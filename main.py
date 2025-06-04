@@ -1,4 +1,5 @@
 from sys import exit
+import asyncio # For creating a browser view
 import pygame
 import constants
 import playerClass
@@ -14,16 +15,22 @@ clock = pygame.time.Clock()
 player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
 player.add(playerClass.Player())
 
-# Main game loop
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
+async def main():
 
-    player.draw(constants.screen)
-    player.update()
+    screen = pygame.display.set_mode((constants.worldWidth,constants.worldHeight)) # Set screen size
+    # Main game loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
-    pygame.display.update()
-    clock.tick(60)
-    
+        player.draw(screen)
+        player.update()
+
+        pygame.display.update()
+        clock.tick(60)
+        await asyncio.sleep(0)
+        
+
+asyncio.run(main())

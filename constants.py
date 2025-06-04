@@ -5,7 +5,6 @@ worldHeight = 1000
 worldWidth = 1000
 scale = 1.5
 
-screen = pygame.display.set_mode((worldWidth,worldHeight)) # Set screen size
 
 playerSpeed = 3
 playerImg = [[pygame.transform.rotozoom(pygame.image.load('images/pl_ph_ala1.png').convert(),0,scale),
