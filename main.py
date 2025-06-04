@@ -2,6 +2,7 @@ from sys import exit
 import asyncio # For creating a browser view
 import pygame
 import constants
+import spriteSheet
 import playerClass
 import random
 import math
@@ -12,12 +13,14 @@ import math
 pygame.init()
 clock = pygame.time.Clock()
 
-player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
-player.add(playerClass.Player())
 
 async def main():
 
     screen = pygame.display.set_mode((constants.worldWidth,constants.worldHeight)) # Set screen size
+
+    player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
+    player.add(playerClass.Player(screen))
+    
     # Main game loop
     while True:
         for event in pygame.event.get():

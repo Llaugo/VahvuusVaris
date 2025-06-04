@@ -1,13 +1,17 @@
 import pygame
 import constants
+import spriteSheet
 
 # Player class
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,screen):
         super().__init__()
-        self.image = constants.playerImg[0][0]
+        # self.screen = screen # Uncomment, if screen is needed elsewhere
+        playerSpriteSheet = pygame.image.load('images/player_sheet_ph.png').convert() # Load player's spritesheet
+        self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
+        self.image = self.playerSprite.getImage(0,32,46,constants.scale,(0,0,0))
         self.facing = 0 # 0,1,2,3 = down,right,up,left
-        self.walking = 0 # 0 = standing, 1,2,3 = walking
+        self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking
         self.rect = self.image.get_rect(midbottom = (constants.worldWidth/2, constants.worldHeight/2))
         
 
@@ -31,7 +35,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= constants.playerSpeed
         else:
             self.walking = 0
-        self.image = constants.playerImg[self.facing][round(self.walking)%4]
+        animationFrame = self.facing*4 + round(self.walking) % 4
+        self.image = self.playerSprite.getImage(animationFrame,32,46,constants.scale,(0,0,0))
 
 
     def update(self):
