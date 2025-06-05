@@ -47,13 +47,13 @@ async def main():
                 exit()
             # Observe finger touches on the movement buttons
             if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERMOTION:
-                x = event.x * constants.worldWidth
-                y = event.y * constants.worldHeight
+                x = round(event.x * constants.worldWidth)
+                y = round(event.y * constants.worldHeight)
                 buttonsPressed[event.finger_id] = (x,y)
             elif event.type == pygame.FINGERUP:
                 buttonsPressed.pop(event.finger_id)
             # Observe mouse presses on the movement buttons
-            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
+            elif event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
                 buttonsPressed["mousePress"] = pos
             elif event.type == pygame.MOUSEBUTTONUP:
