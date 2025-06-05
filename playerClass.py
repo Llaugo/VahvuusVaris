@@ -1,10 +1,12 @@
 import pygame
 import constants
 import spriteSheet
+import button
 
 # Player class
 class Player(pygame.sprite.Sprite):
-    def __init__(self,screen):
+    # controls consists of four control buttons (d,r,u,l) of the Button class
+    def __init__(self, screen, controls: tuple[button.Button,button.Button,button.Button,button.Button]):
         super().__init__()
         # self.screen = screen # Uncomment, if screen is needed elsewhere
         playerSpriteSheet = pygame.image.load('images/player_sheet_ph.png').convert() # Load player's spritesheet
@@ -13,23 +15,24 @@ class Player(pygame.sprite.Sprite):
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking
         self.rect = self.image.get_rect(midbottom = (constants.worldWidth/2, constants.worldHeight/2))
+        self.controls = controls
         
 
     def player_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN] or self.controls[0].activated:
             self.facing = 0
             self.walking = (self.walking + constants.playerSpeed/20.0) % 4
             self.rect.y += constants.playerSpeed
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_RIGHT] or self.controls[1].activated:
             self.facing = 1
             self.walking = (self.walking + constants.playerSpeed/20.0) % 4
             self.rect.x += constants.playerSpeed
-        elif keys[pygame.K_UP]:
+        elif keys[pygame.K_UP] or self.controls[2].activated:
             self.facing = 2
             self.walking = (self.walking + constants.playerSpeed/20.0) % 4
             self.rect.y -= constants.playerSpeed
-        elif keys[pygame.K_LEFT]:
+        elif keys[pygame.K_LEFT] or self.controls[3].activated:
             self.facing = 3
             self.walking = (self.walking + constants.playerSpeed/20.0) % 4
             self.rect.x -= constants.playerSpeed
