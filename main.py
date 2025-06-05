@@ -49,6 +49,11 @@ async def main():
                 buttonsPressed[event.finger_id] = (x,y)
             if event.type == pygame.FINGERUP:
                 buttonsPressed.pop(event.finger_id)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                buttonsPressed["mousePress"] = pos
+            if event.type == pygame.MOUSEBUTTONUP:
+                buttonsPressed.pop("mousePress")
 
         for b in buttons:
             b.unpress()
