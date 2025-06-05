@@ -22,7 +22,7 @@ rightButton = button.Button(2,(constants.worldWidth-69*constants.scale,constants
 upButton = button.Button(4,(constants.worldWidth-115*constants.scale,constants.worldHeight-161*constants.scale),constants.scale,screen)
 leftButton = button.Button(6,(constants.worldWidth-161*constants.scale,constants.worldHeight-115*constants.scale),constants.scale,screen)
 buttons = [downButton, rightButton, upButton, leftButton]
-buttonsPressed = {}
+buttonsPressed = {} 
 
 # Player
 player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
@@ -42,23 +42,29 @@ async def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            # Observe finger touches
+            # Observe finger touches on the movement buttons
             if event.type == pygame.FINGERDOWN:
-                x = event.x * constants.worldHeight
-                y = event.y * constants.worldWidth
+                x = event.x * constants.worldWidth
+                y = event.y * constants.worldHeight
                 buttonsPressed[event.finger_id] = (x,y)
-            if event.type == pygame.FINGERUP:
+            elif event.type == pygame.FINGERMOTION:
+                x = event.x * constants.worldWidth
+                y = event.y * constants.worldHeight
+                buttonsPressed[event.finger_id] = (x,y)
+            elif event.type == pygame.FINGERUP:
                 buttonsPressed.pop(event.finger_id)
+            # Observe mouse presses on the movement buttons
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 buttonsPressed["mousePress"] = pos
-            if event.type == pygame.MOUSEBUTTONUP:
+            elif event.type == pygame.MOUSEBUTTONUP:
                 buttonsPressed.pop("mousePress")
 
         for b in buttons:
             b.unpress()
             for pos in buttonsPressed.values():
                 if b.rect.collidepoint(pos):
+                    print(pos)
                     b.press()
 
         # Draw images to screen
