@@ -28,11 +28,14 @@ buttonsPressed = {}
 player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
 player.add(playerClass.Player(screen,buttons))
 
+
+
 backg = (100,100,100)
 
 async def main():
 
-    
+    # If active, shows useful information about the game. (For debug purposes)
+    debugMode = True
     
     # Main game loop
     while True:
@@ -43,28 +46,27 @@ async def main():
                 pygame.quit()
                 exit()
             # Observe finger touches on the movement buttons
-            if event.type == pygame.FINGERDOWN:
-                x = event.x * constants.worldWidth
-                y = event.y * constants.worldHeight
-                buttonsPressed[event.finger_id] = (x,y)
-            elif event.type == pygame.FINGERMOTION:
+            if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERMOTION:
                 x = event.x * constants.worldWidth
                 y = event.y * constants.worldHeight
                 buttonsPressed[event.finger_id] = (x,y)
             elif event.type == pygame.FINGERUP:
                 buttonsPressed.pop(event.finger_id)
             # Observe mouse presses on the movement buttons
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
                 buttonsPressed["mousePress"] = pos
             elif event.type == pygame.MOUSEBUTTONUP:
                 buttonsPressed.pop("mousePress")
+        # Activate debug mode
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_r]:
+            debugMode = not debugMode 
 
         for b in buttons:
             b.unpress()
             for pos in buttonsPressed.values():
                 if b.rect.collidepoint(pos):
-                    print(pos)
                     b.press()
 
         # Draw images to screen
@@ -72,6 +74,13 @@ async def main():
         player.draw(screen)
         player.update()
         for b in buttons: b.draw(screen)
+
+
+        if debugMode:
+            debugfont = pygame.font.SysFont("fontname", 30)
+            debug_surf = debugfont.render(f'Detected fingers: {buttonsPressed}',False,(50,50,50))
+            debug_rect = debug_surf.get_rect(topleft = (10,10))
+            screen.blit(debug_surf,debug_rect)
 
         pygame.display.update()
         clock.tick(60)
