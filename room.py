@@ -1,7 +1,46 @@
 import pygame
+import const
 import tile
+from random import randint
 
 # A class for rooms which consist of tiles in a grid.
 class Room():
-    def __init__(self):
-        pass
+    def __init__(self, layout):
+        self.layout: list[list[tile.Tile]] = []
+        # Construct the room tiles from the given layout
+        i = 0
+        j = 0
+        for row in layout:
+            self.layout.append([])
+            for c in row:
+                if c == 0: # Wall
+                    self.layout[i].append(tile.Tile(4, (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                elif c == 1: # Floor
+                    self.layout[i].append(tile.Tile(randint(1,3), (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                elif c == 2: # Shelf
+                    self.layout[i].append(tile.Tile(randint(5,7), (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                elif c == 3: # Start
+                    self.layout[i].append(tile.Tile(0, (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                j += 1
+            i += 1
+            j = 0
+        # Set the neighbours for the tiles
+        for row in self.layout:
+            i = 0
+            for c in row:
+                j = 0
+                if j: # Set the tile on top as neighbour if this isn't the top tile
+                    self.layout[i][j-1].setNeighbour(0,c)
+                if i: # Set the previous tile as neighbour if this isn't the first tile
+                    self.layout[i-1][j].setNeighbour(1,c)
+                j += 1
+            i += 1
+
+    def tiles(self):
+        return [x for xs in self.layout for x in xs]
+
+    # Draw each tile in this room
+    def draw(self, screen):
+        for row in self.layout:
+            for tile in row:
+                tile.draw(screen)

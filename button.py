@@ -25,6 +25,7 @@ class Button():
         self.activated = 0
         self.image = self.buttonSprite.getImage(self.buttonType,46,46,self.scale) # Update lifted button image
 
+    # Draws this button on the screen
     def draw(self, screen):
         screen.blit(self.image, (self.rect))
 

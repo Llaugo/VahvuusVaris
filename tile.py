@@ -12,8 +12,20 @@ class Tile():
         self.tileType = tileType
         self.image = self.tileSprite.getImage(tileType,46,46,scale)
         self.rect = self.image.get_rect(center = pos)
-        self.solid = True
+        self.solid = True # Can the tile be walked on
         if tileType < 4: self.solid = False # The first four tiles are not solid and can be walked on
+        self.neighbours = [None, None, None, None] # Down, Right, Up, Left
+        self.playerOccupied = False
 
+    # Method for setting another tile as a neighbour for this one
+    # dir: direction where a neighbouring tile is set. 0,1,2,3 = d,r,u,l
+    # tile: another tile object
+    def setNeighbour(self, dir, tile):
+        if self.neighbours[dir] != None or tile.neighbours[(dir + 2) % 4] != None: # Check if neighbour exists
+            raise ValueError('Tried to set neighbour for a tile that already has that neighbour set.')
+        self.neighbours[dir] = tile # Set the other tile as a neighbour for this tile.
+        tile.neighbours[(dir + 2) % 4] = self # Set this tile as a neighbour for the other tile. (in the opposite direction)
+
+    # Draws this tile on the screen
     def draw(self, screen):
         screen.blit(self.image, (self.rect))

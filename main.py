@@ -1,10 +1,12 @@
 from sys import exit
 import asyncio # For creating a browser view with pygbag
 import pygame
-import constants
+import const
 import spriteSheet
 import playerClass
 import button
+import tile
+import room
 import random
 import math
 
@@ -14,21 +16,22 @@ import math
 pygame.init()
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode((constants.worldWidth,constants.worldHeight)) # Set screen size
+screen = pygame.display.set_mode((const.worldWidth,const.worldHeight)) # Set screen size
 
 # Initialize buttons for moving
-downButton = button.Button(0,(constants.worldWidth-115*constants.scale,constants.worldHeight-69*constants.scale),constants.scale)
-rightButton = button.Button(2,(constants.worldWidth-69*constants.scale,constants.worldHeight-115*constants.scale),constants.scale)
-upButton = button.Button(4,(constants.worldWidth-115*constants.scale,constants.worldHeight-161*constants.scale),constants.scale)
-leftButton = button.Button(6,(constants.worldWidth-161*constants.scale,constants.worldHeight-115*constants.scale),constants.scale)
+downButton = button.Button(0,(const.worldWidth-115*const.scale,const.worldHeight-69*const.scale),const.scale)
+rightButton = button.Button(2,(const.worldWidth-69*const.scale,const.worldHeight-115*const.scale),const.scale)
+upButton = button.Button(4,(const.worldWidth-115*const.scale,const.worldHeight-161*const.scale),const.scale)
+leftButton = button.Button(6,(const.worldWidth-161*const.scale,const.worldHeight-115*const.scale),const.scale)
 buttons = [downButton, rightButton, upButton, leftButton]
-# Finger and mouse positions are tracked in this dictionary (and compared with button locations)
+# Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
 buttonsPressed = {} 
 
 # Player initialization
 player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
 player.add(playerClass.Player(buttons))
 
+room1 = room.Room(const.roomLayouts)
 
 # Placeholder background
 backg = (100,100,100)
@@ -36,7 +39,7 @@ backg = (100,100,100)
 async def main():
 
     # If active, shows useful information about the game. (For debug purposes)
-    debugMode = True
+    debugMode = False
     
     # Main game loop
     while True:
@@ -48,8 +51,8 @@ async def main():
                 exit()
             # Observe finger touches and track their location
             if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERMOTION:
-                x = round(event.x * constants.worldWidth)
-                y = round(event.y * constants.worldHeight)
+                x = round(event.x * const.worldWidth)
+                y = round(event.y * const.worldHeight)
                 buttonsPressed[event.finger_id] = (x,y)
             elif event.type == pygame.FINGERUP: # Delete finger_id, if finger is lifted off
                 buttonsPressed.pop(event.finger_id)
@@ -74,8 +77,9 @@ async def main():
 
         # Draw images to screen
         screen.fill(backg)                  # BG
+        room1.draw(screen)                  # Room/tiles
         player.draw(screen)                 # player
-        player.update()                     # player actions
+        player.update(room1)                # player actions
         for b in buttons: b.draw(screen)    # buttons
 
         # Debug screen info
