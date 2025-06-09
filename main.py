@@ -28,8 +28,7 @@ buttons = [downButton, rightButton, upButton, leftButton]
 buttonsPressed = {} 
 
 # Player initialization
-player = pygame.sprite.GroupSingle() # Create the player sprite and attach a new player to it
-player.add(playerClass.Player(buttons))
+player = playerClass.Player(buttons)
 
 room1 = room.Room(const.roomLayouts)
 

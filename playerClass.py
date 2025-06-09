@@ -17,8 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking
         self.rect = self.image.get_rect(midbottom = (const.worldWidth/2, const.worldHeight/2))
-        self.rect = pygame.Rect.inflate(self.rect, 0, -5)
-        print(self.rect)
+        self.rect = pygame.Rect.inflate(self.rect, 0, -23)
         self.controls = controls
         
     # Tracks for each movement key/button if they are pressed and updates the direction the
@@ -83,6 +82,6 @@ class Player(pygame.sprite.Sprite):
         self.player_input(room)
 
     def draw(self, screen):
-        draw_rect = self.rect.copy()         # 1) copy the logical rect
-        draw_rect.y -= 5         # 2) move it up by however many pixels you need
-        screen.blit(self.image, draw_rect)
+        drawRect = self.rect.copy()
+        drawRect.y -= 23
+        screen.blit(self.image, drawRect)
