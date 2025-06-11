@@ -7,7 +7,21 @@ from random import randint
 class Room():
     def __init__(self, layout):
         self.layout: list[list[tile.Tile]] = []
-        # Construct the room tiles from the given layout
+        self.exit = None
+        self.initialize(layout) # Initialize room's tiles
+
+    def tiles(self):
+        return [x for xs in self.layout for x in xs]
+
+    # Draw each tile in this room
+    def draw(self, screen):
+        for row in self.layout:
+            for tile in row:
+                tile.draw(screen)
+    
+    # Construct the room tiles from the given layout
+    # Only use once upon creation
+    def initialize(self, layout):
         i = 0
         j = 0
         for row in layout:
@@ -19,8 +33,9 @@ class Room():
                     self.layout[i].append(tile.Tile(randint(1,3), (const.scale*46*i+23,const.scale*46*j+23), const.scale))
                 elif c == 2: # Shelf
                     self.layout[i].append(tile.Tile(randint(5,7), (const.scale*46*i+23,const.scale*46*j+23), const.scale))
-                elif c == 3: # Start
-                    self.layout[i].append(tile.Tile(0, (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                elif c == 3: # Exit
+                    self.exit = tile.Tile(0, (const.scale*46*i+23,const.scale*46*j+23), const.scale)
+                    self.layout[i].append(self.exit)
                 j += 1
             i += 1
             j = 0
@@ -35,12 +50,3 @@ class Room():
                     self.layout[i-1][j].setNeighbour(1,c)
                 j += 1
             i += 1
-
-    def tiles(self):
-        return [x for xs in self.layout for x in xs]
-
-    # Draw each tile in this room
-    def draw(self, screen):
-        for row in self.layout:
-            for tile in row:
-                tile.draw(screen)

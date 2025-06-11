@@ -11,7 +11,7 @@ class SpriteSheet():
     # scale: Image scale on the screen
     # color: Needed for keying transparent images (default is black)
     def getImage(self, frame, width, height, scale, color = (0,0,0)):
-        image = pygame.Surface((width,height)).convert()
+        image = pygame.Surface((width,height)).convert_alpha()
         image.blit(self.sheet, (0,0), (frame*width, 0, width, height))
         image = pygame.transform.scale(image, (width*scale,height*scale))
         image.set_colorkey(color)

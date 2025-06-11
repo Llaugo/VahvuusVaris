@@ -15,7 +15,7 @@ class Tile():
         self.solid = True # Can the tile be walked on
         if tileType < 4: self.solid = False # The first four tiles are not solid and can be walked on
         self.neighbours = [None, None, None, None] # Down, Right, Up, Left
-        self.playerOccupied = False
+        # self.playerOccupied = False
 
     # Method for setting another tile as a neighbour for this one
     # dir: direction where a neighbouring tile is set. 0,1,2,3 = d,r,u,l

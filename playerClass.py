@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.playerSprite.getImage(0,32,46,const.scale)
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking
-        self.rect = self.image.get_rect(midbottom = (const.worldWidth/2, const.worldHeight/2))
+        self.rect = self.image.get_rect(midbottom = (346, 373))
         self.rect = pygame.Rect.inflate(self.rect, 0, -23)
         self.controls = controls
         
