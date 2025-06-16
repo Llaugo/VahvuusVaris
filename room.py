@@ -9,15 +9,23 @@ class Room():
         self.layout: list[list[tile.Tile]] = []
         self.exit = None
         self.initialize(layout) # Initialize room's tiles
+        self.updatePos((const.worldWidth/2,const.worldHeight/2))
+        self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
 
-    def tiles(self):
-        return [x for xs in self.layout for x in xs]
+    def updatePos(self, screenCenter):
+        i = 0
+        j = 0
+        for row in self.layout:
+            for tile in row:
+                tile.rect = tile.image.get_rect(center = (screenCenter[0]-(i-7)*46,screenCenter[1]-(j-7)*46))
+                j += 1
+            i += 1
+            j = 0
 
     # Draw each tile in this room
     def draw(self, screen):
-        for row in self.layout:
-            for tile in row:
-                tile.draw(screen)
+        for tile in self.tiles:
+            tile.draw(screen)
     
     # Construct the room tiles from the given layout
     # Only use once upon creation
@@ -28,13 +36,13 @@ class Room():
             self.layout.append([])
             for c in row:
                 if c == 0: # Wall
-                    self.layout[i].append(tile.Tile(4, (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                    self.layout[i].append(tile.Tile(4, (0,0), const.scale))
                 elif c == 1: # Floor
-                    self.layout[i].append(tile.Tile(randint(1,3), (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                    self.layout[i].append(tile.Tile(randint(1,3), (0,0), const.scale))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(randint(5,7), (const.scale*46*i+23,const.scale*46*j+23), const.scale))
+                    self.layout[i].append(tile.Tile(randint(5,7), (0,0), const.scale))
                 elif c == 3: # Exit
-                    self.exit = tile.Tile(0, (const.scale*46*i+23,const.scale*46*j+23), const.scale)
+                    self.exit = tile.Tile(0, (0,0), const.scale)
                     self.layout[i].append(self.exit)
                 j += 1
             i += 1

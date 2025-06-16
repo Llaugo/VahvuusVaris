@@ -9,15 +9,16 @@ import math
 # Player class tracking movement and walking animations.
 class Player(pygame.sprite.Sprite):
     # controls: Consists of four control buttons (d,r,u,l) of the Button class
-    def __init__(self, controls: tuple[button.Button,button.Button,button.Button,button.Button]):
+    # pos: player location on the screen
+    def __init__(self, controls: tuple[button.Button,button.Button,button.Button,button.Button], pos):
         super().__init__()
-        playerSpriteSheet = pygame.image.load('images/player_sheet_ph.png').convert() # Load player's spritesheet
+        playerSpriteSheet = pygame.image.load('images/player_sheet.png').convert() # Load player's spritesheet
         self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
-        self.image = self.playerSprite.getImage(0,32,46,const.scale)
+        self.image = self.playerSprite.getImage(0,36,41,const.scale)
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking
-        self.rect = self.image.get_rect(midbottom = (346, 373))
-        self.rect = pygame.Rect.inflate(self.rect, 0, -23)
+        self.rect = self.image.get_rect(center = pos)
+        self.rect.height -= 20
         self.controls = controls
         
     # Tracks for each movement key/button if they are pressed and updates the direction the
@@ -44,7 +45,7 @@ class Player(pygame.sprite.Sprite):
         if moving:
             self.move(self.facing, room)
         animationFrame = self.facing*4 + round(self.walking) % 4
-        self.image = self.playerSprite.getImage(animationFrame,32,46,const.scale)
+        self.image = self.playerSprite.getImage(animationFrame,36,41,const.scale)
 
     # Check if player collides with a certain tile
     def collidesWithTile(self, tile: tile.Tile):
@@ -54,7 +55,7 @@ class Player(pygame.sprite.Sprite):
         return doesCollide
     # Check if player collides with any tile in a certain room
     def collidesWithRoom(self, room: room.Room):
-        for tile in room.tiles():
+        for tile in room.tiles:
             if self.collidesWithTile(tile):
                 return True
         return False
@@ -81,7 +82,12 @@ class Player(pygame.sprite.Sprite):
     def update(self, room):
         self.player_input(room)
 
+    # screenMove: how much the screen size (x,y) have been changed
+    def updatePos(self, screenMove):
+        self.rect = self.image.get_rect(center = (self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 20))
+        self.rect.height -= 20
+    
     def draw(self, screen):
         drawRect = self.rect.copy()
-        drawRect.y -= 23
+        drawRect.y -= 20
         screen.blit(self.image, drawRect)

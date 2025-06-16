@@ -1,12 +1,12 @@
 import pygame
 
 # World dimensions
-worldWidth = 1000
-worldHeight = 15*46
+worldWidth = 1400
+worldHeight = 700
 # Scale used for image sizes
 scale = 1
 # Player movement speed
-playerSpeed = 2
+playerSpeed = 2*scale
 
 
 # 0 = Wall
