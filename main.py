@@ -8,6 +8,7 @@ import button
 import tile
 import room
 import picture
+import text
 import random
 import math
 
@@ -27,6 +28,7 @@ upButton = button.Button(4,(const.worldWidth-115*const.scale,const.worldHeight-1
 leftButton = button.Button(6,(const.worldWidth-161*const.scale,const.worldHeight-115*const.scale),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 exitButton = button.Button(8,(const.worldWidth-231*const.scale,const.worldHeight-115*const.scale),const.scale)
+nextFloorButton = button.Button(10,(const.worldWidth/2,const.worldHeight*3/4),const.scale)
 # Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
 fingerPositions = {} 
 
@@ -36,13 +38,13 @@ frame = picture.Picture("images/frame.png", (710,710), (const.worldWidth/2,const
 player = playerClass.Player(moveButtons, (const.worldWidth/2*const.scale,const.worldHeight/2*const.scale))
 room1 = room.Room(const.roomLayouts)
 
-# gameStatus: Shows the state of the game
-# "level": Game is running a level
-# "menu": Game is at the starting menu
-# "checkpoint": Game is at a state in between levels
-gameStatus = "level"
+# Different font sizes
+sGameFont = pygame.font.SysFont("fontname", 30)
+mGameFont = pygame.font.SysFont("fontname", 50)
+lGameFont = pygame.font.SysFont("fontname", 80)
 
-# Placeholder background
+
+# Background color
 backg = (160,209,255)
 
 async def main():
@@ -50,6 +52,17 @@ async def main():
     # If active, shows useful information about the game. (For debug purposes)
     debugMode = False
     screenSize = pygame.display.get_window_size()
+    # gameStatus: Shows the state of the game
+    # "level": Game is running a level
+    # "menu": Game is at the starting menu
+    # "checkpoint": Game is at a state in between levels
+    gameStatus = "level"
+    # Tracks the floor/level the player is at
+    floorNumber = 1
+
+    # Texts
+    checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2,screenSize[1]/6))
+    debugText = text.Text(sGameFont,f'Detected fingers: {fingerPositions}',(400,20))
     
     # Main game loop
     while True:
@@ -88,7 +101,7 @@ async def main():
         #########################################################
         # RUNNING A LEVEL
         #########################################################
-        if gameStatus == "level":
+        elif gameStatus == "level":
 
             # Check if any buttons are pressed
             for b in moveButtons:
@@ -97,9 +110,9 @@ async def main():
                     if b.rect.collidepoint(pos):
                         b.press()
 
-            # Draw images to screen
+            
             newScreenSize = pygame.display.get_window_size()
-            # Update all positions if the screen size was changed
+            # Update all positions if the screen size is changed
             if newScreenSize != screenSize:
                 screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
                 room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
@@ -110,6 +123,7 @@ async def main():
                 leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
                 exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
                 frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+            # Draw images to screen
             screen.fill(backg)                                          # BG
             room1.draw(screen)                                          # Room/tiles
             player.draw(screen)                                         # player
@@ -122,21 +136,35 @@ async def main():
                 exitButton.unpress()
                 for pos in fingerPositions.values():
                     if exitButton.rect.collidepoint(pos):
-                        exitButton.press()
+                        # exitButton.press()
+                        gameStatus = "checkpoint"
             screenSize = newScreenSize
 
         #########################################################
         # CHECKPOINT IN BETWEEN LEVELS
         #########################################################
-        if gameStatus == "checkpoint":
-            pass
+        elif gameStatus == "checkpoint":
+            screen.fill(backg)
 
+            checkpointText.draw(screen,f'You have completed floor {floorNumber}')
+            nextFloorButton.draw(screen)
+
+            # Check if nextFloorButton is pressed
+            for pos in fingerPositions.values():
+                if nextFloorButton.rect.collidepoint(pos): # Go to next floor / start a new level
+                    # nextFloorButton.press()
+                    floorNumber += 1
+                    gameStatus = "level"
+
+            newScreenSize = pygame.display.get_window_size()
+            # Update all positions if the screen size is changed
+            if newScreenSize != screenSize:
+                checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
+                nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
+            screenSize = newScreenSize
         # Debug screen info
         if debugMode:
-            debugfont = pygame.font.SysFont("fontname", 30)
-            debug_surf = debugfont.render(f'Detected fingers: {fingerPositions}',False,(50,50,50))
-            debug_rect = debug_surf.get_rect(topleft = (10,10))
-            screen.blit(debug_surf,debug_rect)
+            debugText.draw(screen,f'Detected fingers: {fingerPositions}')
 
         pygame.display.update()
         clock.tick(60)
