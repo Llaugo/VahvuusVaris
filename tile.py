@@ -13,7 +13,7 @@ class Tile():
         self.image = self.tileSprite.getImage(tileType,46,46,scale)
         self.rect = self.image.get_rect(center = pos)
         self.solid = True # Can the tile be walked on
-        if tileType < 4: self.solid = False # The first four tiles are not solid and can be walked on
+        if tileType < 5: self.solid = False # The first five tiles are not solid and can be walked on
         self.neighbours = [None, None, None, None] # Down, Right, Up, Left
         # self.playerOccupied = False
 

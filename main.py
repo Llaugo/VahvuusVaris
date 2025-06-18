@@ -60,6 +60,7 @@ async def main():
     # Tracks the floor/level the player is at
     floorNumber = 1
     room1 = room.Room(const.roomLayouts[0],(screenSize[0]/2,screenSize[1]/2))
+    lobby = room.Room(const.lobbyLayout, (screenSize[0]/2,screenSize[1]/2))
 
     # Timer
     timer = const.floorTime
@@ -132,15 +133,20 @@ async def main():
                 exitButton.draw(screen)                                 # exit button, if player is at the lift
                 exitButton.unpress()
                 for pos in fingerPositions.values():
-                    if exitButton.rect.collidepoint(pos):
+                    if exitButton.rect.collidepoint(pos): # Go to the checkpoint lift
                         # exitButton.press()
-                        gameStatus = "checkpoint"
+                        gameStatus = "checkpoint" # Change the game status
+
 
         #########################################################
         # CHECKPOINT IN BETWEEN LEVELS
         #########################################################
         elif gameStatus == "checkpoint":
             screen.fill(backg)
+
+            lobby.draw(screen)
+            player.draw(screen)
+            player.update(lobby)
 
             checkpointText.draw(screen,f'You have completed floor {floorNumber}')
             nextFloorButton.draw(screen)
@@ -160,6 +166,7 @@ async def main():
         if newScreenSize != screenSize:
             #if gameStatus == "level":
             screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
+            lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
             room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
             player.updatePos(screenMove)
             downButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-69*const.scale))
@@ -173,7 +180,7 @@ async def main():
             checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
             nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
         screenSize = newScreenSize
-        
+
         # Debug screen info
         if debugMode:
             debugText.draw(screen,f'Detected fingers: {fingerPositions}')

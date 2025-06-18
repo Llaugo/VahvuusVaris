@@ -13,11 +13,12 @@ class Room():
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
 
     def updatePos(self, screenCenter):
+        halfLength = round((len(self.layout)-1)/2)
         i = 0
         j = 0
         for row in self.layout:
             for tile in row:
-                tile.rect = tile.image.get_rect(center = (screenCenter[0]-(i-7)*46,screenCenter[1]-(j-7)*46))
+                tile.rect = tile.image.get_rect(center = (screenCenter[0]-(i-halfLength)*46,screenCenter[1]-(j-halfLength)*46))
                 j += 1
             i += 1
             j = 0
@@ -36,14 +37,18 @@ class Room():
             self.layout.append([])
             for c in row:
                 if c == 0: # Wall
-                    self.layout[i].append(tile.Tile(4, (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(5, (0,0), const.scale))
                 elif c == 1: # Floor
                     self.layout[i].append(tile.Tile(randint(1,3), (0,0), const.scale))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(randint(5,7), (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(randint(6,8), (0,0), const.scale))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0, (0,0), const.scale)
                     self.layout[i].append(self.exit)
+                elif c == 9: # Lift floor
+                    self.layout[i].append(tile.Tile(4, (0,0), const.scale))
+                elif c == 8: # Lift wall
+                    self.layout[i].append(tile.Tile(9, (0,0), const.scale))
                 j += 1
             i += 1
             j = 0
