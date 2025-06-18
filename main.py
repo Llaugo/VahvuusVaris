@@ -50,7 +50,7 @@ backg = (160,209,255)
 async def main():
 
     # If active, shows useful information about the game. (For debug purposes)
-    debugMode = False
+    debugMode = True
     screenSize = pygame.display.get_window_size()
     # gameStatus: Shows the state of the game
     # "level": Game is running a level
@@ -126,7 +126,7 @@ async def main():
             player.draw(screen)                                         # player
             player.update(room1)                                        # player actions
             for b in moveButtons:                                       # buttons
-                b.draw(screen)                    
+                b.draw(screen)               
             frame.draw(screen)                                          # room frame
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer)))                           # timer
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
@@ -183,7 +183,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen,f'Detected fingers: {fingerPositions}')
+            debugText.draw(screen,f'Detected fingers: {fingerPositions}\nFPS: {round(clock.get_fps())}')
 
         pygame.display.update()
         clock.tick(60)

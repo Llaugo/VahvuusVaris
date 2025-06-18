@@ -48,6 +48,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.playerSprite.getImage(animationFrame,36,41,const.scale)
 
     # Check if player collides with a certain tile
+    # Not used anymore
     def collidesWithTile(self, tile: tile.Tile):
         doesCollide = False
         if self.rect.colliderect(tile.rect) and tile.solid: 
@@ -55,8 +56,8 @@ class Player(pygame.sprite.Sprite):
         return doesCollide
     # Check if player collides with any tile in a certain room
     def collidesWithRoom(self, room: room.Room):
-        for tile in room.tiles:
-            if self.collidesWithTile(tile):
+        for tile in room.solidRects:
+            if self.rect.colliderect(tile):
                 return True
         return False
 

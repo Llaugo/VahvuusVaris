@@ -5,6 +5,8 @@ worldWidth = 1400
 worldHeight = 700
 # Scale used for image sizes
 scale = 1
+# Tile size (square)
+tileSize = 46
 # Player movement speed
 playerSpeed = 2*scale
 
