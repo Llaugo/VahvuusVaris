@@ -13,6 +13,7 @@ class Text():
 
     # pos: new pos of the button
     def updatePos(self, pos):
+        self.pos = pos
         self.rect = self.surf.get_rect(center = (pos))
     
     def draw(self, screen, text = None):

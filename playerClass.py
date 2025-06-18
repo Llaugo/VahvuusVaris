@@ -86,6 +86,13 @@ class Player(pygame.sprite.Sprite):
     def updatePos(self, screenMove):
         self.rect = self.image.get_rect(center = (self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 20))
         self.rect.height -= 20
+
+    # Reset player to the center of the screen
+    # screenSize: dimensions of the window
+    def resetPos(self, screenSize):
+        self.rect = self.image.get_rect(center = (screenSize[0]/2, screenSize[1]/2))
+        self.rect.height -= 20
+        self.facing = 0
     
     def draw(self, screen):
         drawRect = self.rect.copy()

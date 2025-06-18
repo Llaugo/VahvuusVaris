@@ -5,11 +5,11 @@ from random import randint
 
 # A class for rooms which consist of tiles in a grid.
 class Room():
-    def __init__(self, layout):
+    def __init__(self, layout, pos):
         self.layout: list[list[tile.Tile]] = []
         self.exit = None
         self.initialize(layout) # Initialize room's tiles
-        self.updatePos((const.worldWidth/2,const.worldHeight/2))
+        self.updatePos(pos)
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
 
     def updatePos(self, screenCenter):

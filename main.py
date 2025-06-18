@@ -36,7 +36,7 @@ frame = picture.Picture("images/frame.png", (710,710), (const.worldWidth/2,const
 
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2*const.scale,const.worldHeight/2*const.scale))
-room1 = room.Room(const.roomLayouts)
+
 
 # Different font sizes
 sGameFont = pygame.font.SysFont("fontname", 30)
@@ -59,6 +59,7 @@ async def main():
     gameStatus = "level"
     # Tracks the floor/level the player is at
     floorNumber = 1
+    room1 = room.Room(const.roomLayouts[0],(screenSize[0]/2,screenSize[1]/2))
 
     # Texts
     checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2,screenSize[1]/6))
@@ -110,19 +111,6 @@ async def main():
                     if b.rect.collidepoint(pos):
                         b.press()
 
-            
-            newScreenSize = pygame.display.get_window_size()
-            # Update all positions if the screen size is changed
-            if newScreenSize != screenSize:
-                screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
-                room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-                player.updatePos(screenMove)
-                downButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-69*const.scale))
-                rightButton.updatePos((newScreenSize[0]-69*const.scale,newScreenSize[1]-115*const.scale))
-                upButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-161*const.scale))
-                leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
-                exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
-                frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
             # Draw images to screen
             screen.fill(backg)                                          # BG
             room1.draw(screen)                                          # Room/tiles
@@ -138,7 +126,6 @@ async def main():
                     if exitButton.rect.collidepoint(pos):
                         # exitButton.press()
                         gameStatus = "checkpoint"
-            screenSize = newScreenSize
 
         #########################################################
         # CHECKPOINT IN BETWEEN LEVELS
@@ -155,13 +142,27 @@ async def main():
                     # nextFloorButton.press()
                     floorNumber += 1
                     gameStatus = "level"
+                    room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2))
+                    player.resetPos(screenSize)
 
-            newScreenSize = pygame.display.get_window_size()
-            # Update all positions if the screen size is changed
-            if newScreenSize != screenSize:
-                checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
-                nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
-            screenSize = newScreenSize
+
+        newScreenSize = pygame.display.get_window_size()
+        # Update all positions if the screen size is changed
+        if newScreenSize != screenSize:
+            #if gameStatus == "level":
+            screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
+            room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+            player.updatePos(screenMove)
+            downButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-69*const.scale))
+            rightButton.updatePos((newScreenSize[0]-69*const.scale,newScreenSize[1]-115*const.scale))
+            upButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-161*const.scale))
+            leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
+            exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
+            frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+            #elif gameStatus == "checkpoint":
+            checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
+            nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
+        screenSize = newScreenSize
         # Debug screen info
         if debugMode:
             debugText.draw(screen,f'Detected fingers: {fingerPositions}')
