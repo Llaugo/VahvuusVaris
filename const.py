@@ -8,6 +8,8 @@ scale = 1
 # Player movement speed
 playerSpeed = 2*scale
 
+# How much time there is in each level
+floorTime = 300
 
 # 0 = Wall
 # 1 = Floor

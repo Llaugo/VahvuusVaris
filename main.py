@@ -11,7 +11,7 @@ import picture
 import text
 import random
 import math
-
+import time
 
 
 
@@ -39,9 +39,9 @@ player = playerClass.Player(moveButtons, (const.worldWidth/2*const.scale,const.w
 
 
 # Different font sizes
-sGameFont = pygame.font.SysFont("fontname", 30)
-mGameFont = pygame.font.SysFont("fontname", 50)
-lGameFont = pygame.font.SysFont("fontname", 80)
+sGameFont = pygame.font.SysFont(None, 30)
+mGameFont = pygame.font.SysFont(None, 50)
+lGameFont = pygame.font.SysFont(None, 80)
 
 
 # Background color
@@ -61,7 +61,12 @@ async def main():
     floorNumber = 1
     room1 = room.Room(const.roomLayouts[0],(screenSize[0]/2,screenSize[1]/2))
 
+    # Timer
+    timer = const.floorTime
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+
     # Texts
+    timerText = text.Text(mGameFont,time.strftime('%M:%S', time.gmtime(timer)),(screenSize[0]/2,screenSize[1]/2-324))
     checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2,screenSize[1]/6))
     debugText = text.Text(sGameFont,f'Detected fingers: {fingerPositions}',(400,20))
     
@@ -86,6 +91,9 @@ async def main():
                 fingerPositions["mousePress"] = pos
             #elif event.type == pygame.MOUSEBUTTONUP: # Stop mouse position tracking if mouse is lifted
             #    fingerPositions.pop("mousePress")
+            # Advance timer
+            elif event.type == pygame.USEREVENT and gameStatus == "level": 
+                timer -= 1
 
         # Toggle debug mode
         keys = pygame.key.get_pressed()
@@ -118,7 +126,8 @@ async def main():
             player.update(room1)                                        # player actions
             for b in moveButtons:                                       # buttons
                 b.draw(screen)                    
-            frame.draw(screen)    
+            frame.draw(screen)                                          # room frame
+            timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer)))                           # timer
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)                                 # exit button, if player is at the lift
                 exitButton.unpress()
@@ -140,11 +149,11 @@ async def main():
             for pos in fingerPositions.values():
                 if nextFloorButton.rect.collidepoint(pos): # Go to next floor / start a new level
                     # nextFloorButton.press()
-                    floorNumber += 1
-                    gameStatus = "level"
-                    room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2))
-                    player.resetPos(screenSize)
-
+                    floorNumber += 1 # Advance floor number
+                    gameStatus = "level" # Change game status
+                    room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
+                    player.resetPos(screenSize) # Move player to the middle
+                    timer = const.floorTime # Reset timer
 
         newScreenSize = pygame.display.get_window_size()
         # Update all positions if the screen size is changed
@@ -159,10 +168,12 @@ async def main():
             leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
             exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
             frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+            timerText.updatePos((newScreenSize[0]/2,newScreenSize[1]/2-324))
             #elif gameStatus == "checkpoint":
             checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
             nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
         screenSize = newScreenSize
+        
         # Debug screen info
         if debugMode:
             debugText.draw(screen,f'Detected fingers: {fingerPositions}')
