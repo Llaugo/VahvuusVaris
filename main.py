@@ -9,6 +9,7 @@ import tile
 import room
 import picture
 import text
+import shoppingList
 import random
 import math
 import time
@@ -32,13 +33,13 @@ nextFloorButton = button.Button(10,(const.worldWidth/2,const.worldHeight*3/4),co
 # Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
 fingerPositions = {} 
 
-frame = picture.Picture("images/frame.png", (710,710), (const.worldWidth/2,const.worldHeight/2))
 
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2*const.scale,const.worldHeight/2*const.scale))
 
 
 # Different font sizes
+xsGameFont = pygame.font.SysFont(None, 22)
 sGameFont = pygame.font.SysFont(None, 30)
 mGameFont = pygame.font.SysFont(None, 50)
 lGameFont = pygame.font.SysFont(None, 80)
@@ -62,14 +63,19 @@ async def main():
     room1 = room.Room(const.roomLayouts[0],(screenSize[0]/2,screenSize[1]/2))
     lobby = room.Room(const.lobbyLayout, (screenSize[0]/2,screenSize[1]/2))
 
+    frame = picture.Picture("images/frame.png", (710,710), (const.worldWidth/2, const.worldHeight/2))
+    shoplist = picture.Picture("images/shoplist.png", (230,230), (const.worldWidth - room1.rect.left/2, const.worldHeight/4))
+    shoplistTitle = text.Text(sGameFont,"Ostoslista",(shoplist.rect.left+13,shoplist.rect.top+13))
+    shoppinglist = shoppingList.ShoppingList(xsGameFont,(shoplist.rect.left+13,shoplist.rect.top+50))
+
     # Timer
     timer = const.floorTime
     pygame.time.set_timer(pygame.USEREVENT, 1000)
 
     # Texts
-    timerText = text.Text(mGameFont,time.strftime('%M:%S', time.gmtime(timer)),(screenSize[0]/2,screenSize[1]/2-324))
-    checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2,screenSize[1]/6))
-    debugText = text.Text(sGameFont,f'Detected fingers: {fingerPositions}',(400,20))
+    timerText = text.Text(mGameFont,time.strftime('%M:%S', time.gmtime(timer)),(screenSize[0]/2-45,screenSize[1]/2-341))
+    checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2-370,screenSize[1]/6))
+    debugText = text.Text(sGameFont,f'Detected fingers: {fingerPositions}',(20,20))
 
     def updateAllPositions(newScreenSize):
         #if gameStatus == "level":
@@ -83,9 +89,12 @@ async def main():
         leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
         exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
         frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-        timerText.updatePos((newScreenSize[0]/2,newScreenSize[1]/2-324))
+        timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
+        shoplist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
+        shoplistTitle.updatePos((shoplist.rect.left+13,shoplist.rect.top+13))
+        shoppinglist.updatePos((shoplist.rect.left+13,shoplist.rect.top+50))
         #elif gameStatus == "checkpoint":
-        checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
+        checkpointText.updatePos((newScreenSize[0]/2-370,newScreenSize[1]/6))
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
     
     # Main game loop
@@ -146,6 +155,9 @@ async def main():
             for b in moveButtons:                                       # buttons
                 b.draw(screen)               
             frame.draw(screen)                                          # room frame
+            shoplist.draw(screen)                                       # shopping list
+            shoplistTitle.draw(screen)
+            shoppinglist.draw(screen)
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer)))                           # timer
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)                                 # exit button, if player is at the lift

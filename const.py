@@ -14,6 +14,12 @@ playerSpeed = 2*scale
 # How much time there is in each level
 floorTime = 300
 
+shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Välipalakeksi", "Kaurahiutale"],
+        ["Myskikurpitsa", "Oliiviöljy", "Saksanpähkinä", "Fusilli", "Tomaattimurska"],
+        ["Kvinoa", "Kasvisliemikuutio", "Rasvaton maito", "Mustapavut", "Halloumi"],
+        ["Kreikkalainen jogurtti", "Rosmariini", "Luomu Mango", "Linssisipsit", "Runebergin torttu"],
+        ["Viiriäisen munat", "Karambola", "Sahrami", "Murot", "Pakaste dumpligs"]]
+
 # 0 = Wall
 # 1 = Floor
 # 2 = Shelf

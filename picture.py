@@ -7,10 +7,12 @@ class Picture():
     def __init__(self, pic, dimensions, pos):
         picSpriteSheet = pygame.image.load(pic).convert() # Load player's spritesheet
         self.playerSprite = spriteSheet.SpriteSheet(picSpriteSheet)
+        self.pos = pos
         self.image = self.playerSprite.getImage(0,dimensions[0],dimensions[1],const.scale)
         self.rect = self.image.get_rect(center = pos)
 
     def updatePos(self, pos):
+        self.pos = pos
         self.rect = self.image.get_rect(center = (pos))
 
     # Draws this image on the screen
