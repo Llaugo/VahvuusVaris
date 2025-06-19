@@ -70,6 +70,23 @@ async def main():
     timerText = text.Text(mGameFont,time.strftime('%M:%S', time.gmtime(timer)),(screenSize[0]/2,screenSize[1]/2-324))
     checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2,screenSize[1]/6))
     debugText = text.Text(sGameFont,f'Detected fingers: {fingerPositions}',(400,20))
+
+    def updateAllPositions(newScreenSize):
+        #if gameStatus == "level":
+        screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
+        lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        player.updatePos(screenMove)
+        downButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-69*const.scale))
+        rightButton.updatePos((newScreenSize[0]-69*const.scale,newScreenSize[1]-115*const.scale))
+        upButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-161*const.scale))
+        leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
+        exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
+        frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        timerText.updatePos((newScreenSize[0]/2,newScreenSize[1]/2-324))
+        #elif gameStatus == "checkpoint":
+        checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
+        nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
     
     # Main game loop
     while True:
@@ -95,6 +112,7 @@ async def main():
             # Advance timer
             elif event.type == pygame.USEREVENT and gameStatus == "level": 
                 timer -= 1
+
 
         # Toggle debug mode
         keys = pygame.key.get_pressed()
@@ -161,29 +179,15 @@ async def main():
                     player.resetPos(screenSize) # Move player to the middle
                     timer = const.floorTime # Reset timer
 
-        newScreenSize = pygame.display.get_window_size()
         # Update all positions if the screen size is changed
+        newScreenSize = pygame.display.get_window_size()
         if newScreenSize != screenSize:
-            #if gameStatus == "level":
-            screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
-            lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-            room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-            player.updatePos(screenMove)
-            downButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-69*const.scale))
-            rightButton.updatePos((newScreenSize[0]-69*const.scale,newScreenSize[1]-115*const.scale))
-            upButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-161*const.scale))
-            leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
-            exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
-            frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-            timerText.updatePos((newScreenSize[0]/2,newScreenSize[1]/2-324))
-            #elif gameStatus == "checkpoint":
-            checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
-            nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
-        screenSize = newScreenSize
+            updateAllPositions(newScreenSize)
+            screenSize = newScreenSize
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen,f'Detected fingers: {fingerPositions}\nFPS: {round(clock.get_fps())}')
+            debugText.draw(screen,f"Detected fingers: {fingerPositions} – FPS: {round(clock.get_fps())}")
 
         pygame.display.update()
         clock.tick(60)

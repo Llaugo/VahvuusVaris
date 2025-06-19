@@ -17,8 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.playerSprite.getImage(0,36,41,const.scale)
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking
-        self.rect = self.image.get_rect(center = pos)
-        self.rect.height -= 20
+        self.resetRect(pos)
         self.controls = controls
         
     # Tracks for each movement key/button if they are pressed and updates the direction the
@@ -85,17 +84,22 @@ class Player(pygame.sprite.Sprite):
 
     # screenMove: how much the screen size (x,y) have been changed
     def updatePos(self, screenMove):
-        self.rect = self.image.get_rect(center = (self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 20))
-        self.rect.height -= 20
+        self.resetRect((self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 20))
 
     # Reset player to the center of the screen
     # screenSize: dimensions of the window
     def resetPos(self, screenSize):
-        self.rect = self.image.get_rect(center = (screenSize[0]/2, screenSize[1]/2))
-        self.rect.height -= 20
+        self.resetRect((screenSize[0]/2, screenSize[1]/2))
         self.facing = 0
+
+    # Set a new position for the rect and make it smaller than the image
+    def resetRect(self, pos):
+        self.rect = self.image.get_rect(center = pos)
+        self.rect.height -= 20
+        self.rect.width -= 10
     
     def draw(self, screen):
         drawRect = self.rect.copy()
         drawRect.y -= 20
+        drawRect.x -= 5
         screen.blit(self.image, drawRect)

@@ -1,5 +1,6 @@
 import pygame
 import spriteSheet
+import const
 
 
 class Tile():
@@ -10,7 +11,7 @@ class Tile():
         tileSpriteSheet = pygame.image.load('images/shop_sheet.png').convert() # Load tile spritesheet
         self.tileSprite = spriteSheet.SpriteSheet(tileSpriteSheet)
         self.tileType = tileType
-        self.image = self.tileSprite.getImage(tileType,46,46,scale)
+        self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, scale)
         self.rect = self.image.get_rect(center = pos)
         self.solid = True # Can the tile be walked on
         if tileType < 5: self.solid = False # The first five tiles are not solid and can be walked on

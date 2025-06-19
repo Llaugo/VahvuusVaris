@@ -4,6 +4,7 @@ import pygame
 worldWidth = 1400
 worldHeight = 700
 # Scale used for image sizes
+# DON'T CHANGE from 1, not implemented to everywhere
 scale = 1
 # Tile size (square)
 tileSize = 46
