@@ -41,6 +41,7 @@ class Room():
     # Construct the room tiles from the given layout
     # Only use once upon creation
     def initialize(self, layout):
+        # Create the correct tile by the number
         for i,row in enumerate(layout):
             self.layout.append([])
             for j,c in enumerate(row):
@@ -56,17 +57,29 @@ class Room():
                 elif c == 9: # Lift floor
                     self.layout[i].append(tile.Tile(4, (0,0), const.scale))
                 elif c == 8: # Lift wall
-                    self.layout[i].append(tile.Tile(9, (0,0), const.scale))
-                    
+                    self.layout[i].append(tile.Tile(10, (0,0), const.scale))
         # Set the neighbours for the tiles
-        #i = 0
-        #j = 0
-        #for row in self.layout:
-        #    for c in row:
-        #        j = 0
-        #        if j: # Set the tile on top as neighbour if this isn't the top tile
-        #            self.layout[i][j-1].setNeighbour(0,c)
-        #        if i: # Set the previous tile as neighbour if this isn't the first tile
-        #            self.layout[i-1][j].setNeighbour(1,c)
-        #        j += 1
-        #    i += 1
+        for i, row in enumerate(self.layout):
+            for j, c in enumerate(row):
+                if j: # Set the tile on top as neighbour if this isn't the top tile
+                    self.layout[i][j-1].setNeighbour(0,c)
+                if i: # Set the previous tile as neighbour if this isn't the first tile
+                    self.layout[i-1][j].setNeighbour(1,c)
+        # Correct Shelf orientation
+        for i, row in enumerate(self.layout):
+            for j, c in enumerate(row):
+                if c.isShelf(): # Tile is a shelf
+                    if c.neighbours[0] and c.neighbours[0].isShelf() and c.neighbours[1] and c.neighbours[1].isShelf():
+                        c.changeType(9)
+                        c.rotateImage()
+                    elif c.neighbours[1] and c.neighbours[1].isShelf() and c.neighbours[2] and c.neighbours[2].isShelf():
+                        c.changeType(9)
+                        c.rotateImage(2)
+                    elif c.neighbours[2] and c.neighbours[2].isShelf() and c.neighbours[3] and c.neighbours[3].isShelf():
+                        c.changeType(9)
+                        c.rotateImage(3)
+                    elif c.neighbours[3] and c.neighbours[3].isShelf() and c.neighbours[0] and c.neighbours[0].isShelf():
+                        c.changeType(9)
+                    elif (c.neighbours[0] and c.neighbours[0].isShelf()) or (c.neighbours[2] and c.neighbours[2].isShelf()):
+                        c.rotateImage()
+
