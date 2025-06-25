@@ -39,7 +39,7 @@ player = playerClass.Player(moveButtons, (const.worldWidth/2*const.scale,const.w
 
 
 # Different font sizes
-xsGameFont = pygame.font.SysFont(None, 22)
+xsGameFont = pygame.font.SysFont(None, 23)
 sGameFont = pygame.font.SysFont(None, 30)
 mGameFont = pygame.font.SysFont(None, 50)
 lGameFont = pygame.font.SysFont(None, 80)
@@ -54,28 +54,30 @@ async def main():
     debugMode = True
     screenSize = pygame.display.get_window_size()
     # gameStatus: Shows the state of the game
-    # "level": Game is running a level
-    # "menu": Game is at the starting menu
-    # "checkpoint": Game is at a state in between levels
+    #   "level": Game is running a level
+    #   "menu": Game is at the starting menu
+    #   "checkpoint": Game is at a state in between levels
     gameStatus = "level"
     # Tracks the floor/level the player is at
     floorNumber = 1
+
     room1 = room.Room(const.roomLayouts[0],(screenSize[0]/2,screenSize[1]/2))
     lobby = room.Room(const.lobbyLayout, (screenSize[0]/2,screenSize[1]/2))
 
-    frame = picture.Picture("images/frame.png", (710,710), (const.worldWidth/2, const.worldHeight/2))
-    shoplist = picture.Picture("images/shoplist.png", (230,230), (const.worldWidth - room1.rect.left/2, const.worldHeight/4))
-    shoplistTitle = text.Text(sGameFont,"Ostoslista",(shoplist.rect.left+13,shoplist.rect.top+13))
-    shoppinglist = shoppingList.ShoppingList(xsGameFont,(shoplist.rect.left+13,shoplist.rect.top+50))
+    frame = picture.Picture("images/frame.png", (710,710), (screenSize[0]/2, screenSize[1]/2))
+
+    # Shopping list
+    shoppinglist = shoppingList.ShoppingList(sGameFont, xsGameFont,(screenSize[0] - room1.rect.left/2, screenSize[1]/4))
 
     # Timer
     timer = const.floorTime
     pygame.time.set_timer(pygame.USEREVENT, 1000)
 
     # Texts
-    timerText = text.Text(mGameFont,time.strftime('%M:%S', time.gmtime(timer)),(screenSize[0]/2-45,screenSize[1]/2-341))
-    checkpointText = text.Text(lGameFont,f'You have completed floor {floorNumber}', (screenSize[0]/2-370,screenSize[1]/6))
-    debugText = text.Text(sGameFont,f'Detected fingers: {fingerPositions}',(20,20))
+    floorText = text.Text(mGameFont, f'Kerros {floorNumber}', (screenSize[0]/2-340,screenSize[1]/2-341))
+    timerText = text.Text(mGameFont, time.strftime('%M:%S',time.gmtime(timer)),(screenSize[0]/2-45,screenSize[1]/2-341))
+    checkpointText = text.Text(lGameFont, f'You have completed floor {floorNumber}', (screenSize[0]/2-370,screenSize[1]/6))
+    debugText = text.Text(sGameFont, f'FPS: {round(clock.get_fps())}',(20,20))
 
     def updateAllPositions(newScreenSize):
         #if gameStatus == "level":
@@ -89,10 +91,9 @@ async def main():
         leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
         exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
         frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        floorText.updatePos((newScreenSize[0]/2-340,newScreenSize[1]/2-341))
         timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
-        shoplist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
-        shoplistTitle.updatePos((shoplist.rect.left+13,shoplist.rect.top+13))
-        shoppinglist.updatePos((shoplist.rect.left+13,shoplist.rect.top+50))
+        shoppinglist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
         #elif gameStatus == "checkpoint":
         checkpointText.updatePos((newScreenSize[0]/2-370,newScreenSize[1]/6))
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
@@ -107,8 +108,8 @@ async def main():
                 exit()
             # Observe finger touches and track their location
             if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERMOTION:
-                x = round(event.x * const.worldWidth)
-                y = round(event.y * const.worldHeight)
+                x = round(event.x * screenSize[0])
+                y = round(event.y * screenSize[1])
                 fingerPositions[event.finger_id] = (x,y)
             elif event.type == pygame.FINGERUP: # Delete finger_id, if finger is lifted off
                 fingerPositions.pop(event.finger_id)
@@ -155,10 +156,9 @@ async def main():
             for b in moveButtons:                                       # buttons
                 b.draw(screen)               
             frame.draw(screen)                                          # room frame
-            shoplist.draw(screen)                                       # shopping list
-            shoplistTitle.draw(screen)
-            shoppinglist.draw(screen)
-            timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer)))                           # timer
+            shoppinglist.draw(screen)                                   # shopping list
+            floorText.draw(screen)
+            timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer))) # timer
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)                                 # exit button, if player is at the lift
                 exitButton.unpress()
@@ -186,6 +186,7 @@ async def main():
                 if nextFloorButton.rect.collidepoint(pos): # Go to next floor / start a new level
                     # nextFloorButton.press()
                     floorNumber += 1 # Advance floor number
+                    floorText.setText(f'Kerros {floorNumber}')
                     gameStatus = "level" # Change game status
                     room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
                     player.resetPos(screenSize) # Move player to the middle
@@ -199,7 +200,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen,f"Detected fingers: {fingerPositions} – FPS: {round(clock.get_fps())}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())}\nDetected fingers: {fingerPositions}")
 
         pygame.display.update()
         clock.tick(60)
