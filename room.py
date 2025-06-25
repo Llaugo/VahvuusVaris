@@ -1,7 +1,8 @@
 import pygame
 import const
 import tile
-from random import randint
+import item
+import random
 
 # A class for rooms which consist of tiles in a grid.
 class Room():
@@ -14,11 +15,11 @@ class Room():
         self.background = pygame.Surface((len(layout[0]*const.tileSize), len(layout*const.tileSize))).convert()
         self.rect = self.background.get_rect(center = pos)
         self.solidRects = []
+        self.items = []
+        # Blit all the tiles to a single background image
         for i,row in enumerate(self.layout):
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (i*const.tileSize, j*const.tileSize))
-                if oneTile.solid:
-                    self.solidRects.append(pygame.Rect(0, 0, const.tileSize, const.tileSize))
         self.updatePos(pos)
 
     def updatePos(self, screenCenter):
@@ -26,17 +27,23 @@ class Room():
         self.rect = self.background.get_rect(center = self.pos)
         halfLength = round((len(self.layout)-1)/2)
         self.solidRects = []
+        self.items = []
         for i, row in enumerate(self.layout):
             for j, tile in enumerate(row):
-                tile.rect = tile.image.get_rect(center = (screenCenter[0]-(i-halfLength)*const.tileSize,screenCenter[1]-(j-halfLength)*const.tileSize))
+                tilePos = (screenCenter[0]-(i-halfLength)*const.tileSize,screenCenter[1]-(j-halfLength)*const.tileSize)
+                tile.updatePos(tilePos)
                 if tile.solid:
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
-                    newRect.center = (screenCenter[0]-(i-halfLength)*const.tileSize,screenCenter[1]-(j-halfLength)*const.tileSize)
+                    newRect.center = tilePos
                     self.solidRects.append(newRect)
+                if tile.item:
+                    self.items.append(tile.item)
 
     # Draw each tile in this room
     def draw(self, screen):
         screen.blit(self.background, self.rect)
+        for item in self.items:
+            item.draw(screen)
     
     # Construct the room tiles from the given layout
     # Only use once upon creation
@@ -48,9 +55,9 @@ class Room():
                 if c == 0: # Wall
                     self.layout[i].append(tile.Tile(5, (0,0), const.scale))
                 elif c == 1: # Floor
-                    self.layout[i].append(tile.Tile(randint(1,3), (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(random.randint(1,3), (0,0), const.scale))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(randint(6,8), (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(random.randint(6,8), (0,0), const.scale))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0, (0,0), const.scale)
                     self.layout[i].append(self.exit)

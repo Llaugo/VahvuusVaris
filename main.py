@@ -10,6 +10,7 @@ import room
 import picture
 import text
 import shoppingList
+import item
 import random
 import math
 import time
@@ -47,6 +48,7 @@ lGameFont = pygame.font.SysFont(None, 80)
 
 # Background color
 backg = (160,209,255)
+
 
 async def main():
 
@@ -200,7 +202,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())}\nDetected fingers: {fingerPositions}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Item positions: {[room1.items[i].rect.center for i in range(len(room1.items))]}")
 
         pygame.display.update()
         clock.tick(60)

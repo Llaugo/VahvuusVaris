@@ -14,6 +14,8 @@ playerSpeed = 2*scale
 # How much time there is in each level
 floorTime = 300
 
+itemProbability = 0.05
+
 shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Välipalakeksi", "Kaurahiutale"],
         ["Myskikurpitsa", "Oliiviöljy", "Saksanpähkinä", "Fusilli", "Tomaattimurska"],
         ["Kvinoa", "Kasvisliemikuutio", "Rasvaton maito", "Mustapavut", "Halloumi"],

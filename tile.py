@@ -1,6 +1,9 @@
 import pygame
 import spriteSheet
 import const
+import item
+import random
+
 
 
 class Tile():
@@ -13,11 +16,15 @@ class Tile():
         self.tileType = tileType
         self.scale = scale
         self.pos = pos
+        self.rotated = random.randint(0,1)*2 # helps to figure out item location on the tile
         self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, self.scale)
         self.rect = self.image.get_rect(center = pos)
         self.solid = True # Can the tile be walked on
+        self.item = None
         if tileType < 5: self.solid = False # The first five tiles are not solid and can be walked on
         self.neighbours = [None, None, None, None] # Down, Right, Up, Left
+        if self.isShelf() and const.itemProbability > random.random():
+            self.item = item.Item(self.itemPos())
         # self.playerOccupied = False
 
     # Method for setting another tile as a neighbour for this one
@@ -34,9 +41,13 @@ class Tile():
     def rotateImage(self, count = 1):
         self.image = pygame.transform.rotate(self.image, 90*count)
         self.rect = self.image.get_rect(center = self.pos)
+        self.rotated = (self.rotated + count) % 4
+        if self.item:
+            self.item.updatePos(self.itemPos())
+            
 
 
-    # tileType: new tile type
+    # tileType: new tile type and changes the image
     def changeType(self, tileType):
         self.tileType = tileType
         self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, self.scale)
@@ -47,6 +58,11 @@ class Tile():
         else:
             return False
 
-    # Draws this tile on the screen
-    def draw(self, screen):
-        screen.blit(self.image, (self.rect))
+    def updatePos(self, pos):
+        self.pos = pos
+        self.rect.center = pos
+        if self.item:
+            self.item.updatePos(self.itemPos())
+
+    def itemPos(self):
+        return (self.pos[0] + (self.rotated%2)*(self.rotated-2)*7, self.pos[1] + ((self.rotated+1)%2)*(self.rotated-1)*7)
