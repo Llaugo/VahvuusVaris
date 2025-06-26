@@ -65,4 +65,10 @@ class Tile():
             self.item.updatePos(self.itemPos())
 
     def itemPos(self):
-        return (self.pos[0] + (self.rotated%2)*(self.rotated-2)*7, self.pos[1] + ((self.rotated+1)%2)*(self.rotated-1)*7)
+        if self.tileType == 9:
+            if self.rotated % 2 == 0:
+                return (self.pos[0] + 8*(self.rotated-1), self.pos[1] - 8*(self.rotated-1))
+            else:
+                return (self.pos[0] + 8*(self.rotated-2), self.pos[1] + 8*(self.rotated-2))
+        else:
+            return (self.pos[0] + (self.rotated%2)*(self.rotated-2)*8, self.pos[1] + ((self.rotated+1)%2)*(self.rotated-1)*8)
