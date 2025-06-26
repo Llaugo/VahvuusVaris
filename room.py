@@ -26,8 +26,8 @@ class Room():
         self.pos = screenCenter
         self.rect = self.background.get_rect(center = self.pos)
         halfLength = round((len(self.layout)-1)/2)
-        self.solidRects = []
-        self.items = []
+        self.solidRects: list[pygame.Rect] = []
+        self.items: list[item.Item] = []
         for i, row in enumerate(self.layout):
             for j, tile in enumerate(row):
                 tilePos = (screenCenter[0]-(i-halfLength)*const.tileSize,screenCenter[1]-(j-halfLength)*const.tileSize)

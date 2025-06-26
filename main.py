@@ -36,6 +36,7 @@ leftButton = button.Button(6,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 exitButton = button.Button(10,(0,0),const.scale, sGameFont, "HISSI", (8,63,6))
 nextFloorButton = button.Button(10,(0,0),const.scale, xsGameFont, "SEURAAVA\n  KERROS", (8,63,6))
+itemButton = button.Button(14,(0,0),const.scale, xsGameFont, " OTA\nESINE", (130,63,0))
 # Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
 fingerPositions = {} 
 
@@ -92,6 +93,7 @@ async def main():
         floorText.updatePos((newScreenSize[0]/2-340,newScreenSize[1]/2-341))
         timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
         shoppinglist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
+        itemButton.updatePos((newScreenSize[0]/2+580,newScreenSize[1]/2))
         #elif gameStatus == "checkpoint":
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
@@ -158,6 +160,17 @@ async def main():
             shoppinglist.draw(screen)                                   # shopping list
             floorText.draw(screen)
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer))) # timer
+
+            clearItem = None
+            for i, item in enumerate(room1.items):
+                if item.rect.colliderect(player.rect):
+                    itemButton.draw(screen)
+                    itemButton.unpress()
+                    for pos in fingerPositions.values():
+                        if itemButton.rect.collidepoint(pos):
+                            # itemButton.press()
+                            room1.items.remove(item)
+            
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)                                 # exit button, if player is at the lift
                 exitButton.unpress()
