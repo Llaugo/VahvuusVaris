@@ -22,29 +22,25 @@ clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set screen size
 
-
-# Initialize buttons for moving
-downButton = button.Button(0,(const.worldWidth-115*const.scale,const.worldHeight-69*const.scale),const.scale)
-rightButton = button.Button(2,(const.worldWidth-69*const.scale,const.worldHeight-115*const.scale),const.scale)
-upButton = button.Button(4,(const.worldWidth-115*const.scale,const.worldHeight-161*const.scale),const.scale)
-leftButton = button.Button(6,(const.worldWidth-161*const.scale,const.worldHeight-115*const.scale),const.scale)
-moveButtons = [downButton, rightButton, upButton, leftButton]
-exitButton = button.Button(8,(const.worldWidth-231*const.scale,const.worldHeight-115*const.scale),const.scale)
-nextFloorButton = button.Button(10,(const.worldWidth/2,const.worldHeight*3/4),const.scale)
-# Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
-fingerPositions = {} 
-
-
-# Player initialization
-player = playerClass.Player(moveButtons, (const.worldWidth/2*const.scale,const.worldHeight/2*const.scale))
-
-
 # Different font sizes
 xsGameFont = pygame.font.SysFont(None, 23)
 sGameFont = pygame.font.SysFont(None, 30)
 mGameFont = pygame.font.SysFont(None, 50)
 lGameFont = pygame.font.SysFont(None, 80)
 
+# Initialize buttons for moving
+downButton = button.Button(0,(0,0),const.scale)
+rightButton = button.Button(2,(0,0),const.scale)
+upButton = button.Button(4,(0,0),const.scale)
+leftButton = button.Button(6,(0,0),const.scale)
+moveButtons = [downButton, rightButton, upButton, leftButton]
+exitButton = button.Button(10,(0,0),const.scale, sGameFont, "HISSI", (8,63,6))
+nextFloorButton = button.Button(10,(0,0),const.scale, xsGameFont, "SEURAAVA\n  KERROS", (8,63,6))
+# Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
+fingerPositions = {} 
+
+# Player initialization
+player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 
 # Background color
 backg = (160,209,255)
@@ -63,22 +59,22 @@ async def main():
     # Tracks the floor/level the player is at
     floorNumber = 1
 
-    room1 = room.Room(const.roomLayouts[0],(screenSize[0]/2,screenSize[1]/2))
-    lobby = room.Room(const.lobbyLayout, (screenSize[0]/2,screenSize[1]/2))
+    room1 = room.Room(const.roomLayouts[0],(0,0))
+    lobby = room.Room(const.lobbyLayout, (0,0))
 
-    frame = picture.Picture("images/frame.png", (710,710), (screenSize[0]/2, screenSize[1]/2))
+    frame = picture.Picture("images/frame.png", (710,710), (0,0))
 
     # Shopping list
-    shoppinglist = shoppingList.ShoppingList(sGameFont, xsGameFont,(screenSize[0] - room1.rect.left/2, screenSize[1]/4))
+    shoppinglist = shoppingList.ShoppingList(sGameFont, xsGameFont,(0,0))
 
     # Timer
     timer = const.floorTime
     pygame.time.set_timer(pygame.USEREVENT, 1000)
 
     # Texts
-    floorText = text.Text(mGameFont, f'Kerros {floorNumber}', (screenSize[0]/2-340,screenSize[1]/2-341))
-    timerText = text.Text(mGameFont, time.strftime('%M:%S',time.gmtime(timer)),(screenSize[0]/2-45,screenSize[1]/2-341))
-    checkpointText = text.Text(lGameFont, f'You have completed floor {floorNumber}', (screenSize[0]/2-370,screenSize[1]/6))
+    floorText = text.Text(mGameFont, f'Kerros {floorNumber}', (0,0))
+    timerText = text.Text(mGameFont, time.strftime('%M:%S',time.gmtime(timer)),(0,0))
+    checkpointText = text.Text(lGameFont, f'Kerros {floorNumber} suoritettu.', (0,0))
     debugText = text.Text(sGameFont, f'FPS: {round(clock.get_fps())}',(20,20))
 
     def updateAllPositions(newScreenSize):
@@ -87,19 +83,20 @@ async def main():
         lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
         room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
         player.updatePos(screenMove)
-        downButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-69*const.scale))
-        rightButton.updatePos((newScreenSize[0]-69*const.scale,newScreenSize[1]-115*const.scale))
-        upButton.updatePos((newScreenSize[0]-115*const.scale,newScreenSize[1]-161*const.scale))
-        leftButton.updatePos((newScreenSize[0]-161*const.scale,newScreenSize[1]-115*const.scale))
-        exitButton.updatePos((newScreenSize[0]-231*const.scale,newScreenSize[1]-115*const.scale))
+        downButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-50))
+        rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))
+        upButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-225))
+        leftButton.updatePos((newScreenSize[0]-225,newScreenSize[1]-138))
+        exitButton.updatePos((newScreenSize[0]/2+460,newScreenSize[1]/2))
         frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
         floorText.updatePos((newScreenSize[0]/2-340,newScreenSize[1]/2-341))
         timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
         shoppinglist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
         #elif gameStatus == "checkpoint":
-        checkpointText.updatePos((newScreenSize[0]/2-370,newScreenSize[1]/6))
-        nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*3/4))
-    
+        checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
+        nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
+    updateAllPositions(screenSize)
+
     # Main game loop
     while True:
         # Event handler
@@ -180,7 +177,7 @@ async def main():
             player.draw(screen)
             player.update(lobby)
 
-            checkpointText.draw(screen,f'You have completed floor {floorNumber}')
+            checkpointText.draw(screen,f'Kerros {floorNumber} suoritettu.')
             nextFloorButton.draw(screen)
 
             # Check if nextFloorButton is pressed

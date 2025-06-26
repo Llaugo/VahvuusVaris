@@ -17,8 +17,8 @@ class ShoppingList():
         self.contents.append((const.shop[0][randint(0,4)],0,10))
         self.back = picture.Picture("images/shoplist.png", (230,230), pos)
         self.title = text.Text(titleFont, "Ostoslista",(self.back.rect.left+13,self.back.rect.top+13))
-        self.text1 = text.Text(textFont, [self.contents[i][0] for i in range(len(self.contents))], (self.back.rect.left+13,self.back.rect.top+50), 10)
-        self.text2 = text.Text(textFont, [f'{self.contents[i][1]} / {self.contents[i][2]}' for i in range(len(self.contents))], (self.back.rect.right-55,self.back.rect.top+50), 10)
+        self.text1 = text.Text(textFont, [self.contents[i][0] for i in range(len(self.contents))], (self.back.rect.left+13,self.back.rect.top+50), (0,0,0), 10)
+        self.text2 = text.Text(textFont, [f'{self.contents[i][1]} / {self.contents[i][2]}' for i in range(len(self.contents))], (self.back.rect.right-55,self.back.rect.top+50),(0,0,0), 10)
 
     def updatePos(self, pos):
         self.pos = pos
