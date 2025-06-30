@@ -11,9 +11,9 @@ class ShoppingList():
         self.pos = pos
         self.contents = []
         self.contents.append((const.shop[4][randint(0,4)],0,1))
-        self.contents.append((const.shop[3][randint(0,4)],0,1))
-        self.contents.append((const.shop[2][randint(0,4)],0,2))
-        self.contents.append((const.shop[1][randint(0,4)],0,5))
+        self.contents.append((const.shop[3][randint(0,4)],0,2))
+        self.contents.append((const.shop[2][randint(0,4)],0,4))
+        self.contents.append((const.shop[1][randint(0,4)],0,6))
         self.contents.append((const.shop[0][randint(0,4)],0,10))
         self.back = picture.Picture("images/shoplist.png", (230,230), pos)
         self.title = text.Text(titleFont, "Ostoslista",(self.back.rect.left+13,self.back.rect.top+13))

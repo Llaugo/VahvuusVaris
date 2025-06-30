@@ -212,7 +212,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Item positions: {[room1.items[i].rect.center for i in range(len(room1.items))]}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
 
         pygame.display.update()
         clock.tick(60)

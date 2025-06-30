@@ -16,11 +16,21 @@ floorTime = 300
 
 itemProbability = 0.05
 
-shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Välipalakeksi", "Kaurahiutale"],
-        ["Myskikurpitsa", "Oliiviöljy", "Saksanpähkinä", "Fusilli", "Tomaattimurska"],
-        ["Kvinoa", "Kasvisliemikuutio", "Rasvaton maito", "Mustapavut", "Halloumi"],
-        ["Kreikkalainen jogurtti", "Rosmariini", "Luomu Mango", "Linssisipsit", "Runebergin torttu"],
-        ["Viiriäisen munat", "Karambola", "Sahrami", "Murot", "Pakaste dumpligs"]]
+shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Myskikurpitsa", "Mango"],
+        ["Välipalakeksi", "Kaurahiutale", "Kvinoa", "Fusilli", "Linssisipsit"],
+        ["Pakaste katkaravut", "Kreikkalainen jogurtti", "Rasvaton maito", "Manchego", "Halloumi"],
+        ["Kasvisliemikuutio", "Rosmariini", "Oliiviöljy", "Inkivääri", "Balsamico"],
+        ["Viiriäisen munat", "Karambola", "Sahrami", "Murot", "Runebergin torttu"]]
+itemRarity = [[0.78,	1,	1,	1,	1],
+              [0.68,	0.95,	1,	1,	1],
+              [0.59,	0.91,	0.99,	1,	1],
+              [0.52,	0.85,	0.97,	0.99,	1],
+              [0.45,	0.77,	0.95,	0.99,	1],
+              [0.38,	0.66,	0.9,	0.97,	1],
+              [0.32,	0.56,	0.81,	0.93,	1],
+              [0.26,	0.47,	0.69,	0.86,	1],
+              [0.2,	0.4,	0.6,	0.8,	1]]
+
 
 # 0 = Wall
 # 1 = Floor
