@@ -39,6 +39,14 @@ class Room():
                 if tile.item:
                     self.items.append(tile.item)
 
+    def removeItem(self, item: item.Item):
+        self.items.remove(item)
+        for row in self.layout:
+            for tile in row:
+                if tile.item == item:
+                    tile.deleteItem()
+
+
     # Draw each tile in this room
     def draw(self, screen):
         screen.blit(self.background, self.rect)

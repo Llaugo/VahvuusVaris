@@ -161,15 +161,15 @@ async def main():
             floorText.draw(screen)
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer))) # timer
 
-            clearItem = None
-            for i, item in enumerate(room1.items):
+            # Picking up items from the room
+            for item in room1.items:
                 if item.rect.colliderect(player.rect):
                     itemButton.draw(screen)
                     itemButton.unpress()
                     for pos in fingerPositions.values():
                         if itemButton.rect.collidepoint(pos):
                             # itemButton.press()
-                            room1.items.remove(item)
+                            room1.removeItem(item)
             
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)                                 # exit button, if player is at the lift

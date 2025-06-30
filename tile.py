@@ -44,8 +44,6 @@ class Tile():
         self.rotated = (self.rotated + count) % 4
         if self.item:
             self.item.updatePos(self.itemPos())
-            
-
 
     # tileType: new tile type and changes the image
     def changeType(self, tileType):
@@ -72,3 +70,9 @@ class Tile():
                 return (self.pos[0] + 8*(self.rotated-2), self.pos[1] + 8*(self.rotated-2))
         else:
             return (self.pos[0] + (self.rotated%2)*(self.rotated-2)*8, self.pos[1] + ((self.rotated+1)%2)*(self.rotated-1)*8)
+
+    # Deletes a possible held item and returns it
+    def deleteItem(self):
+        deletedItem = self.item
+        self.item = None
+        return deletedItem
