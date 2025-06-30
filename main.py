@@ -19,6 +19,9 @@ import time
 
 pygame.init()
 clock = pygame.time.Clock()
+seed = random.random()
+random.seed(seed)
+print(seed)
 
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set screen size
 
@@ -169,6 +172,7 @@ async def main():
                     for pos in fingerPositions.values():
                         if itemButton.rect.collidepoint(pos):
                             # itemButton.press()
+                            shoppinglist.receiveItem(item.name)
                             room1.removeItem(item)
             
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
@@ -212,7 +216,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
 
         pygame.display.update()
         clock.tick(60)
