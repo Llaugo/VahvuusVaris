@@ -11,12 +11,12 @@ class Tile():
     # pos: A double for the x and y coordinates of the tile center
     # scale: For determining the image size
     def __init__(self, tileType, pos, scale):
-        tileSpriteSheet = pygame.image.load('images/shop_sheet2.png').convert() # Load tile spritesheet
+        tileSpriteSheet = pygame.image.load('images/shopsprite_heidi.png').convert() # Load tile spritesheet
         self.tileSprite = spriteSheet.SpriteSheet(tileSpriteSheet)
         self.tileType = tileType
         self.scale = scale
         self.pos = pos
-        self.rotated = random.randint(0,1)*2 # helps to figure out item location on the tile
+        self.itemCorner = (random.randint(0,1)*2-1, random.randint(0,1)*2-1) # helps to figure out item location on the tile
         self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, self.scale)
         self.rect = self.image.get_rect(center = pos)
         self.solid = True # Can the tile be walked on
@@ -36,6 +36,7 @@ class Tile():
         self.neighbours[dir] = tile # Set the other tile as a neighbour for this tile.
         tile.neighbours[(dir + 2) % 4] = self # Set this tile as a neighbour for the other tile. (in the opposite direction)
 
+    '''
     # Rotate the image of the tile
     # count: how many times counterclockwise
     def rotateImage(self, count = 1):
@@ -44,14 +45,16 @@ class Tile():
         self.rotated = (self.rotated + count) % 4
         if self.item:
             self.item.updatePos(self.itemPos())
+    
 
     # tileType: new tile type and changes the image
     def changeType(self, tileType):
         self.tileType = tileType
         self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, self.scale)
-
+    '''
+    
     def isShelf(self):
-        if self.tileType >= 6 and self.tileType <= 9:
+        if self.tileType >= 6 and self.tileType <= 14:
             return True
         else:
             return False
@@ -63,6 +66,8 @@ class Tile():
             self.item.updatePos(self.itemPos())
 
     def itemPos(self):
+        return (self.pos[0] + 8*self.itemCorner[0], self.pos[1] + 8*self.itemCorner[1])
+        '''
         if self.tileType == 9:
             if self.rotated % 2 == 0:
                 return (self.pos[0] + 8*(self.rotated-1), self.pos[1] - 8*(self.rotated-1))
@@ -70,6 +75,7 @@ class Tile():
                 return (self.pos[0] + 8*(self.rotated-2), self.pos[1] + 8*(self.rotated-2))
         else:
             return (self.pos[0] + (self.rotated%2)*(self.rotated-2)*8, self.pos[1] + ((self.rotated+1)%2)*(self.rotated-1)*8)
+        '''
 
     # Deletes a possible held item and returns it
     def deleteItem(self):

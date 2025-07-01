@@ -21,6 +21,7 @@ shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Myskikurpitsa", "Mango"]
         ["Pakaste katkaravut", "Kreikkalainen jogurtti", "Rasvaton maito", "Manchego", "Halloumi"],
         ["Kasvisliemikuutio", "Rosmariini", "Oliiviöljy", "Inkivääri", "Balsamico"],
         ["Viiriäisen munat", "Karambola", "Sahrami", "Murot", "Runebergin torttu"]]
+
 itemRarity = [[0.78,	1,	1,	1,	1],
               [0.68,	0.95,	1,	1,	1],
               [0.59,	0.91,	0.99,	1,	1],
