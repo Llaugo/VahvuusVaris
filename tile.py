@@ -7,7 +7,7 @@ import random
 
 
 class Tile():
-    # tileType: The number tells what kind of tile this is and what image to use in the shop_sheet.png
+    # tileType: The number tells what kind of tile this is and what image to use for it
     # pos: A double for the x and y coordinates of the tile center
     # scale: For determining the image size
     def __init__(self, tileType, pos, scale):
@@ -16,7 +16,7 @@ class Tile():
         self.tileType = tileType
         self.scale = scale
         self.pos = pos
-        self.itemCorner = (random.randint(0,1)*2-1, random.randint(0,1)*2-1) # helps to figure out item location on the tile
+        self.itemCorner = (random.randint(0,1)*2-1, random.randint(0,1)*2-1) # helps to figure out and randomize item location on the tile
         self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, self.scale)
         self.rect = self.image.get_rect(center = pos)
         self.solid = True # Can the tile be walked on

@@ -17,8 +17,8 @@ floorTime = 300
 itemProbability = 0.05
 
 shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Myskikurpitsa", "Mango"],
-        ["Välipalakeksi", "Kaurahiutale", "Kvinoa", "Fusilli", "Linssisipsit"],
-        ["Pakaste katkaravut", "Kreikkalainen jogurtti", "Rasvaton maito", "Manchego", "Halloumi"],
+        ["Välipalakeksi", "Fusilli", "Kaurahiutale", "Kvinoa", "Linssisipsit"],
+        ["Rasvaton maito", "Kreikkalainen jogurtti", "Pakaste katkaravut", "Manchego", "Halloumi"],
         ["Kasvisliemikuutio", "Rosmariini", "Oliiviöljy", "Inkivääri", "Balsamico"],
         ["Viiriäisen munat", "Karambola", "Sahrami", "Murot", "Runebergin torttu"]]
 
