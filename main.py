@@ -1,3 +1,4 @@
+#!/usr/bin/env pypy
 from sys import exit
 import asyncio # For creating a browser view with pygbag
 import pygame
@@ -11,6 +12,8 @@ import picture
 import text
 import shoppingList
 import item
+import strengthCard
+import strengthDeck
 import random
 import math
 import time
@@ -45,6 +48,8 @@ fingerPositions = {}
 
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
+
+deck = strengthDeck.StrengthDeck((0,1,2,3,4,5))
 
 # Background color
 backg = (160,209,255)
@@ -97,6 +102,7 @@ async def main():
         timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
         shoppinglist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
         itemButton.updatePos((newScreenSize[0]/2+580,newScreenSize[1]/2))
+        deck.updatePos((room1.rect.left, newScreenSize[1]))
         #elif gameStatus == "checkpoint":
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
@@ -163,6 +169,7 @@ async def main():
             shoppinglist.draw(screen)                                   # shopping list
             floorText.draw(screen)
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer))) # timer
+            deck.draw(screen)
 
             # Picking up items from the room
             for item in room1.items:
@@ -216,7 +223,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
+            debugText.draw(screen, f"{deck.pos}FPS: {round(clock.get_fps())} Seed: {seed}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
 
         pygame.display.update()
         clock.tick(60)
