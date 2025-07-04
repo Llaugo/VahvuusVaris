@@ -40,9 +40,9 @@ rightButton = button.Button(2,(0,0),const.scale)
 upButton = button.Button(4,(0,0),const.scale)
 leftButton = button.Button(6,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
-exitButton = button.Button(10,(0,0),const.scale, sGameFont, "HISSI", (8,63,6))
+exitButton = button.Button(10,(0,0),const.scale, sGameFont, "HISSIIN", (8,63,6))
 nextFloorButton = button.Button(10,(0,0),const.scale, xsGameFont, "SEURAAVA\n  KERROS", (8,63,6))
-itemButton = button.Button(14,(0,0),const.scale, xsGameFont, " OTA\nESINE", (130,63,0))
+itemButton = button.Button(14,(0,0),const.scale, sGameFont, " OTA\nESINE", (130,63,0))
 # Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
 fingerPositions = {} 
 
@@ -182,8 +182,9 @@ async def main():
                             shoppinglist.receiveItem(item.name)
                             room1.removeItem(item)
             
+            # Draw the exit button, if player is at the exit
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
-                exitButton.draw(screen)                                 # exit button, if player is at the lift
+                exitButton.draw(screen)
                 exitButton.unpress()
                 for pos in fingerPositions.values():
                     if exitButton.rect.collidepoint(pos): # Go to the checkpoint lift

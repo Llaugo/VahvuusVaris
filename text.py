@@ -30,7 +30,12 @@ class Text():
     # pos: new pos of the button
     def updatePos(self, pos, center=False):
         if center:
-            self.pos = (pos[0] - self.surfaces[0].get_width()/2, pos[1] - len(self.surfaces)*self.surfaces[0].get_height()/2)
+            # Find the longest line, to center the text on
+            longest = 0
+            for i, surf in enumerate(self.surfaces):
+                if surf.get_width() > longest:
+                    longest = surf.get_width()
+            self.pos = (pos[0] - longest/2, pos[1] - len(self.surfaces)*self.surfaces[0].get_height()/2)
         else:
             self.pos = pos
 
