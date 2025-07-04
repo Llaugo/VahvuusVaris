@@ -1,24 +1,43 @@
 import pygame
 import const
 import strengthCard
+import button
+import math
 
 class StrengthDeck():
-    def __init__(self, cards: tuple[int,int,int,int,int,int], font):
+    def __init__(self, cards, font):
         self.pos = (0,0)
         self.cards: list[strengthCard.StrengthCard] = []
-        for card in cards:
-            self.cards.append(strengthCard.StrengthCard(card, font))
+        self.buttons: list[button.Button] = []
+        for i in cards:
+            self.cards.append(strengthCard.createStrengthCard(i))
+        for i in range(len(self.cards)):
+            self.buttons.append(button.Button(12,(0,0), const.scale/2, font, "Aktivoi"))
         self.background: pygame.Surface = None
 
     def updatePos(self, pos):
         self.background = pygame.Surface((pos[0],pos[1]*2)).convert_alpha()
         self.background.fill((0, 0, 0, 0))
         for i, card in enumerate(self.cards):
-            self.background.blit(card.image, (pos[0]-((i+1)%2)*150-175, pos[1]-((round(i/2)-2)*220)-320))
-            #card.activateButton.updatePos((pos[0]-((i+1)%2)*150-145, pos[1]-((round(i/2)-2)*220)-127))
+            self.background.blit(card.image, (pos[0]-((i+1)%2)*150-175, pos[1]+((math.floor(i/2)-2)*220)+125))
+            self.buttons[i].updatePos((pos[0]-((i+1)%2)*150-145, pos[1]+((math.floor(i/2)-2)*220)+320))
+
+    def update(self):
+        for i, btn in enumerate(self.buttons):
+            if btn.activeFinger:
+                self.cards[i].tryActivate()
+            self.cards[i].update()
+
+    def reset(self):
+        for card in self.cards:
+            card.reset()
+
+    def handleButtons(self, event, screenSize):
+        for btn in self.buttons:
+            btn.handleEvent(event,screenSize)
             
     def draw(self, screen):
         screen.blit(self.background, self.pos)
-        #for card in self.cards:
-        #    card.activateButton.draw(screen)
+        for btn in self.buttons:
+            btn.draw(screen)
         

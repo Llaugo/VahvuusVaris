@@ -29,6 +29,7 @@ print(seed)
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set screen size
 
 # Different font sizes
+xxsGameFont = pygame.font.SysFont(None, 17)
 xsGameFont = pygame.font.SysFont(None, 23)
 sGameFont = pygame.font.SysFont(None, 30)
 mGameFont = pygame.font.SysFont(None, 50)
@@ -49,7 +50,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 
-deck = strengthDeck.StrengthDeck((0,1,2,3,4,5),xsGameFont)
+deck = strengthDeck.StrengthDeck((8,8),xxsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -58,7 +59,7 @@ backg = (160,209,255)
 async def main():
 
     # If active, shows useful information about the game. (For debug purposes)
-    debugMode = True
+    debugMode = False
     screenSize = pygame.display.get_window_size()
     # gameStatus: Shows the state of the game
     #   "level": Game is running a level
@@ -122,8 +123,8 @@ async def main():
             # Handle button presses
             else:
                 for btn in buttons:
-                    btn.handleEvent(event,screenSize)
-
+                    btn.handleEvent(event, screenSize)
+                deck.handleButtons(event, screenSize)
 
         # Toggle debug mode
         keys = pygame.key.get_pressed()
@@ -145,14 +146,15 @@ async def main():
             # Draw images to screen
             screen.fill(backg)                                          # BG
             room1.draw(screen)                                          # Room/tiles
-            player.draw(screen)                                         # player
             player.update(room1)                                        # player actions
+            player.draw(screen)                                         # player
             for b in moveButtons:                                       # buttons
                 b.draw(screen)               
             frame.draw(screen)                                          # room frame
             shoppinglist.draw(screen)                                   # shopping list
             floorText.draw(screen)
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer))) # timer
+            deck.update()
             deck.draw(screen)
 
             # Picking up items from the room
@@ -167,7 +169,9 @@ async def main():
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)
                 if exitButton.activeFinger:
+                    # EXIT THE LEVEL
                     gameStatus = "checkpoint" # Change the game status
+                    deck.reset()
 
 
         #########################################################
@@ -185,12 +189,14 @@ async def main():
 
             # Check if nextFloorButton is pressed
             if nextFloorButton.activeFinger:
+                # START NEW LEVEL
                 floorNumber += 1 # Advance floor number
                 floorText.setText(f'Kerros {floorNumber}')
                 gameStatus = "level" # Change game status
                 room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
                 player.resetPos(screenSize) # Move player to the middle
                 timer = const.floorTime # Reset timer
+                deck.reset()
 
         # Update all positions if the screen size is changed
         newScreenSize = pygame.display.get_window_size()
@@ -200,7 +206,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
 
         pygame.display.update()
         clock.tick(60)

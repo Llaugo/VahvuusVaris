@@ -9,7 +9,8 @@ scale = 1
 # Tile size (square)
 tileSize = 46
 # Player movement speed
-playerSpeed = 2*scale
+basePlayerSpeed = 2*scale
+playerSpeed = basePlayerSpeed
 
 # How much time there is in each level
 floorTime = 300
