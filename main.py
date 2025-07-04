@@ -49,7 +49,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 
-deck = strengthDeck.StrengthDeck((0,1,2,3,4,5))
+deck = strengthDeck.StrengthDeck((0,1,2,3,4,5),xsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -102,7 +102,7 @@ async def main():
         timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
         shoppinglist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
         itemButton.updatePos((newScreenSize[0]/2+580,newScreenSize[1]/2))
-        deck.updatePos((room1.rect.left, newScreenSize[1]))
+        deck.updatePos((room1.rect.left, newScreenSize[1]/2))
         #elif gameStatus == "checkpoint":
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))

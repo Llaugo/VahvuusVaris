@@ -55,7 +55,6 @@ class Button():
             return True
         return False
 
-
     # Draws this button on the screen
     def draw(self, screen):
         screen.blit(self.image, (self.rect))
