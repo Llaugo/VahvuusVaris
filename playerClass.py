@@ -26,16 +26,16 @@ class Player(pygame.sprite.Sprite):
     def player_input(self, room: room.Room):
         keys = pygame.key.get_pressed()
         moving = True
-        if keys[pygame.K_DOWN] or self.controls[0].activated: # Down key or button
+        if keys[pygame.K_DOWN] or self.controls[0].activeFinger: # Down key or button
             self.facing = 0
             self.walking = (self.walking + const.playerSpeed/20.0) % 4
-        elif keys[pygame.K_RIGHT] or self.controls[1].activated: # Right key or button
+        elif keys[pygame.K_RIGHT] or self.controls[1].activeFinger: # Right key or button
             self.facing = 1
             self.walking = (self.walking + const.playerSpeed/20.0) % 4
-        elif keys[pygame.K_UP] or self.controls[2].activated: # Up key or button
+        elif keys[pygame.K_UP] or self.controls[2].activeFinger: # Up key or button
             self.facing = 2
             self.walking = (self.walking + const.playerSpeed/20.0) % 4
-        elif keys[pygame.K_LEFT] or self.controls[3].activated: # Left key or button
+        elif keys[pygame.K_LEFT] or self.controls[3].activeFinger: # Left key or button
             self.facing = 3
             self.walking = (self.walking + const.playerSpeed/20.0) % 4
         else: # If no buttons are pressed, we want the first picture of the animation (standing)

@@ -43,8 +43,8 @@ moveButtons = [downButton, rightButton, upButton, leftButton]
 exitButton = button.Button(10,(0,0),const.scale, sGameFont, "HISSIIN", (8,63,6))
 nextFloorButton = button.Button(10,(0,0),const.scale, xsGameFont, "SEURAAVA\n  KERROS", (8,63,6))
 itemButton = button.Button(14,(0,0),const.scale, sGameFont, " OTA\nESINE", (130,63,0))
-# Finger and mouse positions are tracked in this dictionary (and can be compared with button locations)
-fingerPositions = {} 
+# All button are handled from this array
+buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton,itemButton]
 
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
@@ -116,22 +116,13 @@ async def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            # Observe finger touches and track their location
-            if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERMOTION:
-                x = round(event.x * screenSize[0])
-                y = round(event.y * screenSize[1])
-                fingerPositions[event.finger_id] = (x,y)
-            elif event.type == pygame.FINGERUP: # Delete finger_id, if finger is lifted off
-                fingerPositions.pop(event.finger_id)
-            # Observe mouse location when pressed
-            elif event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
-                pos = pygame.mouse.get_pos()
-                fingerPositions["mousePress"] = pos
-            #elif event.type == pygame.MOUSEBUTTONUP: # Stop mouse position tracking if mouse is lifted
-            #    fingerPositions.pop("mousePress")
             # Advance timer
             elif event.type == pygame.USEREVENT and gameStatus == "level": 
                 timer -= 1
+            # Handle button presses
+            else:
+                for btn in buttons:
+                    btn.handleEvent(event,screenSize)
 
 
         # Toggle debug mode
@@ -151,13 +142,6 @@ async def main():
         #########################################################
         elif gameStatus == "level":
 
-            # Check if any buttons are pressed
-            for b in moveButtons:
-                b.unpress()
-                for pos in fingerPositions.values():
-                    if b.rect.collidepoint(pos):
-                        b.press()
-
             # Draw images to screen
             screen.fill(backg)                                          # BG
             room1.draw(screen)                                          # Room/tiles
@@ -175,21 +159,15 @@ async def main():
             for item in room1.items:
                 if item.rect.colliderect(player.rect):
                     itemButton.draw(screen)
-                    itemButton.unpress()
-                    for pos in fingerPositions.values():
-                        if itemButton.rect.collidepoint(pos):
-                            # itemButton.press()
-                            shoppinglist.receiveItem(item.name)
-                            room1.removeItem(item)
+                    if itemButton.activeFinger:
+                        shoppinglist.receiveItem(item.name)
+                        room1.removeItem(item)
             
             # Draw the exit button, if player is at the exit
             if room1.exit != None and room1.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)
-                exitButton.unpress()
-                for pos in fingerPositions.values():
-                    if exitButton.rect.collidepoint(pos): # Go to the checkpoint lift
-                        # exitButton.press()
-                        gameStatus = "checkpoint" # Change the game status
+                if exitButton.activeFinger:
+                    gameStatus = "checkpoint" # Change the game status
 
 
         #########################################################
@@ -206,15 +184,13 @@ async def main():
             nextFloorButton.draw(screen)
 
             # Check if nextFloorButton is pressed
-            for pos in fingerPositions.values():
-                if nextFloorButton.rect.collidepoint(pos): # Go to next floor / start a new level
-                    # nextFloorButton.press()
-                    floorNumber += 1 # Advance floor number
-                    floorText.setText(f'Kerros {floorNumber}')
-                    gameStatus = "level" # Change game status
-                    room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
-                    player.resetPos(screenSize) # Move player to the middle
-                    timer = const.floorTime # Reset timer
+            if nextFloorButton.activeFinger:
+                floorNumber += 1 # Advance floor number
+                floorText.setText(f'Kerros {floorNumber}')
+                gameStatus = "level" # Change game status
+                room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
+                player.resetPos(screenSize) # Move player to the middle
+                timer = const.floorTime # Reset timer
 
         # Update all positions if the screen size is changed
         newScreenSize = pygame.display.get_window_size()
@@ -224,7 +200,7 @@ async def main():
 
         # Debug screen info
         if debugMode:
-            debugText.draw(screen, f"{deck.pos}FPS: {round(clock.get_fps())} Seed: {seed}\nDetected fingers: {fingerPositions}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
 
         pygame.display.update()
         clock.tick(60)
