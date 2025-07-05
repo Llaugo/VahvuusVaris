@@ -11,7 +11,7 @@ class Tile():
     # pos: A double for the x and y coordinates of the tile center
     # scale: For determining the image size
     def __init__(self, tileType, pos, scale):
-        tileSpriteSheet = pygame.image.load('images/shopsprite_heidi.png').convert() # Load tile spritesheet
+        tileSpriteSheet = pygame.image.load('images/shopsprite.png').convert() # Load tile spritesheet
         self.tileSprite = spriteSheet.SpriteSheet(tileSpriteSheet)
         self.tileType = tileType
         self.scale = scale
@@ -21,7 +21,7 @@ class Tile():
         self.rect = self.image.get_rect(center = pos)
         self.solid = True # Can the tile be walked on
         self.item = None
-        if tileType < 5: self.solid = False # The first five tiles are not solid and can be walked on
+        if tileType < 6: self.solid = False # The first six tiles are not solid and can be walked on
         self.neighbours = [None, None, None, None] # Down, Right, Up, Left
         if self.isShelf() and const.itemProbability > random.random():
             self.item = item.Item(self.itemPos())
@@ -54,7 +54,7 @@ class Tile():
     '''
     
     def isShelf(self):
-        if self.tileType >= 6 and self.tileType <= 14:
+        if self.tileType >= 7 and self.tileType <= 15:
             return True
         else:
             return False

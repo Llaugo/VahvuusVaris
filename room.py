@@ -36,6 +36,10 @@ class Room():
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
                     newRect.center = tilePos
                     self.solidRects.append(newRect)
+                elif tile.tileType == 5: # Tile has a crate on it
+                    newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize*0.6, const.tileSize*0.6)
+                    newRect.topleft = (tilePos[0]-4, tilePos[1]-4)
+                    self.solidRects.append(newRect)
                 if tile.item:
                     self.items.append(tile.item)
 
@@ -61,18 +65,20 @@ class Room():
             self.layout.append([])
             for j,c in enumerate(row):
                 if c == 0: # Wall
-                    self.layout[i].append(tile.Tile(5, (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(6, (0,0), const.scale))
                 elif c == 1: # Floor
                     self.layout[i].append(tile.Tile(random.randint(1,3), (0,0), const.scale))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(6,14), (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(random.randint(7,15), (0,0), const.scale))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0, (0,0), const.scale)
                     self.layout[i].append(self.exit)
+                elif c == 4: # crate
+                    self.layout[i].append(tile.Tile(5, (0,0), const.scale))
                 elif c == 9: # Lift floor
                     self.layout[i].append(tile.Tile(4, (0,0), const.scale))
                 elif c == 8: # Lift wall
-                    self.layout[i].append(tile.Tile(15, (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(16, (0,0), const.scale))
         # Set the neighbours for the tiles
         for i, row in enumerate(self.layout):
             for j, c in enumerate(row):

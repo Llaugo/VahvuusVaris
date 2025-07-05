@@ -50,7 +50,7 @@ class ZestCard(StrengthCard):
 
     def update(self):
         if self.timer > 0:
-            const.playerSpeed = const.basePlayerSpeed*2
+            const.playerSpeed = const.basePlayerSpeed*1.5
         else:
             const.playerSpeed = const.basePlayerSpeed
         self.updateTimers()
