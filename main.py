@@ -50,7 +50,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 
-deck = strengthDeck.StrengthDeck((8,8),xxsGameFont)
+deck = strengthDeck.StrengthDeck((8,18),xxsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -154,7 +154,7 @@ async def main():
             shoppinglist.draw(screen)                                   # shopping list
             floorText.draw(screen)
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer))) # timer
-            deck.update()
+            deck.update(player, room1)
             deck.draw(screen)
 
             # Picking up items from the room
@@ -171,8 +171,8 @@ async def main():
                 if exitButton.activeFinger:
                     # EXIT THE LEVEL
                     gameStatus = "checkpoint" # Change the game status
-                    deck.reset()
-
+                    deck.reset(player, room1)
+        
 
         #########################################################
         # CHECKPOINT IN BETWEEN LEVELS
@@ -196,7 +196,7 @@ async def main():
                 room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
                 player.resetPos(screenSize) # Move player to the middle
                 timer = const.floorTime # Reset timer
-                deck.reset()
+                deck.reset(player, room1)
 
         # Update all positions if the screen size is changed
         newScreenSize = pygame.display.get_window_size()

@@ -37,8 +37,8 @@ class Room():
                     newRect.center = tilePos
                     self.solidRects.append(newRect)
                 elif tile.tileType == 5: # Tile has a crate on it
-                    newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize*0.6, const.tileSize*0.6)
-                    newRect.topleft = (tilePos[0]-4, tilePos[1]-4)
+                    newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, 23, 25)
+                    newRect.center = (tilePos[0]+5, tilePos[1]+5)
                     self.solidRects.append(newRect)
                 if tile.item:
                     self.items.append(tile.item)

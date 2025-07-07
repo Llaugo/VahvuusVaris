@@ -1,6 +1,7 @@
 import pygame
 import const
 import spriteSheet
+import playerClass
 
 class StrengthCard():
     # imageNum: the index of the card image
@@ -10,12 +11,12 @@ class StrengthCard():
         self.image = self.cardSprite.getImage(imageNum,250,350,const.scale/2)
         self.timer = 0
         self.cooldown = 0
-        self.timerMax = 900
-        self.cooldownMax = 360
+        self.timerMax = 300
+        self.cooldownMax = 300
 
     # Activate the card and start the active timer if the card is not on cooldown
     # Returns True if activation was successful, False otherwise
-    def tryActivate(self):
+    def tryActivate(self, player, room):
         if not self.cooldown:
             self.timer = self.timerMax
             self.cooldown = self.cooldownMax
@@ -23,7 +24,7 @@ class StrengthCard():
         return False
 
     # Do card action if card is active
-    def update(self):
+    def update(self, player, room):
         raise NotImplementedError("Please Implement this method")
 
     # update the timers of the card
@@ -34,7 +35,7 @@ class StrengthCard():
             self.cooldown -= 1
 
     # Reset the card timers to the base state
-    def reset(self):
+    def reset(self, player, room):
         self.timer = 0
         self.cooldown = 0
 
@@ -48,16 +49,34 @@ class ZestCard(StrengthCard):
     def __init__(self):
         super().__init__(8)
 
-    def update(self):
-        if self.timer > 0:
+    def update(self, player, room):
+        if self.isActive():
             const.playerSpeed = const.basePlayerSpeed*1.5
         else:
             const.playerSpeed = const.basePlayerSpeed
         self.updateTimers()
 
-    def reset(self):
-        super().reset()
+    def reset(self, player, room):
+        super().reset(player, room)
         const.playerSpeed = const.basePlayerSpeed
+
+class HumilityCard(StrengthCard):
+    def __init__(self):
+        super().__init__(18)
+
+    def tryActivate(self, player: playerClass.Player, room):
+        if super().tryActivate(player, room):
+            player.toggleSize(room, 0.5)
+
+    def update(self, player: playerClass.Player, room):
+        if self.timer == 1:
+            player.toggleSize(room)
+        self.updateTimers()
+
+    def reset(self, player: playerClass.Player, room):
+        super().reset(player, room)
+        player.toggleSize(room)
+
 
 # Return a strength card respective to the given integer.
 def createStrengthCard(n):
@@ -98,7 +117,7 @@ def createStrengthCard(n):
     elif n == 17:
         pass
     elif n == 18:
-        pass
+        return HumilityCard()
     elif n == 19:
         pass
     elif n == 20:

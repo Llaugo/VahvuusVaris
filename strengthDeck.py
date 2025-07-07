@@ -22,15 +22,15 @@ class StrengthDeck():
             self.background.blit(card.image, (pos[0]-((i+1)%2)*150-175, pos[1]+((math.floor(i/2)-2)*220)+125))
             self.buttons[i].updatePos((pos[0]-((i+1)%2)*150-145, pos[1]+((math.floor(i/2)-2)*220)+320))
 
-    def update(self):
+    def update(self, player, room):
         for i, btn in enumerate(self.buttons):
             if btn.activeFinger:
-                self.cards[i].tryActivate()
-            self.cards[i].update()
+                self.cards[i].tryActivate(player,room)
+            self.cards[i].update(player,room)
 
-    def reset(self):
+    def reset(self, player, room):
         for card in self.cards:
-            card.reset()
+            card.reset(player, room)
 
     def handleButtons(self, event, screenSize):
         for btn in self.buttons:
