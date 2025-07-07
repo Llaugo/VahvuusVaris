@@ -50,7 +50,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 
-deck = strengthDeck.StrengthDeck((8,18),xxsGameFont)
+deck = strengthDeck.StrengthDeck((8,18,22),xxsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -193,7 +193,7 @@ async def main():
                 floorNumber += 1 # Advance floor number
                 floorText.setText(f'Kerros {floorNumber}')
                 gameStatus = "level" # Change game status
-                room1 = room.Room(const.roomLayouts[floorNumber % 3],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
+                room1 = room.Room(const.roomLayouts[floorNumber % 4],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
                 player.resetPos(screenSize) # Move player to the middle
                 timer = const.floorTime # Reset timer
                 deck.reset(player, room1)

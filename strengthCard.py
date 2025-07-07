@@ -43,8 +43,7 @@ class StrengthCard():
         if self.timer:
             return True
         return False
-        
-    
+          
 class ZestCard(StrengthCard):
     def __init__(self):
         super().__init__(8)
@@ -77,6 +76,29 @@ class HumilityCard(StrengthCard):
         super().reset(player, room)
         player.toggleSize(room)
 
+class GratitudeCard(StrengthCard):
+    def __init__(self):
+        super().__init__(22)
+        self.timerMax = 60 # This cards timer means how long the speedboost lasts
+
+    def tryActivate(self, player, room):
+        if not self.cooldown:
+            room.addStone(player.rect.center)
+            self.cooldown = self.cooldownMax            
+
+    def update(self, player, room):
+        if self.isActive():
+            const.playerSpeed = const.basePlayerSpeed*1.5
+        else:
+            const.playerSpeed = const.basePlayerSpeed
+        for stn in room.stones:
+            if player.rect.colliderect(stn[1]):
+                self.timer = self.timerMax
+                break
+        if self.timer:
+            self.timer -= 1
+        if self.cooldown:
+            self.cooldown -= 1
 
 # Return a strength card respective to the given integer.
 def createStrengthCard(n):
@@ -125,7 +147,7 @@ def createStrengthCard(n):
     elif n == 21:
         pass
     elif n == 22:
-        pass
+        return GratitudeCard()
     elif n == 23:
         pass
     else:
