@@ -3,18 +3,21 @@ import const
 import spriteSheet
 import playerClass
 
+# Class for strength cards. There is a parent class and 26 child classes, one each strength.
+# Each card gives the player some ability or boost, which has a timer during which the strength is active.
+# After the ability ends, there is a cooldown for using the ability.
 class StrengthCard():
     # imageNum: the index of the card image
     def __init__(self, imageNum):
         cardSpriteSheet = pygame.image.load('images/strength_sheet.png').convert() # Load strength spritesheet
         self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
         self.image = self.cardSprite.getImage(imageNum,250,350,const.scale/2)
-        self.timer = 0
-        self.cooldown = 0
-        self.timerMax = 300
-        self.cooldownMax = 300
+        self.timer = 0          # timer for the ability
+        self.cooldown = 0       # timer for the cooldown
+        self.timerMax = 300     # timer duration
+        self.cooldownMax = 300  # cooldown duration
 
-    # Activate the card and start the active timer if the card is not on cooldown
+    # Activates the card and starts the active timer if the card is not on cooldown
     # Returns True if activation was successful, False otherwise
     def tryActivate(self, player, room):
         if not self.cooldown:
@@ -25,13 +28,13 @@ class StrengthCard():
 
     # Do card action if card is active
     def update(self, player, room):
-        raise NotImplementedError("Please Implement this method")
+        raise NotImplementedError("The update method was not implemented for a child strength class")
 
     # update the timers of the card
     def updateTimers(self):
-        if self.timer:
+        if self.timer:          # Update timer if timer is active
             self.timer -= 1
-        elif self.cooldown:
+        elif self.cooldown:     # Update cooldown timer if cooldown is active
             self.cooldown -= 1
 
     # Reset the card timers to the base state
@@ -39,66 +42,78 @@ class StrengthCard():
         self.timer = 0
         self.cooldown = 0
 
+    # Returns True if timer is on, False if not
     def isActive(self):
         if self.timer:
             return True
         return False
-          
+
+# Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
     def __init__(self):
         super().__init__(8)
 
+    # Update card
     def update(self, player, room):
         if self.isActive():
-            const.playerSpeed = const.basePlayerSpeed*1.5
+            player.changeSpeed(const.basePlayerSpeed*2) # Increase speed
         else:
-            const.playerSpeed = const.basePlayerSpeed
+            player.changeSpeed(const.basePlayerSpeed) # Normal speed
         self.updateTimers()
 
+    # Reset card and player speed
     def reset(self, player, room):
         super().reset(player, room)
-        const.playerSpeed = const.basePlayerSpeed
+        player.changeSpeed(const.basePlayerSpeed)
 
+# Humility card makes the player smaller to fit through small spaces
 class HumilityCard(StrengthCard):
     def __init__(self):
         super().__init__(18)
 
+    # Make player smaller if cooldown is not on
     def tryActivate(self, player: playerClass.Player, room):
         if super().tryActivate(player, room):
             player.toggleSize(room, 0.5)
 
+    # Turn player size back to normal if timer is out
     def update(self, player: playerClass.Player, room):
         if self.timer == 1:
             player.toggleSize(room)
         self.updateTimers()
 
+    # Reset size to normal
     def reset(self, player: playerClass.Player, room):
         super().reset(player, room)
         player.toggleSize(room)
 
+# Gratitude card can drop stones on the ground, to keep track of steps and gives a speed boost when walking over the stones
 class GratitudeCard(StrengthCard):
     def __init__(self):
         super().__init__(22)
-        self.timerMax = 60 # This cards timer means how long the speedboost lasts
+        self.timerMax = 60 # This card's timer means how long the speedboost lasts
 
+    # Adds a stone to the ground if not on cooldown
     def tryActivate(self, player, room):
         if not self.cooldown:
             room.addStone(player.rect.center)
             self.cooldown = self.cooldownMax            
 
+    # Fill boost timer if player is standing on a stone
     def update(self, player, room):
-        if self.isActive():
-            const.playerSpeed = const.basePlayerSpeed*1.5
-        else:
-            const.playerSpeed = const.basePlayerSpeed
         for stn in room.stones:
-            if player.rect.colliderect(stn[1]):
+            if player.rect.colliderect(stn[1]): # Check collision with all the stones
                 self.timer = self.timerMax
                 break
+        if self.isActive():
+            player.changeSpeed(const.basePlayerSpeed*1.5)   # change speed if active
+        else:
+            player.changeSpeed(const.basePlayerSpeed)       # Change to normal otherwise
         if self.timer:
             self.timer -= 1
         if self.cooldown:
             self.cooldown -= 1
+
 
 # Return a strength card respective to the given integer.
 def createStrengthCard(n):

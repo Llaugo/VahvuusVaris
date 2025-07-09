@@ -7,6 +7,9 @@ class Button():
     # buttonType: The number just tells what image to use in the interface_sheet.png
     # pos: A double for the x and y coordinates of the button center
     # scale: For determining the image size
+    # font: The font of the text on the button. If not specified, no text is displayed
+    # buttonText: Text on the button
+    # color: Color of the button text. Black by default
     def __init__(self, buttonType, pos, scale, font=None, buttonText="Test button", color=(0,0,0)):
         buttonSpriteSheet = pygame.image.load('images/interface_sheet.png').convert() # Load buttons spritesheet
         self.buttonSprite = spriteSheet.SpriteSheet(buttonSpriteSheet)
@@ -14,9 +17,9 @@ class Button():
         self.scale = scale
         self.image = self.buttonSprite.getImage(self.buttonType,100,100,self.scale)
         self.rect = self.image.get_rect(center = pos)
-        self.activeFinger = None
-        self.text = None
-        if font:
+        self.activeFinger = None # Id of the pressing finger
+        self.text = None # Text on the button
+        if font: # If font is specified, render text on the button
             self.text = text.Text(font, buttonText, pos, color)
             self.text.updatePos(pos, True)
 
@@ -33,9 +36,10 @@ class Button():
     # pos: new pos of the button
     def updatePos(self, pos):
         self.rect.center = pos
-        if self.text:
+        if self.text: # Update text pos
             self.text.updatePos(pos, True)
 
+    # Track button pressing
     def handleEvent(self, event, screenSize):
         # Track touch
         if event.type == pygame.FINGERDOWN:
@@ -58,6 +62,6 @@ class Button():
     # Draws this button on the screen
     def draw(self, screen):
         screen.blit(self.image, (self.rect))
-        if self.text:
+        if self.text: # Draw text on top
             self.text.draw(screen)
 
