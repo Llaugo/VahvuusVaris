@@ -9,7 +9,6 @@ class StrengthDeck():
     # cards: list of integers corresponding to the wanted strengths' numbers
     # font: font used by the deck to show texts
     def __init__(self, cards, font):
-        self.pos = (0,0)
         self.cards: list[strengthCard.StrengthCard] = [] # List of strength cards
         self.buttons: list[button.Button] = []  # List of buttons associated with the cards
         for i in cards: # Create strengthcards according to the given numbers
@@ -20,7 +19,6 @@ class StrengthDeck():
 
     # Update position of the cards on the screen
     def updatePos(self, pos):
-        self.pos = pos
         self.background = pygame.Surface((pos[0],pos[1]*2)).convert_alpha()
         self.background.fill((0, 0, 0, 0)) # Initialize background
         for i, card in enumerate(self.cards): # Blit every card image to background
@@ -46,7 +44,7 @@ class StrengthDeck():
     
     # Draw the cards/background and buttons on the screen
     def draw(self, screen):
-        screen.blit(self.background, self.pos)
+        screen.blit(self.background, (0,0))
         for btn in self.buttons:
             btn.draw(screen)
         

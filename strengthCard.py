@@ -28,7 +28,7 @@ class StrengthCard():
 
     # Do card action if card is active
     def update(self, player, room):
-        raise NotImplementedError("The update method was not implemented for a child strength class")
+        self.updateTimers()
 
     # update the timers of the card
     def updateTimers(self):
@@ -53,18 +53,15 @@ class ZestCard(StrengthCard):
     def __init__(self):
         super().__init__(8)
 
-    # Update card
-    def update(self, player, room):
-        if self.isActive():
-            player.changeSpeed(const.basePlayerSpeed*2) # Increase speed
-        else:
-            player.changeSpeed(const.basePlayerSpeed) # Normal speed
-        self.updateTimers()
+    # Change players speed if not on cooldown
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            player.changeSpeed(const.basePlayerSpeed*1.5, self.timerMax)
 
-    # Reset card and player speed
+    # Reset player speed to normal
     def reset(self, player, room):
         super().reset(player, room)
-        player.changeSpeed(const.basePlayerSpeed)
+        player.resetSpeed()
 
 # Humility card makes the player smaller to fit through small spaces
 class HumilityCard(StrengthCard):
@@ -104,15 +101,18 @@ class GratitudeCard(StrengthCard):
         for stn in room.stones:
             if player.rect.colliderect(stn[1]): # Check collision with all the stones
                 self.timer = self.timerMax
+                player.changeSpeed(const.basePlayerSpeed*1.5, self.timerMax) # change speed upon collision
                 break
-        if self.isActive():
-            player.changeSpeed(const.basePlayerSpeed*1.5)   # change speed if active
-        else:
-            player.changeSpeed(const.basePlayerSpeed)       # Change to normal otherwise
+        # Update both timers
         if self.timer:
             self.timer -= 1
         if self.cooldown:
             self.cooldown -= 1
+    
+    # Reset player speed to normal
+    def reset(self, player, room):
+        super().reset(player, room)
+        player.resetSpeed()
 
 
 # Return a strength card respective to the given integer.

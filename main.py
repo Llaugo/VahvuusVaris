@@ -91,8 +91,8 @@ async def main():
     # Updates all positions of all elements on the screen, when the screen size is changed
     def updateAllPositions(newScreenSize):
         screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
-        lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-        room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), (0,0))
+        room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), screenMove)
         player.updatePos(screenMove)
         downButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-50))
         rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))

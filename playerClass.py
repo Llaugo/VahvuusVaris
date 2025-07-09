@@ -14,6 +14,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.scale = const.scale # Scale of the player image
         self.playerSpeed = const.basePlayerSpeed
+        self.speedDuration = 0 # Duration of a possible speed boost
         playerSpriteSheet = pygame.image.load('images/player_sheet.png').convert() # Load player's spritesheet
         self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
@@ -75,7 +76,10 @@ class Player(pygame.sprite.Sprite):
 
     # Update player's state in the room
     def update(self, room):
-        self.player_input(room)
+        self.player_input(room) # Take input
+        self.speedDuration = max(self.speedDuration-1, 0) # update speedboost timer
+        if not self.speedDuration: # Reset speed when timer runs out
+            self.resetSpeed()
 
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
@@ -108,8 +112,15 @@ class Player(pygame.sprite.Sprite):
         self.resolveCollision(room)             # Resolve any collitions from changing the size
 
     # Change player speed
-    def changeSpeed(self, speed):
-        self.playerSpeed = speed
+    def changeSpeed(self, speed, duration):
+        if duration > self.speedDuration: # If new speedChange is longer than current, change speed
+            self.playerSpeed = speed
+            self.speedDuration = duration
+
+    # Reset player speed to normal
+    def resetSpeed(self):
+        self.playerSpeed = const.basePlayerSpeed
+        self.speedDuration = 0
 
     # Draw the player
     def draw(self, screen):

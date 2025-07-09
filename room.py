@@ -22,11 +22,12 @@ class Room():
         for i,row in enumerate(self.layout):    # Blit all the tiles to a single background image
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (i*const.tileSize, j*const.tileSize))
-        self.updatePos(pos)                     # Set positions correctly
+        self.updatePos(pos,(0,0))                     # Set positions correctly
 
     # Update room position
     # screenCenter: center of the screen
-    def updatePos(self, screenCenter):
+    # how much the screen size (x,y) has been changed
+    def updatePos(self, screenCenter, screenMove):
         self.pos = screenCenter
         self.rect = self.background.get_rect(center = self.pos)
         halfLength = round((len(self.layout)-1)/2)  # Helper value
@@ -46,6 +47,8 @@ class Room():
                     self.solidRects.append(newRect)
                 if tile.item:                       # Update items
                     self.items.append(tile.item)
+        for stn in self.stones:
+            stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
 
     # Remove item from the rooms memory
     # item: the item to be removed
