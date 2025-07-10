@@ -26,6 +26,11 @@ class Room():
         for i,row in enumerate(self.layout):    # Blit all the tiles to a single background image
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
+        self.darkness = None                    # None if room is dark
+        self.litRadius = 0                           # Extra light space around the player in the dark
+        if random.random() < const.darknessProbability: # Chance for setting the room as dark
+            self.darkness = pygame.Surface(((len(layout[0])-2)*const.tileSize, (len(layout)-2)*const.tileSize), flags=pygame.SRCALPHA) # dark square
+            self.darkness.fill((0, 0, 0, 255)) # Fill with black
         self.updatePos(pos,(0,0))                     # Set positions correctly
 
     # Update room position
@@ -52,9 +57,11 @@ class Room():
                 if tile.item:                       # Update items
                     self.items.append(tile.item)
         random.shuffle(self.items)
+        self.itemNamesTitle.updatePos((self.rect.left + 5, self.rect.top + 45))
+        for i, itm in enumerate(self.items): # List of items, if needed for showing room items
+            itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
-        self.itemNamesTitle.updatePos((self.rect.left + 5, self.rect.top + 45))
 
     # Remove item from the rooms memory
     # item: the item to be removed
@@ -90,19 +97,32 @@ class Room():
             rndTile.addItem(self.roomDistance)  # Add an item to a random tile
             self.items.append(rndTile.item)     # Add the item to room
             random.shuffle(self.items)
+            for i, itm in enumerate(self.items): # List of items, if needed for showing room items
+                itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
+    
+    # Widen the light area around the player on a dark room
+    def changeDarkness(self, radius):
+        self.litRadius = radius
 
     # Draw each tile, item and stone in this room
-    def draw(self, screen):
+    def draw(self, screen, player):
         screen.blit(self.background, self.rect) # background
-        if self.showItemNames:
-            self.itemNamesTitle.draw(screen)
-        for i, item in enumerate(self.items):   # items
+        for item in self.items:                 # items
             item.draw(screen)
-            if self.showItemNames:              # Show item names if True
-                item.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*item.text.surfaces[0].get_height()+ item.text.lineSpacing))
-                item.text.draw(screen)
         for stn in self.stones:                 # stones
             screen.blit(stn[0],stn[1])
+        # Fill with darkness
+        if self.darkness:
+            self.darkness.fill((0, 0, 0, 255))
+            for a,r in [(200,18+self.litRadius), (150,16+self.litRadius), (100,14+self.litRadius), (50,12+self.litRadius), (0,10+self.litRadius)]:
+                pygame.draw.circle(self.darkness, (0, 0, 0, a), (player.rect.centerx-self.rect.left-const.tileSize, player.rect.centery-3-self.rect.top-const.tileSize), r)
+            screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
+        # Show item name list
+        if self.showItemNames:
+            self.itemNamesTitle.draw(screen)
+        for item in self.items:
+            if self.showItemNames:              # Show item names if True
+                item.text.draw(screen)
     
     # Construct the room tiles from the given layout
     # Only use once upon creation

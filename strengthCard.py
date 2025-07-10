@@ -117,7 +117,6 @@ class AppreciationCard(StrengthCard):
             self.cooldown = self.cooldownMax
             room.addItem()
 
-    
 # Gratitude card can drop stones on the ground, to keep track of steps and gives a speed boost when walking over the stones
 class GratitudeCard(StrengthCard):
     def __init__(self):
@@ -148,6 +147,27 @@ class GratitudeCard(StrengthCard):
         super().reset(player, room)
         player.resetSpeed()
 
+# Spirituality makes the visible area around the player wider in the dark rooms
+class SpiritualityCard(StrengthCard):
+    def __init__(self):
+        super().__init__(25)
+
+    # Makes the visible area around the player wider if in a dark room
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            room.changeDarkness(70)
+
+    # Change visible area to normal if timer runs out
+    def update(self, player, room):
+        if self.timer == 1:
+            room.changeDarkness(0)
+        self.updateTimers()
+
+    # Reset visible are and timers
+    def reset(self, player, room):
+        super().reset(player, room)
+        room.changeDarkness(0)
+    
 
 # Return a strength card respective to the given integer.
 def createStrengthCard(n):
@@ -199,5 +219,9 @@ def createStrengthCard(n):
         return GratitudeCard()
     elif n == 23:
         pass
+    elif n == 24:
+        pass
+    elif n == 25:
+        return SpiritualityCard()
     else:
         return StrengthCard(n)

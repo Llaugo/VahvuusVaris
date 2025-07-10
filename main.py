@@ -43,7 +43,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 # Strength deck initialization
-deck = strengthDeck.StrengthDeck((2,8,18,21,22),const.xxsGameFont)
+deck = strengthDeck.StrengthDeck((2,8,18,21,22,25),const.xxsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -135,7 +135,7 @@ async def main():
 
             # Draw images to screen
             screen.fill(backg)                                                  # BG
-            room1.draw(screen)                                                  # Room/tiles
+            room1.draw(screen, player)                                                  # Room/tiles
             player.update(room1)                                                # player actions
             player.draw(screen)                                                 # player
             for b in moveButtons:                                               # buttons
@@ -146,6 +146,7 @@ async def main():
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer)))   # timer
             deck.update(player, room1)
             deck.draw(screen)                                                   # Strength deck
+
             
             # Picking up items from the room
             for item in room1.items:
@@ -170,7 +171,7 @@ async def main():
         elif gameStatus == "checkpoint":
             # Draw checkpoint elements
             screen.fill(backg)                                              # Background
-            lobby.draw(screen)                                              # Room
+            lobby.draw(screen, player)                                              # Room
             player.draw(screen)                                             # Player
             player.update(lobby)
             checkpointText.draw(screen,f'Kerros {floorNumber} suoritettu.') # Text
