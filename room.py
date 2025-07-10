@@ -2,15 +2,18 @@ import pygame
 import const
 import tile
 import item
+import text
 import random
 
 # A class for rooms which consist of tiles in a grid.
 class Room():
     # layout: the tile layout in the room
     # pos: position of the room
-    def __init__(self, layout, pos):
+    # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
+    def __init__(self, layout, pos, roomDistance=0):
         self.layout: list[list[tile.Tile]] = [] # Matrix of every tile
         self.pos = pos                          # Room center
+        self.roomDistance = roomDistance
         self.exit = None                        # Does the room have an exit
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
@@ -18,6 +21,7 @@ class Room():
         self.rect = self.background.get_rect(center = pos)
         self.solidRects = []                    # walls and solid objects of the room
         self.items = []                         # items in the room
+        self.showItemNames = False              # If True, item names are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
         for i,row in enumerate(self.layout):    # Blit all the tiles to a single background image
             for j,oneTile in enumerate(row):
@@ -47,8 +51,10 @@ class Room():
                     self.solidRects.append(newRect)
                 if tile.item:                       # Update items
                     self.items.append(tile.item)
+        random.shuffle(self.items)
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
+        self.itemNamesTitle.updatePos((self.rect.left + 5, self.rect.top + 45))
 
     # Remove item from the rooms memory
     # item: the item to be removed
@@ -65,12 +71,36 @@ class Room():
         rect = image.get_rect(center = pos) # Get rect
         self.stones.append((image, rect))
 
+    # Turn on item name showing
+    def revealItems(self, time):
+        self.showItemNames = True
+
+    # Turn off item name showing
+    def hideItems(self):
+        self.showItemNames = False
+
+    # Add one item randomly into the room
+    def addItem(self, rarity=1):
+        freeTiles = []
+        for tile in self.tiles: # Check all free shelves
+            if tile.isShelf() and not tile.item:
+                freeTiles.append(tile)
+        if freeTiles:
+            rndTile = random.choice(freeTiles)
+            rndTile.addItem(self.roomDistance)  # Add an item to a random tile
+            self.items.append(rndTile.item)     # Add the item to room
+            random.shuffle(self.items)
 
     # Draw each tile, item and stone in this room
     def draw(self, screen):
         screen.blit(self.background, self.rect) # background
-        for item in self.items:                 # items
+        if self.showItemNames:
+            self.itemNamesTitle.draw(screen)
+        for i, item in enumerate(self.items):   # items
             item.draw(screen)
+            if self.showItemNames:              # Show item names if True
+                item.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*item.text.surfaces[0].get_height()+ item.text.lineSpacing))
+                item.text.draw(screen)
         for stn in self.stones:                 # stones
             screen.blit(stn[0],stn[1])
     
@@ -94,7 +124,7 @@ class Room():
                     else:
                         self.layout[i].append(tile.Tile(random.randint(1,3), (0,0), const.scale))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(7,15), (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(random.randint(7,15), (0,0), const.scale, self.roomDistance))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0, (0,0), const.scale)
                     self.layout[i].append(self.exit)
@@ -109,3 +139,5 @@ class Room():
                     self.layout[i][j-1].setNeighbour(0,c)
                 if i: # Set the previous tile as neighbour if this isn't the first tile
                     self.layout[i-1][j].setNeighbour(1,c)
+        # Set the title for the item names list
+        self.itemNamesTitle = text.Text(const.mGameFont,"Huoneessa olevat esineet:",(0,0),(25, 28, 54))

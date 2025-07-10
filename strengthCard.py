@@ -48,6 +48,28 @@ class StrengthCard():
             return True
         return False
 
+# Judgement cards shows what items there are in the room
+class JudgementCard(StrengthCard):
+    def __init__(self):
+        super().__init__(2)
+
+    # Show the item names in the room if not on cooldown
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            self.timer = self.timerMax
+            room.revealItems(self.timerMax)
+
+    # Hide item names, if timer ends
+    def update(self, player, room):
+        if self.timer == 1:
+            room.hideItems()
+        self.updateTimers()
+
+    # Reset timers and hide item names
+    def reset(self, player, room):
+        super().reset(player, room)
+        room.hideItems()
+
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
     def __init__(self):
@@ -84,6 +106,18 @@ class HumilityCard(StrengthCard):
         super().reset(player, room)
         player.toggleSize(room)
 
+# Appreciation card makes a new item appear somewhere in the room
+class AppreciationCard(StrengthCard):
+    def __init__(self):
+        super().__init__(21)
+
+    # Adds an item to room if not on cooldown
+    def tryActivate(self, player, room):
+        if not self.cooldown:
+            self.cooldown = self.cooldownMax
+            room.addItem()
+
+    
 # Gratitude card can drop stones on the ground, to keep track of steps and gives a speed boost when walking over the stones
 class GratitudeCard(StrengthCard):
     def __init__(self):
@@ -122,7 +156,7 @@ def createStrengthCard(n):
     elif n == 1:
         pass
     elif n == 2:
-        pass
+        return JudgementCard()
     elif n == 3:
         pass
     elif n == 4:
@@ -160,10 +194,10 @@ def createStrengthCard(n):
     elif n == 20:
         pass
     elif n == 21:
-        pass
+        return AppreciationCard()
     elif n == 22:
         return GratitudeCard()
     elif n == 23:
         pass
     else:
-        return StrengthCard(0)
+        return StrengthCard(n)

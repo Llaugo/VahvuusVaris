@@ -28,29 +28,22 @@ print(seed)
 
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set up screen
 
-# Different font sizes
-xxsGameFont = pygame.font.SysFont(None, 17)
-xsGameFont = pygame.font.SysFont(None, 23)
-sGameFont = pygame.font.SysFont(None, 30)
-mGameFont = pygame.font.SysFont(None, 50)
-lGameFont = pygame.font.SysFont(None, 80)
-
 # Initialize buttons for moving
 downButton = button.Button(0,(0,0),const.scale)
 rightButton = button.Button(2,(0,0),const.scale)
 upButton = button.Button(4,(0,0),const.scale)
 leftButton = button.Button(6,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
-exitButton = button.Button(10,(0,0),const.scale, sGameFont, "HISSIIN", (8,63,6)) # Button to exit a level
-nextFloorButton = button.Button(10,(0,0),const.scale, xsGameFont, "SEURAAVA\n  KERROS", (8,63,6)) # Button to start a new level
-itemButton = button.Button(14,(0,0),const.scale, sGameFont, " OTA\nESINE", (130,63,0)) # Button to pick up items
+exitButton = button.Button(10,(0,0),const.scale, const.sGameFont, "HISSIIN", (8,63,6)) # Button to exit a level
+nextFloorButton = button.Button(10,(0,0),const.scale, const.xsGameFont, "SEURAAVA\n  KERROS", (8,63,6)) # Button to start a new level
+itemButton = button.Button(14,(0,0),const.scale, const.sGameFont, " OTA\nESINE", (130,63,0)) # Button to pick up items
 # All buttons are handled from this array
 buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton,itemButton]
 
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 # Strength deck initialization
-deck = strengthDeck.StrengthDeck((8,18,22),xxsGameFont)
+deck = strengthDeck.StrengthDeck((2,8,18,21,22),const.xxsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -76,17 +69,17 @@ async def main():
     frame = picture.Picture("images/frame.png", (710,710), (0,0))
 
     # Shopping list
-    shoppinglist = shoppingList.ShoppingList(sGameFont, xsGameFont,(0,0))
+    shoppinglist = shoppingList.ShoppingList(const.sGameFont, const.xsGameFont,(0,0))
 
     # Timer
     timer = const.floorTime
     pygame.time.set_timer(pygame.USEREVENT, 1000)
 
     # Texts
-    floorText = text.Text(mGameFont, f'Kerros {floorNumber}', (0,0))                    # Floor number
-    timerText = text.Text(mGameFont, time.strftime('%M:%S',time.gmtime(timer)),(0,0))   # Timer
-    checkpointText = text.Text(lGameFont, f'Kerros {floorNumber} suoritettu.', (0,0))   # Checkpoint text
-    debugText = text.Text(sGameFont, f'FPS: {round(clock.get_fps())}',(20,20))          # Debug text
+    floorText = text.Text(const.mGameFont, f'Kerros {floorNumber}', (0,0))                    # Floor number
+    timerText = text.Text(const.mGameFont, time.strftime('%M:%S',time.gmtime(timer)),(0,0))   # Timer
+    checkpointText = text.Text(const.lGameFont, f'Kerros {floorNumber} suoritettu.', (0,0))   # Checkpoint text
+    debugText = text.Text(const.sGameFont, f'FPS: {round(clock.get_fps())}',(20,20))          # Debug text
 
     # Updates all positions of all elements on the screen, when the screen size is changed
     def updateAllPositions(newScreenSize):

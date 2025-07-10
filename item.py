@@ -2,6 +2,7 @@ import pygame
 import const
 import picture
 import spriteSheet
+import text
 import random
 
 class Item():
@@ -15,6 +16,7 @@ class Item():
         self.image = self.itemSprite.getImage(self.picType,35,35,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.name = self.rollItem(roomDistance) # Determine item name/type
+        self.text = text.Text(const.sGameFont,self.name,pos,(46, 49, 79)) # Item name as text
 
     # Update item pos
     def updatePos(self, pos):

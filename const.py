@@ -1,5 +1,5 @@
 import pygame
-
+pygame.init()
 # Initial world dimensions
 worldWidth = 1400
 worldHeight = 700
@@ -7,6 +7,13 @@ worldHeight = 700
 # Scale used for image sizes
 # DON'T CHANGE from 1, not implemented to everywhere
 scale = 1
+
+# Different font sizes
+xxsGameFont = pygame.font.SysFont(None, 17)
+xsGameFont = pygame.font.SysFont(None, 23)
+sGameFont = pygame.font.SysFont(None, 30)
+mGameFont = pygame.font.SysFont(None, 50)
+lGameFont = pygame.font.SysFont(None, 80)
 
 # Tile size (square of (tileSize x tileSize))
 tileSize = 46
