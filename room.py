@@ -17,7 +17,7 @@ class Room():
         self.exit = None                        # Does the room have an exit
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
-        self.background = pygame.Surface((len(layout[0]*const.tileSize), len(layout*const.tileSize))).convert() # Room background surface
+        self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
         self.rect = self.background.get_rect(center = pos)
         self.solidRects = []                    # walls and solid objects of the room
         self.items = []                         # items in the room
@@ -25,7 +25,7 @@ class Room():
         self.stones = []                        # stones in the room (list[(image,rect)])
         for i,row in enumerate(self.layout):    # Blit all the tiles to a single background image
             for j,oneTile in enumerate(row):
-                self.background.blit(oneTile.image, (i*const.tileSize, j*const.tileSize))
+                self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
         self.updatePos(pos,(0,0))                     # Set positions correctly
 
     # Update room position
@@ -39,7 +39,7 @@ class Room():
         self.items: list[item.Item] = []            # Reset items
         for i, row in enumerate(self.layout):       # Update all tile positions
             for j, tile in enumerate(row):
-                tilePos = (screenCenter[0]-(i-halfLength)*const.tileSize,screenCenter[1]-(j-halfLength)*const.tileSize)
+                tilePos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize)
                 tile.updatePos(tilePos)             # Update tile
                 if tile.solid:                      # Update solid walls
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
