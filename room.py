@@ -101,8 +101,13 @@ class Room():
                 itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
     
     # Widen the light area around the player on a dark room
-    def changeDarkness(self, radius):
-        self.litRadius = radius
+    # radius: radius of the lit area
+    # clear: if True, get rid of darkness altogether
+    def changeDarkness(self, radius, clear=False):
+        if clear:
+            self.darkness = None
+        else:
+            self.litRadius = radius
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):

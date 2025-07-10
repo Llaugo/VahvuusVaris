@@ -70,6 +70,16 @@ class JudgementCard(StrengthCard):
         super().reset(player, room)
         room.hideItems()
 
+# Learning card gets rid of darkness in the dark rooms
+class LearningCard(StrengthCard):
+    def __init__(self):
+        super().__init__(3)
+
+    # Makes the visible area around the player wider if in a dark room
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            room.changeDarkness(0, True)
+
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
     def __init__(self):
@@ -147,7 +157,7 @@ class GratitudeCard(StrengthCard):
         super().reset(player, room)
         player.resetSpeed()
 
-# Spirituality makes the visible area around the player wider in the dark rooms
+# Spirituality card makes the visible area around the player wider in the dark rooms
 class SpiritualityCard(StrengthCard):
     def __init__(self):
         super().__init__(25)
@@ -178,7 +188,7 @@ def createStrengthCard(n):
     elif n == 2:
         return JudgementCard()
     elif n == 3:
-        pass
+        return LearningCard()
     elif n == 4:
         pass
     elif n == 5:
