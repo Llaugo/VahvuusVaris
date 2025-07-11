@@ -113,7 +113,7 @@ class Player(pygame.sprite.Sprite):
 
     # Change player speed
     def changeSpeed(self, speed, duration):
-        if duration > self.speedDuration: # If new speedChange is longer than current, change speed
+        if duration > self.speedDuration: # If new speed duration is longer than current, change speed
             self.playerSpeed = speed
             self.speedDuration = duration
 

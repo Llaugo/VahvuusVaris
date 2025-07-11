@@ -78,7 +78,7 @@ class LearningCard(StrengthCard):
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, player, room):
         if super().tryActivate(player, room):
-            room.changeDarkness(0, True)
+            room.changeDarkness(0, 0, True)
 
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
@@ -157,6 +157,21 @@ class GratitudeCard(StrengthCard):
         super().reset(player, room)
         player.resetSpeed()
 
+# Hope card makes makes a long visible area in front of the player in the dark rooms
+class HopeCard(StrengthCard):
+    def __init__(self):
+        super().__init__(23)
+
+    # Makes the visible beam in front of the player if in a dark room
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            room.changeDarkness(-50, self.timerMax)
+
+    # Reset visible area and timers
+    def reset(self, player, room):
+        super().reset(player, room)
+        room.resetLights()
+
 # Spirituality card makes the visible area around the player wider in the dark rooms
 class SpiritualityCard(StrengthCard):
     def __init__(self):
@@ -165,18 +180,12 @@ class SpiritualityCard(StrengthCard):
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, player, room):
         if super().tryActivate(player, room):
-            room.changeDarkness(70)
+            room.changeDarkness(70, self.timerMax)
 
-    # Change visible area to normal if timer runs out
-    def update(self, player, room):
-        if self.timer == 1:
-            room.changeDarkness(0)
-        self.updateTimers()
-
-    # Reset visible are and timers
+    # Reset visible area and timers
     def reset(self, player, room):
         super().reset(player, room)
-        room.changeDarkness(0)
+        room.resetLights()
     
 
 # Return a strength card respective to the given integer.
@@ -228,7 +237,7 @@ def createStrengthCard(n):
     elif n == 22:
         return GratitudeCard()
     elif n == 23:
-        pass
+        return HopeCard()
     elif n == 24:
         pass
     elif n == 25:

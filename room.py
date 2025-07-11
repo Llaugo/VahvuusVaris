@@ -27,11 +27,19 @@ class Room():
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
         self.darkness = None                    # None if room is dark
-        self.litRadius = 0                           # Extra light space around the player in the dark
-        if random.random() < const.darknessProbability: # Chance for setting the room as dark
+        self.litRadius = 0                      # Extra light space around the player in the dark
+        self.lightDuration = 0                  # Duration of light space
+        # Chance for setting the room as dark if the room isn't a lift
+        if len(layout) > 5 and random.random() < const.darknessProbability: # ADD THE FOLLOWING: "and not self.exit"
             self.darkness = pygame.Surface(((len(layout[0])-2)*const.tileSize, (len(layout)-2)*const.tileSize), flags=pygame.SRCALPHA) # dark square
             self.darkness.fill((0, 0, 0, 255)) # Fill with black
         self.updatePos(pos,(0,0))                     # Set positions correctly
+
+    # Update room
+    def update(self):
+        self.lightDuration = max(self.lightDuration-1, 0) # update light duration timer
+        if not self.lightDuration: # Reset lights when timer runs out
+            self.resetLights()
 
     # Update room position
     # screenCenter: center of the screen
@@ -100,14 +108,23 @@ class Room():
             for i, itm in enumerate(self.items): # List of items, if needed for showing room items
                 itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
     
-    # Widen the light area around the player on a dark room
-    # radius: radius of the lit area
+    # Lighten up a dark room
+    # radius: radius of the lit area, negative numbers create a beam of light in front of the player
+    # duration: duration of the light being on
     # clear: if True, get rid of darkness altogether
-    def changeDarkness(self, radius, clear=False):
+    def changeDarkness(self, radius, duration, clear=False):
         if clear:
             self.darkness = None
-        else:
+            self.litRadius = 0
+            self.lightDuration = 0
+        elif duration > self.lightDuration:
             self.litRadius = radius
+            self.lightDuration = duration
+
+    # Reset the lit area around the player
+    def resetLights(self):
+        self.litRadius = 0
+        self.lightDuration = 0
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -119,8 +136,19 @@ class Room():
         # Fill with darkness
         if self.darkness:
             self.darkness.fill((0, 0, 0, 255))
-            for a,r in [(200,18+self.litRadius), (150,16+self.litRadius), (100,14+self.litRadius), (50,12+self.litRadius), (0,10+self.litRadius)]:
-                pygame.draw.circle(self.darkness, (0, 0, 0, a), (player.rect.centerx-self.rect.left-const.tileSize, player.rect.centery-3-self.rect.top-const.tileSize), r)
+            playerPos = (player.rect.centerx-self.rect.left-const.tileSize, player.rect.centery-3-self.rect.top-const.tileSize)
+            if self.litRadius >= 0: # Create a circle of light
+                for a,r in [(200,18+self.litRadius), (150,16+self.litRadius), (100,14+self.litRadius), (50,12+self.litRadius), (0,10+self.litRadius)]:
+                    pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r)
+            else: # Create a beam of light
+                if player.facing % 2 == 0:
+                    for a,r in [(200,8-self.litRadius),(150,6-self.litRadius),(100,4-self.litRadius),(50,2-self.litRadius),(0,-self.litRadius)]:
+                        pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
+                        pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0], playerPos[1] + (1 - player.facing)*700], r)
+                else:
+                    for a,r in [(200,8-self.litRadius),(150,6-self.litRadius),(100,4-self.litRadius),(50,2-self.litRadius),(0,-self.litRadius)]:
+                        pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
+                        pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0] + (2 - player.facing)*700, playerPos[1]], r)
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
         # Show item name list
         if self.showItemNames:
