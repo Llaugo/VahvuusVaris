@@ -43,12 +43,21 @@ class Floor():
         else:
             self.currentLocation = (self.currentLocation[0] - 1, self.currentLocation[1])
             player.resetRect((self.pos[0]+const.tileSize*7+5, self.pos[1]+10))
-        # Change rooms
-        if self.rooms[self.currentLocation[0]][self.currentLocation[1]]: # Get from memory
+        # get the correct room or create one if not generated
+        if self.rooms[self.currentLocation[0]][self.currentLocation[1]]:
             newRoom = self.rooms[self.currentLocation[0]][self.currentLocation[1]]
-        else: # Create a new if needed
+        else:
             newRoom = room.Room(random.choice(const.roomLayouts), abs(self.currentLocation[0] - self.half) + abs(self.currentLocation[1] - self.half))
             self.rooms[self.currentLocation[0]][self.currentLocation[1]] = newRoom
+            # Delete doors that would out of index
+            if self.currentLocation[0] == 0:
+                newRoom.removeDoor(0)
+            elif self.currentLocation[0] == len(self.rooms)-1:
+                newRoom.removeDoor(2)
+            if self.currentLocation[1] == 0:
+                newRoom.removeDoor(1)
+            elif self.currentLocation[1] == len(self.rooms)-1:
+                newRoom.removeDoor(3)
             newRoom.updatePos(self.pos)
         newRoom.litRadius = self.currentRoom.litRadius
         newRoom.lightDuration = self.currentRoom.lightDuration

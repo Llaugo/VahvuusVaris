@@ -71,6 +71,22 @@ class Room():
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
 
+    # Remove one entrence
+    # dir: (d=0,r=1,u=2,l=3)
+    def removeDoor(self, dir):
+        if dir == 0:
+            self.layout[(len(self.layout)//2)][0].makeWall()
+        elif dir == 1:
+            self.layout[0][(len(self.layout)//2)].makeWall()
+        elif dir == 2:
+            self.layout[(len(self.layout)//2)][len(self.layout)-1].makeWall()
+        elif dir == 3:
+            self.layout[len(self.layout)-1][(len(self.layout)//2)].makeWall()
+        self.tiles = [x for xs in self.layout for x in xs]
+        for i,row in enumerate(self.layout):    # Blit tile images to background 
+            for j,oneTile in enumerate(row):
+                self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
+
     # Remove item from the rooms memory
     # item: the item to be removed
     def removeItem(self, item: item.Item):

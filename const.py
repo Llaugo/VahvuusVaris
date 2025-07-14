@@ -28,7 +28,7 @@ floorTime = 300
 floorSize = 9
 
 itemProbability = 0.05 # Probability that a shelf tile has an item on it
-darknessProbability = 0.91 # Probability that a room is dark
+darknessProbability = 0.1 # Probability that a room is dark
 
 # All the items that can appear in the shopping list and in the shop
 # The first list has the most common items and the last list has the least common items

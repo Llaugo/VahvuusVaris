@@ -37,6 +37,13 @@ class Tile():
         self.neighbours[dir] = tile # Set the other tile as a neighbour for this tile.
         tile.neighbours[(dir + 2) % 4] = self # Set this tile as a neighbour for the other tile. (in the opposite direction)
 
+    def makeWall(self):
+        if self.tileType == 6: print("already a wall!")
+        self.tileType = 6
+        self.solid = True
+        self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
+        
+
     # Returns True if this tile is a shelf tile and False otherwise
     def isShelf(self):
         if self.tileType >= 7 and self.tileType <= 15:
