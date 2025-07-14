@@ -10,15 +10,15 @@ class Room():
     # layout: the tile layout in the room
     # pos: position of the room
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, layout, pos, roomDistance=0):
+    def __init__(self, layout, roomDistance=0):
         self.layout: list[list[tile.Tile]] = [] # Matrix of every tile
-        self.pos = pos                          # Room center
+        self.pos = (0,0)                        # Room center
         self.roomDistance = roomDistance
         self.exit = None                        # Does the room have an exit
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
-        self.rect = self.background.get_rect(center = pos)
+        self.rect = self.background.get_rect(center = self.pos)
         self.solidRects = []                    # walls and solid objects of the room
         self.items = []                         # items in the room
         self.showItemNames = False              # If True, item names are shown
@@ -30,10 +30,10 @@ class Room():
         self.litRadius = 0                      # Extra light space around the player in the dark
         self.lightDuration = 0                  # Duration of light space
         # Chance for setting the room as dark if the room isn't a lift
-        if len(layout) > 5 and random.random() < const.darknessProbability: # ADD THE FOLLOWING: "and not self.exit"
+        if len(layout) > 5 and random.random() < const.darknessProbability and roomDistance != 0:
             self.darkness = pygame.Surface(((len(layout[0])-2)*const.tileSize, (len(layout)-2)*const.tileSize), flags=pygame.SRCALPHA) # dark square
-            self.darkness.fill((0, 0, 0, 255)) # Fill with black
-        self.updatePos(pos,(0,0))                     # Set positions correctly
+            self.darkness.fill((0, 0, 0, 255))  # Fill with black
+        self.updatePos(self.pos,(0,0))          # Set positions correctly
 
     # Update room
     def update(self):
@@ -44,7 +44,7 @@ class Room():
     # Update room position
     # screenCenter: center of the screen
     # how much the screen size (x,y) has been changed
-    def updatePos(self, screenCenter, screenMove):
+    def updatePos(self, screenCenter, screenMove=(0,0)):
         self.pos = screenCenter
         self.rect = self.background.get_rect(center = self.pos)
         halfLength = round((len(self.layout)-1)/2)  # Helper value
@@ -87,7 +87,7 @@ class Room():
         self.stones.append((image, rect))
 
     # Turn on item name showing
-    def revealItems(self, time):
+    def revealItems(self):
         self.showItemNames = True
 
     # Turn off item name showing
@@ -171,7 +171,7 @@ class Room():
                         self.layout[i].append(tile.Tile(16, (0,0), const.scale))
                     else:
                         self.layout[i].append(tile.Tile(6, (0,0), const.scale))
-                elif c == 1: # Floor
+                elif c == 1 or c == 7: # Floor
                     if lift: # Lift has special floor
                         self.layout[i].append(tile.Tile(4, (0,0), const.scale))
                     else:
@@ -184,7 +184,7 @@ class Room():
                 elif c == 4: # crate
                     self.layout[i].append(tile.Tile(5, (0,0), const.scale))
                 else:
-                    raise ValueError('The room layout contains unknown values')
+                    raise ValueError(f'The room layout contains unknown value: {c}')
         # Set the neighbours for the tiles
         for i, row in enumerate(self.layout):
             for j, c in enumerate(row):

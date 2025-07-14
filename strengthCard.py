@@ -57,7 +57,7 @@ class JudgementCard(StrengthCard):
     def tryActivate(self, player, room):
         if super().tryActivate(player, room):
             self.timer = self.timerMax
-            room.revealItems(self.timerMax)
+            room.revealItems()
 
     # Hide item names, if timer ends
     def update(self, player, room):

@@ -14,6 +14,7 @@ import shoppingList
 import item
 import strengthCard
 import strengthDeck
+import floorClass
 import random
 import math
 import time
@@ -62,9 +63,9 @@ async def main():
 
     # Tracks the floor/level the player is at
     floorNumber = 1
-    # Test rooms
-    room1 = room.Room(const.roomLayouts[0],(0,0))
-    lobby = room.Room(const.lobbyLayout, (0,0))
+    # The main floor object
+    floor = floorClass.Floor(const.floorSize)
+    lobby = room.Room(const.lobbyLayout)
     # Frame image for game area
     frame = picture.Picture("images/frame.png", (710,710), (0,0))
 
@@ -85,7 +86,7 @@ async def main():
     def updateAllPositions(newScreenSize):
         screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
         lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), (0,0))
-        room1.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), screenMove)
+        floor.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), screenMove)
         player.updatePos(screenMove)
         downButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-50))
         rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))
@@ -93,11 +94,11 @@ async def main():
         leftButton.updatePos((newScreenSize[0]-225,newScreenSize[1]-138))
         exitButton.updatePos((newScreenSize[0]/2+460,newScreenSize[1]/2))
         frame.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-        floorText.updatePos((newScreenSize[0]/2-340,newScreenSize[1]/2-341))
-        timerText.updatePos((newScreenSize[0]/2-45,newScreenSize[1]/2-341))
-        shoppinglist.updatePos((newScreenSize[0] - room1.rect.left/2, newScreenSize[1]/4))
+        floorText.updatePos((newScreenSize[0]/2+46,newScreenSize[1]/2-341))
+        timerText.updatePos((newScreenSize[0]/2-141,newScreenSize[1]/2-341))
+        shoppinglist.updatePos((newScreenSize[0] - floor.currentRoom.rect.left/2, newScreenSize[1]/4))
         itemButton.updatePos((newScreenSize[0]/2+580,newScreenSize[1]/2))
-        deck.updatePos((room1.rect.left, newScreenSize[1]/2))
+        deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
     # Called once at the start to get everything in place
@@ -135,9 +136,9 @@ async def main():
 
             # Draw images to screen
             screen.fill(backg)                                                  # BG
-            room1.update()
-            room1.draw(screen, player)                                                  # Room/tiles
-            player.update(room1)                                                # player actions
+            floor.update(player)
+            floor.draw(screen, player)                                   # current room
+            player.update(floor.currentRoom)                                                # player actions
             player.draw(screen)                                                 # player
             for b in moveButtons:                                               # buttons
                 b.draw(screen)               
@@ -145,25 +146,25 @@ async def main():
             shoppinglist.draw(screen)                                           # shopping list
             floorText.draw(screen)                                              # Floor number
             timerText.draw(screen,time.strftime('%M:%S', time.gmtime(timer)))   # timer
-            deck.update(player, room1)
+            deck.update(player, floor.currentRoom)
             deck.draw(screen)                                                   # Strength deck
 
             
             # Picking up items from the room
-            for item in room1.items:
+            for item in floor.currentRoom.items:
                 if item.rect.colliderect(player.rect):  # Show the button if player is on top of the item
                     itemButton.draw(screen)
                     if itemButton.activeFinger:         # Take item if button is active
                         shoppinglist.receiveItem(item.name)
-                        room1.removeItem(item)
+                        floor.currentRoom.removeItem(item)
             
             # Draw the exit button, if player is at the exit
-            if room1.exit != None and room1.exit.rect.colliderect(player.rect):
+            if floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(player.rect):
                 exitButton.draw(screen)
                 if exitButton.activeFinger:
                     # EXIT THE LEVEL
                     gameStatus = "checkpoint" # Change the game status
-                    deck.reset(player, room1) # Finish all active strengths
+                    deck.reset(player, floor.currentRoom) # Finish all active strengths
         
 
         #########################################################
@@ -184,10 +185,11 @@ async def main():
                 floorNumber += 1                            # Advance floor number
                 floorText.setText(f'Kerros {floorNumber}')
                 gameStatus = "level"                        # Change game status
-                room1 = room.Room(const.roomLayouts[floorNumber % 4],(screenSize[0]/2,screenSize[1]/2)) # Create a new room
+                floor = floorClass.Floor(const.floorSize)   # Create a new room
+                floor.updatePos((screenSize[0]/2,screenSize[1]/2))
                 player.resetPos(screenSize)                 # Move player to the middle
                 timer = const.floorTime                     # Reset timer
-                #deck.reset(player, room1)                   # Reset the card deck
+                #deck.reset(player, floor)                   # Reset the card deck
 
         # Update all positions if the screen size is changed
         newScreenSize = pygame.display.get_window_size()
@@ -200,7 +202,7 @@ async def main():
         if keys[pygame.K_r]: # Show debug on pressing the R-key
             debugMode = not debugMode
         if debugMode: # Show debug text info
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(room1.items)} Items: {[room1.items[i].name + str(room1.items[i].rect.center) for i in range(len(room1.items))]}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
 
         pygame.display.update()
         clock.tick(60)
