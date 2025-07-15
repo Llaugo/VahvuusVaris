@@ -4,6 +4,7 @@ import spriteSheet
 import button
 import tile
 import room
+import math
 from pygame.math import Vector2
 
 # Player class tracking movement and walking animations.
@@ -33,7 +34,7 @@ class Player(pygame.sprite.Sprite):
     def playerInput(self, room: room.Room):
         keys = pygame.key.get_pressed()
         velocity = Vector2()
-        speed = self.swimSpeed if self.isInWater(room) else self.playerSpeed
+        speed = self.playerSpeed*self.swimSpeed if self.isInWater(room) else self.playerSpeed
         if keys[pygame.K_s] or self.controls[0].activeFinger: # Down key or button
             self.facing = 0
             velocity += Vector2(0,1)
@@ -53,7 +54,7 @@ class Player(pygame.sprite.Sprite):
             self.walking = 0
         else:
             self.pos += (velocity*speed)
-            self.walking = (self.walking + self.playerSpeed/20.0) % 4
+            self.walking = (self.walking + speed/20.0) % 4
             self.resolveCollision(room) # Resolve collisions with walls etc.
             self.rect.center = (self.pos.x, self.pos.y)
         animationFrame = self.facing*4 + round(self.walking) % 4 # Get the correct image (frame of the animation)
@@ -70,14 +71,14 @@ class Player(pygame.sprite.Sprite):
                 overlap = self.rect.clip(solid)             # Compute overlap rectangle
                 if overlap.width < overlap.height:          # Choose the smaller overlap dimension
                     if self.rect.centerx > solid.centerx:   # Player is on right side of tile -> push right
-                        self.pos.x = solid.right + self.rect.width/2
+                        self.pos.x = solid.right + math.ceil(self.rect.width/2)
                     else:
-                        self.pos.x = solid.left - self.rect.width/2
+                        self.pos.x = solid.left - math.ceil(self.rect.width/2)
                 else:
                     if self.rect.centery > solid.centery:   # Player is below tile -> push down
-                        self.pos.y = solid.bottom + self.rect.height/2
+                        self.pos.y = solid.bottom + math.ceil(self.rect.height/2)
                     else:
-                        self.pos.y = solid.top - self.rect.height/2 - 1
+                        self.pos.y = solid.top - math.ceil(self.rect.height/2)
                 self.rect.center = (self.pos.x, self.pos.y)
 
     # Update player's state in the room

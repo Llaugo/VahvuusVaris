@@ -44,7 +44,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 # Strength deck initialization
-deck = strengthDeck.StrengthDeck((2,3,6,18,21,25),const.xxsGameFont)
+deck = strengthDeck.StrengthDeck((3,6,8,18,24,25),const.xxsGameFont)
 
 # Background color
 backg = (160,209,255)

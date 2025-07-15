@@ -88,7 +88,7 @@ class PerseveranceCard(StrengthCard):
     # Change player swimming speed if not on cooldown
     def tryActivate(self, player, room):
         if super().tryActivate(player, room):
-            player.swim(const.basePlayerSpeed*0.5, self.timerMax)
+            player.swim(const.basePlayerSpeed*0.25, self.timerMax)
 
     # Reset player swimming speed to normal (off)
     def reset(self, player, room):
@@ -159,7 +159,7 @@ class GratitudeCard(StrengthCard):
         for stn in room.stones:
             if player.rect.colliderect(stn[1]): # Check collision with all the stones
                 self.timer = self.timerMax
-                player.changeSpeed(const.basePlayerSpeed*1.5, self.timerMax) # change speed upon collision
+                player.changeSpeed(const.basePlayerSpeed*1.3, self.timerMax) # change speed upon collision
                 break
         # Update both timers
         if self.timer:
@@ -186,6 +186,21 @@ class HopeCard(StrengthCard):
     def reset(self, player, room):
         super().reset(player, room)
         room.resetLights()
+
+# Humor card makes player to be able to swim through water
+class HumorCard(StrengthCard):
+    def __init__(self):
+        super().__init__(24)
+
+    # Change player swimming speed if not on cooldown
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            player.swim(const.basePlayerSpeed*0.5, self.timerMax)
+
+    # Reset player swimming speed to normal (off)
+    def reset(self, player, room):
+        super().reset(player,room)
+        player.resetSwim()
 
 # Spirituality card makes the visible area around the player wider in the dark rooms
 class SpiritualityCard(StrengthCard):
@@ -254,7 +269,7 @@ def createStrengthCard(n):
     elif n == 23:
         return HopeCard()
     elif n == 24:
-        pass
+        return HumorCard()
     elif n == 25:
         return SpiritualityCard()
     else:
