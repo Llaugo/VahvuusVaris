@@ -44,7 +44,7 @@ buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton
 # Player initialization
 player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2))
 # Strength deck initialization
-deck = strengthDeck.StrengthDeck((3,6,8,18,24,25),const.xxsGameFont)
+deck = strengthDeck.StrengthDeck((3,8,17,18,24,25),const.xxsGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -202,7 +202,7 @@ async def main():
         if keys[pygame.K_r]: # Show debug on pressing the R-key
             debugMode = not debugMode
         if debugMode: # Show debug text info
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nRoom location on floor: {floor.currentLocation}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
+            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nRoom loc: {floor.currentLocation} Player pos: {player.pos}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
 
         pygame.display.update()
         clock.tick(60)

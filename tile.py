@@ -11,15 +11,15 @@ class Tile():
     # pos: A double for the x and y coordinates of the tile center
     # scale: For determining the image size
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, tileType, pos, scale, roomDistance=0):
+    def __init__(self, tileType, roomDistance=0):
         tileSpriteSheet = pygame.image.load('images/shopsprite.png').convert() # Load tile spritesheet
         self.tileSprite = spriteSheet.SpriteSheet(tileSpriteSheet)
         self.tileType = tileType
-        self.pos = pos
-        self.scale = scale
+        self.pos = (0,0)
+        self.scale = const.scale
         self.itemCorner = (random.randint(0,1)*2-1, random.randint(0,1)*2-1) # helps to figure out and randomize item location on the tile
         self.image = self.tileSprite.getImage(tileType, const.tileSize, const.tileSize, self.scale)
-        self.rect = self.image.get_rect(center = pos)
+        self.rect = self.image.get_rect(center = self.pos)
         self.solid = True # Can the tile be walked on
         self.item = None # A possible item the tile holds
         if tileType < 6: self.solid = False # The first six tile types are not solid and can be walked on
@@ -37,12 +37,19 @@ class Tile():
         self.neighbours[dir] = tile # Set the other tile as a neighbour for this tile.
         tile.neighbours[(dir + 2) % 4] = self # Set this tile as a neighbour for the other tile. (in the opposite direction)
 
+    # Make this tile a wall
     def makeWall(self):
-        if self.tileType == 6: print("already a wall!")
         self.tileType = 6
         self.solid = True
         self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
         
+    # Make this tile a floor if it is water
+    def clearWater(self):
+        print(self.pos)
+        if self.isWater():
+            self.tileType = 1
+            self.solid = False
+            self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
 
     # Returns True if this tile is a shelf tile and False otherwise
     def isShelf(self):

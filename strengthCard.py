@@ -110,6 +110,16 @@ class ZestCard(StrengthCard):
         super().reset(player, room)
         player.resetSpeed()
 
+# Forgiveness card cleans nearby waters
+class ForgivenessCard(StrengthCard):
+    def __init__(self):
+        super().__init__(17)
+
+    # Clean nearby water from the room if not on cooldown
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            room.cleanWater(player)
+
 # Humility card makes the player smaller to fit through small spaces
 class HumilityCard(StrengthCard):
     def __init__(self):
@@ -255,7 +265,7 @@ def createStrengthCard(n):
     elif n == 16:
         pass
     elif n == 17:
-        pass
+        return ForgivenessCard()
     elif n == 18:
         return HumilityCard()
     elif n == 19:

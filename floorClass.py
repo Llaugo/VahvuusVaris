@@ -59,19 +59,21 @@ class Floor():
             elif self.currentLocation[1] == len(self.rooms)-1:
                 newRoom.removeDoor(3)
             newRoom.updatePos(self.pos)
+        # Transfer the state of darkness
         newRoom.litRadius = self.currentRoom.litRadius
         newRoom.lightDuration = self.currentRoom.lightDuration
         self.currentRoom.litRadius = 0
         self.currentRoom.lightDuration = 0
         self.currentRoom = newRoom
         
-
+    # Update floor
     def update(self, player):
-        for i, door in enumerate(self.doors): 
+        for i, door in enumerate(self.doors): # Detect going through doors 
             if door.colliderect(player.rect):
                 self.nextRoom(i,player)
         self.currentRoom.update()
 
+    # update the position current room and the doors
     def updatePos(self, screenCenter, screenMove=(0,0)):
         self.pos = screenCenter
         self.currentRoom.updatePos(screenCenter, screenMove)

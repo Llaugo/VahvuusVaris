@@ -19,14 +19,12 @@ class Room():
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
         self.rect = self.background.get_rect(center = self.pos)
+        self.reconstruct()                      # Blit all the tiles to a single background image
         self.solidRects = []                    # walls and solid objects of the room
         self.waterRects = []
         self.items = []                         # items in the room
         self.showItemNames = False              # If True, item names are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
-        for i,row in enumerate(self.layout):    # Blit all the tiles to a single background image
-            for j,oneTile in enumerate(row):
-                self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
         self.darkness = None                    # None if room is dark
         self.litRadius = 0                      # Extra light space around the player in the dark
         self.lightDuration = 0                  # Duration of light space
@@ -87,10 +85,7 @@ class Room():
             self.layout[(len(self.layout)//2)][len(self.layout)-1].makeWall()
         elif dir == 3:
             self.layout[len(self.layout)-1][(len(self.layout)//2)].makeWall()
-        self.tiles = [x for xs in self.layout for x in xs]
-        for i,row in enumerate(self.layout):    # Blit tile images to background 
-            for j,oneTile in enumerate(row):
-                self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
+        self.reconstruct()
 
     # Remove item from the rooms memory
     # item: the item to be removed
@@ -147,6 +142,23 @@ class Room():
         self.litRadius = 0
         self.lightDuration = 0
 
+    # Clean the four adjactent tiles from water
+    def cleanWater(self, player):
+        clearradius = pygame.Rect(0, 0, const.tileSize, const.tileSize)
+        clearradius.center = player.pos
+        for tile in self.tiles:
+            if tile.rect.colliderect(clearradius):
+                tile.clearWater()
+        self.reconstruct()
+        self.waterRects: list[pygame.Rect] = []     # Reset waters
+        for i, row in enumerate(self.layout):       # Update all tile positions
+            for j, tile in enumerate(row):
+                if tile.isWater():
+                    newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
+                    newRect.center = tile.pos
+                    self.waterRects.append(newRect)
+        print(len(self.waterRects))
+
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
         screen.blit(self.background, self.rect) # background
@@ -177,6 +189,13 @@ class Room():
         for item in self.items:
             if self.showItemNames:              # Show item names if True
                 item.text.draw(screen)
+
+    # Generates the background image again from the matrix of tiles)
+    # Call anytime the background image/tiles are changed
+    def reconstruct(self):
+        for i,row in enumerate(self.layout):    # Blit tile images to background 
+            for j,oneTile in enumerate(row):
+                self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
     
     # Construct the room tiles from the given layout
     # Only use once upon creation
@@ -189,31 +208,31 @@ class Room():
             for j,c in enumerate(row):
                 if c == 0: # Wall
                     if lift: # Lift has special walls
-                        self.layout[i].append(tile.Tile(16, (0,0), const.scale))
+                        self.layout[i].append(tile.Tile(16))
                     else:
-                        self.layout[i].append(tile.Tile(6, (0,0), const.scale))
+                        self.layout[i].append(tile.Tile(6))
                 elif c == 1: # Floor
                     if lift: # Lift has special floor
-                        self.layout[i].append(tile.Tile(4, (0,0), const.scale))
+                        self.layout[i].append(tile.Tile(4))
                     else:
-                        self.layout[i].append(tile.Tile(random.randint(1,3), (0,0), const.scale))
+                        self.layout[i].append(tile.Tile(random.randint(1,3)))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(7,15), (0,0), const.scale, self.roomDistance))
+                    self.layout[i].append(tile.Tile(random.randint(7,15), self.roomDistance))
                 elif c == 3: # Exit
-                    self.exit = tile.Tile(0, (0,0), const.scale)
+                    self.exit = tile.Tile(0)
                     self.layout[i].append(self.exit)
                 elif c == 4: # crate
-                    self.layout[i].append(tile.Tile(5, (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(5))
                 elif c == 7:
-                    self.layout[i].append(tile.Tile(17, (0,0), const.scale))
+                    self.layout[i].append(tile.Tile(17))
                 else:
                     raise ValueError(f'The room layout contains unknown value: {c}')
         # Set the neighbours for the tiles
         for i, row in enumerate(self.layout):
             for j, c in enumerate(row):
                 if j: # Set the tile on top as neighbour if this isn't the top tile
-                    self.layout[i][j-1].setNeighbour(0,c)
+                    self.layout[j-1][i].setNeighbour(0,c)
                 if i: # Set the previous tile as neighbour if this isn't the first tile
-                    self.layout[i-1][j].setNeighbour(1,c)
+                    self.layout[j][i-1].setNeighbour(1,c)
         # Set the title for the item names list
         self.itemNamesTitle = text.Text(const.mGameFont,"Huoneessa olevat esineet:",(0,0),(25, 28, 54))
