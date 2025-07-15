@@ -50,6 +50,12 @@ class Tile():
             return True
         else:
             return False
+        
+    def isWater(self):
+        if self.tileType == 17:
+            return True
+        else:
+            return False
 
     # Update pos of the tile
     def updatePos(self, pos):

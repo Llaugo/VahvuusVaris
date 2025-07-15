@@ -80,6 +80,21 @@ class LearningCard(StrengthCard):
         if super().tryActivate(player, room):
             room.changeDarkness(0, 0, True)
 
+# Perseverance card makes player to be able to walk through water
+class PerseveranceCard(StrengthCard):
+    def __init__(self):
+        super().__init__(6)
+
+    # Change player swimming speed if not on cooldown
+    def tryActivate(self, player, room):
+        if super().tryActivate(player, room):
+            player.swim(const.basePlayerSpeed*1.5, self.timerMax)
+
+    # Reset player swimming speed to normal (off)
+    def reset(self, player, room):
+        super().reset(player,room)
+        player.resetSwim()
+
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
     def __init__(self):
@@ -203,7 +218,7 @@ def createStrengthCard(n):
     elif n == 5:
         pass
     elif n == 6:
-        pass
+        return PerseveranceCard()
     elif n == 7:
         pass
     elif n == 8:

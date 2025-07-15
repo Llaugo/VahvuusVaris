@@ -15,6 +15,8 @@ class Player(pygame.sprite.Sprite):
         self.scale = const.scale # Scale of the player image
         self.playerSpeed = const.basePlayerSpeed
         self.speedDuration = 0 # Duration of a possible speed boost
+        self.swimSpeed = 0     # Player's speed on water
+        self.swimDuration = 0  # Duration of the swim speed
         playerSpriteSheet = pygame.image.load('images/player_sheet.png').convert() # Load player's spritesheet
         self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
@@ -32,35 +34,43 @@ class Player(pygame.sprite.Sprite):
         moving = True
         if keys[pygame.K_s] or self.controls[0].activeFinger: # Down key or button
             self.facing = 0
-            self.walking = (self.walking + self.playerSpeed/20.0) % 4
+            if self.isInWater(room):
+                self.rect.y += self.swimSpeed
+            else:
+                self.rect.y += self.playerSpeed
         elif keys[pygame.K_d] or self.controls[1].activeFinger: # Right key or button
             self.facing = 1
-            self.walking = (self.walking + self.playerSpeed/20.0) % 4
+            if self.isInWater(room):
+                self.rect.x += self.swimSpeed
+            else:
+                self.rect.x += self.playerSpeed
         elif keys[pygame.K_w] or self.controls[2].activeFinger: # Up key or button
             self.facing = 2
-            self.walking = (self.walking + self.playerSpeed/20.0) % 4
+            if self.isInWater(room):
+                self.rect.y -= self.swimSpeed
+            else:
+                self.rect.y -= self.playerSpeed
         elif keys[pygame.K_a] or self.controls[3].activeFinger: # Left key or button
             self.facing = 3
-            self.walking = (self.walking + self.playerSpeed/20.0) % 4
+            if self.isInWater(room):
+                self.rect.x -= self.swimSpeed
+            else:
+                self.rect.x -= self.playerSpeed
         else: # If no buttons are pressed, we want the first picture of the animation (standing)
             self.walking = 0
             moving = False
         if moving: # If some movement button was pressed move the player that direction
-            if self.facing == 0:                               
-                self.rect.y += self.playerSpeed 
-            elif self.facing == 1:
-                self.rect.x += self.playerSpeed
-            elif self.facing == 2:
-                self.rect.y -= self.playerSpeed
-            else:
-                self.rect.x -= self.playerSpeed
+            self.walking = (self.walking + self.playerSpeed/20.0) % 4
             self.resolveCollision(room) # Resolve collisions with walls etc.
         animationFrame = self.facing*4 + round(self.walking) % 4 # Get the correct image (frame of the animation)
         self.image = self.playerSprite.getImage(animationFrame,36,41,self.scale)
         
     # Handle player collision with a wall in a room
     def resolveCollision(self, room: room.Room):
-        for solid in room.solidRects:                       # Check all the solid rects in the room
+        solids = room.solidRects.copy()
+        if not self.swimDuration:
+            solids += room.waterRects
+        for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid):
                 overlap = self.rect.clip(solid)             # Compute overlap rectangle
                 if overlap.width < overlap.height:          # Choose the smaller overlap dimension
@@ -80,6 +90,12 @@ class Player(pygame.sprite.Sprite):
         self.speedDuration = max(self.speedDuration-1, 0) # update speedboost timer
         if not self.speedDuration: # Reset speed when timer runs out
             self.resetSpeed()
+        if self.swimDuration == 1 and self.isInWater(room): # Keep timer at 1, if player is still in the water
+            self.swimSpeed = const.basePlayerSpeed*0.1
+        else:
+            self.swimDuration = max(self.swimDuration-1, 0) # update swimming timer
+        if not self.swimDuration:
+            self.resetSwim()
 
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
@@ -105,10 +121,10 @@ class Player(pygame.sprite.Sprite):
     def toggleSize(self, room, newScale=1):
         if self.scale == const.scale:           # If the scale is normal
             self.scale = const.scale*newScale   # Change scale to new scale
-            self.updatePos((0,0))
+            self.updatePos((10,0))
         else:
             self.scale = const.scale            # Set scale back to normal
-            self.updatePos((0,0))
+            self.updatePos((-10,0))
         self.resolveCollision(room)             # Resolve any collitions from changing the size
 
     # Change player speed
@@ -121,6 +137,24 @@ class Player(pygame.sprite.Sprite):
     def resetSpeed(self):
         self.playerSpeed = const.basePlayerSpeed
         self.speedDuration = 0
+
+    # Change players swimming speed
+    def swim(self, speed, duration):
+        if duration > self.swimDuration:
+            self.swimSpeed = speed
+            self.swimDuration = duration
+
+    # Reset player swimming speed
+    def resetSwim(self):
+        self.swimSpeed = 0
+        self.swimDuration = 0
+    
+    # Returns true if player is colliding with water tiles in the given room
+    def isInWater(self,room):
+        for water in room.waterRects:
+            if self.rect.colliderect(water):
+                return True
+        return False
 
     # Draw the player
     def draw(self, screen):

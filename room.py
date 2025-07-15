@@ -20,6 +20,7 @@ class Room():
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
         self.rect = self.background.get_rect(center = self.pos)
         self.solidRects = []                    # walls and solid objects of the room
+        self.waterRects = []
         self.items = []                         # items in the room
         self.showItemNames = False              # If True, item names are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
@@ -49,6 +50,7 @@ class Room():
         self.rect = self.background.get_rect(center = self.pos)
         halfLength = round((len(self.layout)-1)/2)  # Helper value
         self.solidRects: list[pygame.Rect] = []     # Reset solids
+        self.waterRects: list[pygame.Rect] = []     # Reset waters
         self.items: list[item.Item] = []            # Reset items
         for i, row in enumerate(self.layout):       # Update all tile positions
             for j, tile in enumerate(row):
@@ -57,7 +59,10 @@ class Room():
                 if tile.solid:                      # Update solid walls
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
                     newRect.center = tilePos
-                    self.solidRects.append(newRect)
+                    if tile.isWater():
+                        self.waterRects.append(newRect)
+                    else:
+                        self.solidRects.append(newRect)
                 elif tile.tileType == 5:            # Update crate tiles
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, 23, 25)
                     newRect.center = (tilePos[0]+5, tilePos[1]+5)
@@ -71,7 +76,7 @@ class Room():
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
 
-    # Remove one entrence
+    # Remove one entrence and make it wall
     # dir: (d=0,r=1,u=2,l=3)
     def removeDoor(self, dir):
         if dir == 0:
@@ -157,7 +162,7 @@ class Room():
                 for a,r in [(200,18+self.litRadius), (150,16+self.litRadius), (100,14+self.litRadius), (50,12+self.litRadius), (0,10+self.litRadius)]:
                     pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r)
             else: # Create a beam of light
-                if player.facing % 2 == 0:
+                if player.facing % 2 == 0: # Direction of the beam
                     for a,r in [(200,8-self.litRadius),(150,6-self.litRadius),(100,4-self.litRadius),(50,2-self.litRadius),(0,-self.litRadius)]:
                         pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
                         pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0], playerPos[1] + (1 - player.facing)*700], r)
@@ -187,7 +192,7 @@ class Room():
                         self.layout[i].append(tile.Tile(16, (0,0), const.scale))
                     else:
                         self.layout[i].append(tile.Tile(6, (0,0), const.scale))
-                elif c == 1 or c == 7: # Floor
+                elif c == 1: # Floor
                     if lift: # Lift has special floor
                         self.layout[i].append(tile.Tile(4, (0,0), const.scale))
                     else:
@@ -199,6 +204,8 @@ class Room():
                     self.layout[i].append(self.exit)
                 elif c == 4: # crate
                     self.layout[i].append(tile.Tile(5, (0,0), const.scale))
+                elif c == 7:
+                    self.layout[i].append(tile.Tile(17, (0,0), const.scale))
                 else:
                     raise ValueError(f'The room layout contains unknown value: {c}')
         # Set the neighbours for the tiles
