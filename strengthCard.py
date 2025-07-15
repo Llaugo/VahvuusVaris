@@ -88,7 +88,7 @@ class PerseveranceCard(StrengthCard):
     # Change player swimming speed if not on cooldown
     def tryActivate(self, player, room):
         if super().tryActivate(player, room):
-            player.swim(const.basePlayerSpeed*1.5, self.timerMax)
+            player.swim(const.basePlayerSpeed*0.5, self.timerMax)
 
     # Reset player swimming speed to normal (off)
     def reset(self, player, room):
