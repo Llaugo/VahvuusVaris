@@ -38,7 +38,7 @@ class StrengthCard():
             self.cooldown -= 1
 
     # Reset the card timers to the base state
-    def reset(self, player, floor):
+    def reset(self, floor):
         self.timer = 0
         self.cooldown = 0
 
@@ -98,6 +98,7 @@ class PerspectiveCard(StrengthCard):
 
     # Reset view to normal
     def reset(self, floor):
+        super().reset(floor)
         floor.setBirdsEye(0)
 
 # Perseverance card makes player to be able to walk through water

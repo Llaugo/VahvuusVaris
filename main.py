@@ -150,7 +150,7 @@ async def main():
         elif gameStatus == "checkpoint":
             # Draw checkpoint elements
             screen.fill(backg)                                              # Background
-            lobby.draw(screen)                                              # Room
+            lobby.draw(screen, floor.player)                                              # Room
             floor.player.draw(screen)                                       # Player
             floor.player.update(lobby)
             checkpointText.draw(screen,f'Kerros {floorNumber} suoritettu.') # Text
