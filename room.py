@@ -224,6 +224,8 @@ class Room():
                     self.layout[i].append(tile.Tile(5))
                 elif c == 7:
                     self.layout[i].append(tile.Tile(17))
+                elif c > 0:
+                    self.layout[i].append(tile.Tile(4))
                 else:
                     raise ValueError(f'The room layout contains unknown value: {c}')
         # Set the neighbours for the tiles

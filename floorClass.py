@@ -46,7 +46,7 @@ class Floor():
             for i in range(self.birdsEyeLevel):
                 for j in range(self.birdsEyeLevel):
                     room = self.getRoom(self.currentLocation[0]+i-half, self.currentLocation[1]+j-half)
-                    if room:
+                    if room and not room.darkness:
                         roomPic = room.background.copy()
                         roomPic = pygame.transform.rotozoom(room.background,0,frac).convert()
                     else:
