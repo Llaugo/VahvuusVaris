@@ -157,7 +157,6 @@ class Room():
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
                     newRect.center = tile.pos
                     self.waterRects.append(newRect)
-        print(len(self.waterRects))
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):

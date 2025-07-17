@@ -45,7 +45,6 @@ class Tile():
         
     # Make this tile a floor if it is water
     def clearWater(self):
-        print(self.pos)
         if self.isWater():
             self.tileType = 1
             self.solid = False

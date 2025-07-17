@@ -26,16 +26,16 @@ class StrengthDeck():
             self.buttons[i].updatePos((pos[0]-((i+1)%2)*150-145, pos[1]+((math.floor(i/2)-2)*220)+320)) # update button positions
 
     # Update all the cards
-    def update(self, player, room):
+    def update(self, floor):
         for i, btn in enumerate(self.buttons): 
             if btn.activeFinger: # Activate cards when button is pressed
-                self.cards[i].tryActivate(player,room)
-            self.cards[i].update(player,room) # Update cards
+                self.cards[i].tryActivate(floor)
+            self.cards[i].update(floor) # Update cards
 
     # Reset all card actions
-    def reset(self, player, room):
+    def reset(self, floor):
         for card in self.cards:
-            card.reset(player, room)
+            card.reset(floor)
 
     # Handle all button events
     def handleButtons(self, event, screenSize):
