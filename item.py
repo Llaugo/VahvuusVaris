@@ -24,8 +24,10 @@ class Item():
 
     # Draw item with animated shine effect
     def draw(self, screen):
-        self.shinePhase += 0.1 
-        self.image = self.itemSprite.getImage(self.picType + (round(self.shinePhase) % 4),35,35,const.scale)
+        oldShine = round(self.shinePhase)
+        self.shinePhase += 0.1
+        if oldShine != round(self.shinePhase):
+            self.image = self.itemSprite.getImage(self.picType + (round(self.shinePhase) % 4),35,35,const.scale)
         screen.blit(self.image, self.rect)
 
     # Set the name/type of the item randomly

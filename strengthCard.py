@@ -12,6 +12,7 @@ class StrengthCard():
         cardSpriteSheet = pygame.image.load('images/strength_sheet.png').convert() # Load strength spritesheet
         self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
         self.image = self.cardSprite.getImage(imageNum,250,350,const.scale/2)
+        self.ready = False
         self.timer = 0          # timer for the ability
         self.cooldown = 0       # timer for the cooldown
         self.timerMax = 300     # timer duration
@@ -23,6 +24,7 @@ class StrengthCard():
         if not self.cooldown:
             self.timer = self.timerMax
             self.cooldown = self.cooldownMax
+            self.unpress()
             return True
         return False
 
@@ -47,6 +49,11 @@ class StrengthCard():
         if self.timer:
             return True
         return False
+    
+    def press(self):
+        self.ready = True
+    def unpress(self):
+        self.ready = False
 
 # Judgement cards shows what items there are in the room
 class JudgementCard(StrengthCard):
@@ -184,11 +191,11 @@ class PrudenceCard(StrengthCard):
 class AppreciationCard(StrengthCard):
     def __init__(self):
         super().__init__(21)
+        self.timerMax = 1
 
     # Adds an item to room if not on cooldown
     def tryActivate(self, floor):
-        if not self.cooldown:
-            self.cooldown = self.cooldownMax
+        if super().tryActivate(floor):
             floor.currentRoom.addItem()
 
 # Gratitude card can drop stones on the ground, to keep track of steps and gives a speed boost when walking over the stones
@@ -201,7 +208,8 @@ class GratitudeCard(StrengthCard):
     def tryActivate(self, floor):
         if not self.cooldown:
             floor.addStone()
-            self.cooldown = self.cooldownMax            
+            self.cooldown = self.cooldownMax
+            self.unpress()
 
     # Fill boost timer if player is standing on a stone
     def update(self, floor):

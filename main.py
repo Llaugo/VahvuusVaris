@@ -42,7 +42,7 @@ itemButton = button.Button(14,(0,0),const.scale, const.sGameFont, " OTA\nESINE",
 buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton,itemButton]
 
 # Strength deck initialization
-deck = strengthDeck.StrengthDeck((4,8,18,19,24,25),const.xxsGameFont)
+deck = strengthDeck.StrengthDeck((4,8,18,19,24,25),const.sGameFont)
 
 # Background color
 backg = (160,209,255)
@@ -63,7 +63,7 @@ async def main():
     floorNumber = 1
     # The main floor object
     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons)
-    lobby = room.Room(const.lobbyLayout)
+    lobby = room.Room(const.lobbyLayout[0])
 
     # Shopping list
     shoppinglist = shoppingList.ShoppingList(const.sGameFont, const.xsGameFont,(0,0))
@@ -81,9 +81,9 @@ async def main():
         rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))
         upButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-225))
         leftButton.updatePos((newScreenSize[0]-225,newScreenSize[1]-138))
-        exitButton.updatePos((newScreenSize[0]/2+460,newScreenSize[1]/2))
+        exitButton.updatePos((floor.currentRoom.rect.right+80,newScreenSize[1]/2))
         shoppinglist.updatePos((newScreenSize[0] - floor.currentRoom.rect.left/2, newScreenSize[1]/4))
-        itemButton.updatePos((newScreenSize[0]/2+580,newScreenSize[1]/2))
+        itemButton.updatePos((floor.currentRoom.rect.right+180,newScreenSize[1]/2))
         deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
@@ -102,7 +102,7 @@ async def main():
             else:
                 for btn in buttons:
                     btn.handleEvent(event, screenSize)
-                deck.handleButtons(event, screenSize)
+                deck.handleCards(event, screenSize)
 
 
         #########################################################
@@ -178,7 +178,7 @@ async def main():
         if keys[pygame.K_r]: # Show debug on pressing the R-key
             debugMode = not debugMode
         if debugMode: # Show debug text info
-            debugText.draw(screen, f"FPS: {round(clock.get_fps())} Seed: {seed}\nRoom loc: {floor.currentLocation} Player pos: {floor.player.pos}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
+            debugText.draw(screen, f"\nFPS: {round(clock.get_fps())} Seed: {seed}\nRoom loc: {floor.currentLocation} Player pos: {floor.player.pos}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
 
         pygame.display.update()
         clock.tick(60)

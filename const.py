@@ -61,10 +61,7 @@ One layout is a square of numbers, each number representing a type of tile.
 3 = Start
 4 = Crate (can't be passed by without an active strength)
 '''
-lobbyLayout = [[0,0,0,0,0],
-               [0,1,1,1,0],
-               [0,1,1,1,0],
-               [0,1,1,1,0],
-               [0,0,0,0,0]]
+lobbyLayout  = layoutLoader.readLayout("rooms/lift.csv")
 startLayouts = layoutLoader.readLayout("rooms/startRooms.csv")
-roomLayouts = layoutLoader.readLayout("rooms/roomLayouts.csv")
+roomLayouts  = layoutLoader.readLayout("rooms/roomLayouts.csv")
+testRoom     = layoutLoader.readLayout("rooms/testRoom.csv")
