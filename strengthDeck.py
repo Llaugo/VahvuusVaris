@@ -9,7 +9,7 @@ import math
 class StrengthDeck():
     # cards: list of integers corresponding to the wanted strengths' numbers
     # font: font used by the deck to show texts
-    def __init__(self, cards, font):
+    def __init__(self, cards):
         self.pos = (0,0)
         self.shinePhase = 0
         overlaySpriteSheet = pygame.image.load('images/card_overlay.png').convert() # Load strength spritesheet
@@ -22,7 +22,7 @@ class StrengthDeck():
             overlay = self.overlaySprite.getImage(0,250,350,const.scale/2)
             rect = overlay.get_rect()
             self.overlays.append((overlay,rect))
-        self.activateButton = button.Button(12,1,(0,0), const.scale, font, "Aktivoi\n  kortti")
+        self.activateButton = button.Button(12,1,(0,0), const.scale, const.gameFont(19), "Aktivoi\nkortti")
         self.background: pygame.Surface = None # Background to blit every card image
 
     # Update position of the cards on the screen

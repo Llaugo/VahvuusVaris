@@ -236,4 +236,4 @@ class Room():
                 if i: # Set the previous tile as neighbour if this isn't the first tile
                     self.layout[j][i-1].setNeighbour(1,c)
         # Set the title for the item names list
-        self.itemNamesTitle = text.Text(const.mGameFont,"Huoneessa olevat esineet:",(0,0),(25, 28, 54))
+        self.itemNamesTitle = text.Text(const.gameFont(32),"Huoneessa olevat esineet:",(0,0),(25, 28, 54))

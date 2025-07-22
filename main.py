@@ -35,38 +35,44 @@ rightButton = button.Button(2,1,(0,0),const.scale)
 upButton = button.Button(4,1,(0,0),const.scale)
 leftButton = button.Button(6,1,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
-liftButton = button.Button(10,1,(0,0),const.scale, const.sGameFont, "HISSIIN", (8,63,6)) # Button to exit a level
-itemButton = button.Button(14,1,(0,0),const.scale, const.sGameFont, " OTA\nESINE", (130,63,0)) # Button to pick up items
+liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), "HISSIIN", (8,63,6)) # Button to exit a level
+itemButton = button.Button(14,1,(0,0),const.scale, const.gameFont(23), " OTA\nESINE", (130,63,0)) # Button to pick up items
 # Checkpoint buttons
-nextFloorButton = button.Button(0,4,(0,0),const.scale, const.mGameFont, "Seuraava kerros", (8,63,6)) # Button to start a new level
+nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), "Seuraava kerros", (8,63,6)) # Button to start a new level
 # Menu buttons
-startButton = button.Button(0,4,(0,0),const.scale,const.mGameFont, "Pelaa", (255,255,255))
-settingsButton = button.Button(0,4,(0,0),const.scale,const.mGameFont, "Asetukset", (255,255,255))
-infoButton = button.Button(0,4,(0,0),const.scale,const.mGameFont, "Tietoa", (255,255,255))
+startButton = button.Button(16,1,(0,0),const.scale)
+continueButton = button.Button(16,1,(0,0),const.scale)
+settingsButton = button.Button(16,1,(0,0),const.scale)
+infoButton = button.Button(16,1,(0,0),const.scale)
+backButton = button.Button(0,4,(0,0),const.scale*0.45, const.gameFont(13), "Takaisin päävalikkoon")
+readyButton = button.Button(0,4,(0,0),const.scale*0.45, const.gameFont(15), "Aloita seikkailu!")
+
 
 # All buttons are handled from this array
-buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,settingsButton,infoButton]
+buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton,backButton,readyButton]
 
 # Strength deck initialization
-deck = strengthDeck.StrengthDeck((4,8,18,19,24,25),const.sGameFont)
+deck = strengthDeck.StrengthDeck((4,8,18,19,24,25))
 
 # Background color
 backg = (160,209,255)
 menuback = (180,200,215)
 # Menu elements
 menuBackground = picture.Picture("images/menu_screen.png", (4000,2000), (0,0), 0.45)
+strengthBackground = picture.Picture("images/strength_menu.png", (2500,1500), (0,0), 0.45)
 
 async def main():
 
     # If active, shows useful information about the game. (For debug purposes)
-    debugMode = True
+    debugMode = False
     screenSize = pygame.display.get_window_size() # Used to check changes in screen size
 
     # gameStatus: Shows the state of the game
     #   "level": Game is running a level
     #   "menu": Game is at the starting menu
+    #   "strengths": Game is at the strength picking menu
     #   "checkpoint": Game is at a state in between levels
-    gameStatus = "menu"
+    gameStatus = "level"
 
     # Tracks the floor/level the player is at
     floorNumber = 1
@@ -75,11 +81,11 @@ async def main():
     lobby = room.Room(const.lobbyLayout[0])
 
     # Shopping list
-    shoppinglist = shoppingList.ShoppingList(const.sGameFont, const.xsGameFont,(0,0))
+    shoppinglist = shoppingList.ShoppingList((0,0))
 
     # Texts
-    checkpointText = text.Text(const.lGameFont, f'Kerros {floorNumber} suoritettu.', (0,0))   # Checkpoint text
-    debugText = text.Text(const.sGameFont, f'FPS: {round(clock.get_fps())}',(20,20))          # Debug text
+    checkpointText = text.Text(const.gameFont(50), f'Kerros {floorNumber} suoritettu.', (0,0))   # Checkpoint text
+    debugText = text.Text(const.gameFont(20), f'FPS: {round(clock.get_fps())}',(20,20))          # Debug text
 
     # Updates all positions of all elements on the screen, when the screen size is changed
     def updateAllPositions(newScreenSize):
@@ -96,10 +102,14 @@ async def main():
         deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
-        startButton.updatePos((newScreenSize[0]/2, newScreenSize[1]/2))
-        settingsButton.updatePos((newScreenSize[0]/2, newScreenSize[1]/2+100))
-        infoButton.updatePos((newScreenSize[0]/2, newScreenSize[1]/2+200))
+        startButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2-107))
+        continueButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+14))
+        settingsButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+135))
+        infoButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+256))
         menuBackground.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        strengthBackground.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
+        backButton.updatePos(((newScreenSize[0]/2-450,newScreenSize[1]/2+295)))
+        readyButton.updatePos(((newScreenSize[0]/2+450,newScreenSize[1]/2+295)))
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
 
@@ -125,9 +135,22 @@ async def main():
             screen.fill(menuback)
             menuBackground.draw(screen)
             startButton.draw(screen)
+            continueButton.draw(screen)
             settingsButton.draw(screen)
             infoButton.draw(screen)
             if startButton.activeFinger:
+                gameStatus = "strengths"
+
+        # THE STRENGTH MENU
+        if gameStatus == "strengths":
+            screen.fill(menuback)
+            menuBackground.draw(screen)
+            strengthBackground.draw(screen)
+            backButton.draw(screen)
+            readyButton.draw(screen)
+            if backButton.activeFinger:
+                gameStatus = "menu"
+            if readyButton.activeFinger:
                 gameStatus = "level"
 
 

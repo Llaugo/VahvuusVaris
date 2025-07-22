@@ -21,8 +21,8 @@ class Floor():
         self.player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2)) # Player initialization
         self.frame = picture.Picture("images/frame.png", (710,710), (0,0)) # Frame image for game area
         self.timer = const.floorTime # Timer
-        self.timerText = text.Text(const.mGameFont, time.strftime('%M:%S',time.gmtime(self.timer)),(0,0))   # Timer
-        self.floorText = text.Text(const.mGameFont, f'Kerros {floorNumber}', (0,0)) # Floor number
+        self.timerText = text.Text(const.gameFont(32), time.strftime('%M:%S',time.gmtime(self.timer)),(0,0))   # Timer
+        self.floorText = text.Text(const.gameFont(32), f'Kerros {floorNumber}', (0,0)) # Floor number
         self.birdsEye = pygame.Surface((self.currentRoom.background.get_width(), self.currentRoom.background.get_height())).convert() # multiple rooms view
         self.birdsEyeLevel = 0
         self.timeStop = False
@@ -122,7 +122,7 @@ class Floor():
         self.currentRoom.updatePos(screenCenter, screenMove)
         self.player.updatePos(screenMove)
         self.frame.updatePos(screenCenter)
-        self.timerText.updatePos((screenCenter[0]-141,screenCenter[1]-341))
+        self.timerText.updatePos((screenCenter[0]-143,screenCenter[1]-341))
         self.floorText.updatePos((screenCenter[0]+46,screenCenter[1]-341))
         self.doors[0].center = (screenCenter[0], screenCenter[1] + const.tileSize*8)
         self.doors[1].center = (screenCenter[0] + const.tileSize*8, screenCenter[1])

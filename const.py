@@ -10,11 +10,8 @@ worldHeight = 700
 scale = 1
 
 # Different font sizes
-xxsGameFont = pygame.font.SysFont(None, 17)
-xsGameFont = pygame.font.SysFont(None, 23)
-sGameFont = pygame.font.SysFont(None, 30)
-mGameFont = pygame.font.SysFont(None, 50)
-lGameFont = pygame.font.SysFont(None, 80)
+def gameFont(size=30):
+    return pygame.font.SysFont("Courier", size)
 
 # Tile size (square of (tileSize x tileSize))
 tileSize = 46
