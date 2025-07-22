@@ -22,7 +22,7 @@ class StrengthDeck():
             overlay = self.overlaySprite.getImage(0,250,350,const.scale/2)
             rect = overlay.get_rect()
             self.overlays.append((overlay,rect))
-        self.activateButton = button.Button(12,(0,0), const.scale, font, "Aktivoi\n  kortti")
+        self.activateButton = button.Button(12,1,(0,0), const.scale, font, "Aktivoi\n  kortti")
         self.background: pygame.Surface = None # Background to blit every card image
 
     # Update position of the cards on the screen

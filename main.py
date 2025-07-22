@@ -29,23 +29,32 @@ print(seed)
 
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set up screen
 
-# Initialize buttons for moving
-downButton = button.Button(0,(0,0),const.scale)
-rightButton = button.Button(2,(0,0),const.scale)
-upButton = button.Button(4,(0,0),const.scale)
-leftButton = button.Button(6,(0,0),const.scale)
+# Initialize buttons
+downButton = button.Button(0,1,(0,0),const.scale)
+rightButton = button.Button(2,1,(0,0),const.scale)
+upButton = button.Button(4,1,(0,0),const.scale)
+leftButton = button.Button(6,1,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
-exitButton = button.Button(10,(0,0),const.scale, const.sGameFont, "HISSIIN", (8,63,6)) # Button to exit a level
-nextFloorButton = button.Button(10,(0,0),const.scale, const.xsGameFont, "SEURAAVA\n  KERROS", (8,63,6)) # Button to start a new level
-itemButton = button.Button(14,(0,0),const.scale, const.sGameFont, " OTA\nESINE", (130,63,0)) # Button to pick up items
+liftButton = button.Button(10,1,(0,0),const.scale, const.sGameFont, "HISSIIN", (8,63,6)) # Button to exit a level
+itemButton = button.Button(14,1,(0,0),const.scale, const.sGameFont, " OTA\nESINE", (130,63,0)) # Button to pick up items
+# Checkpoint buttons
+nextFloorButton = button.Button(0,4,(0,0),const.scale, const.mGameFont, "Seuraava kerros", (8,63,6)) # Button to start a new level
+# Menu buttons
+startButton = button.Button(0,4,(0,0),const.scale,const.mGameFont, "Pelaa", (255,255,255))
+settingsButton = button.Button(0,4,(0,0),const.scale,const.mGameFont, "Asetukset", (255,255,255))
+infoButton = button.Button(0,4,(0,0),const.scale,const.mGameFont, "Tietoa", (255,255,255))
+
 # All buttons are handled from this array
-buttons = [downButton,rightButton,upButton,leftButton,exitButton,nextFloorButton,itemButton]
+buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,settingsButton,infoButton]
 
 # Strength deck initialization
 deck = strengthDeck.StrengthDeck((4,8,18,19,24,25),const.sGameFont)
 
 # Background color
 backg = (160,209,255)
+menuback = (180,200,215)
+# Menu elements
+menuBackground = picture.Picture("images/menu_screen.png", (4000,2000), (0,0), 0.45)
 
 async def main():
 
@@ -57,7 +66,7 @@ async def main():
     #   "level": Game is running a level
     #   "menu": Game is at the starting menu
     #   "checkpoint": Game is at a state in between levels
-    gameStatus = "level"
+    gameStatus = "menu"
 
     # Tracks the floor/level the player is at
     floorNumber = 1
@@ -81,12 +90,16 @@ async def main():
         rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))
         upButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-225))
         leftButton.updatePos((newScreenSize[0]-225,newScreenSize[1]-138))
-        exitButton.updatePos((floor.currentRoom.rect.right+80,newScreenSize[1]/2))
+        liftButton.updatePos((floor.currentRoom.rect.right+80,newScreenSize[1]/2))
         shoppinglist.updatePos((newScreenSize[0] - floor.currentRoom.rect.left/2, newScreenSize[1]/4))
         itemButton.updatePos((floor.currentRoom.rect.right+180,newScreenSize[1]/2))
         deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
+        startButton.updatePos((newScreenSize[0]/2, newScreenSize[1]/2))
+        settingsButton.updatePos((newScreenSize[0]/2, newScreenSize[1]/2+100))
+        infoButton.updatePos((newScreenSize[0]/2, newScreenSize[1]/2+200))
+        menuBackground.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
 
@@ -109,7 +122,14 @@ async def main():
         # THE MAIN MENU
         #########################################################a
         if gameStatus == "menu":
-            pass
+            screen.fill(menuback)
+            menuBackground.draw(screen)
+            startButton.draw(screen)
+            settingsButton.draw(screen)
+            infoButton.draw(screen)
+            if startButton.activeFinger:
+                gameStatus = "level"
+
 
 
         #########################################################
@@ -137,8 +157,8 @@ async def main():
 
             # Draw the exit button, if player is at the exit
             if floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(floor.player.rect):
-                exitButton.draw(screen)
-                if exitButton.activeFinger:
+                liftButton.draw(screen)
+                if liftButton.activeFinger:
                     # EXIT THE LEVEL
                     gameStatus = "checkpoint" # Change the game status
                     deck.reset(floor) # Finish all active strengths
