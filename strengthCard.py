@@ -9,6 +9,7 @@ import playerClass
 class StrengthCard():
     # imageNum: the index of the card image
     def __init__(self, imageNum):
+        self.imageNum = imageNum
         cardSpriteSheet = pygame.image.load('images/strength_sheet.png').convert() # Load strength spritesheet
         self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
         self.image = self.cardSprite.getImage(imageNum,250,350,const.scale/2)
@@ -55,6 +56,12 @@ class StrengthCard():
     def unpress(self):
         self.ready = False
 
+class CreativityCard(StrengthCard):
+    def __init__(self):
+        super().__init__(0)
+class CuriosityCard(StrengthCard):
+    def __init__(self):
+        super().__init__(1)
 # Judgement cards shows what items there are in the room
 class JudgementCard(StrengthCard):
     def __init__(self):
@@ -108,6 +115,9 @@ class PerspectiveCard(StrengthCard):
         super().reset(floor)
         floor.setBirdsEye(0)
 
+class BraveryCard(StrengthCard):
+    def __init__(self):
+        super().__init__(5)
 # Perseverance card makes player to be able to walk through water
 class PerseveranceCard(StrengthCard):
     def __init__(self):
@@ -123,6 +133,9 @@ class PerseveranceCard(StrengthCard):
         super().reset(floor)
         floor.player.resetSwim()
 
+class HonestyCard(StrengthCard):
+    def __init__(self):
+        super().__init__(7)
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
     def __init__(self):
@@ -137,6 +150,38 @@ class ZestCard(StrengthCard):
     def reset(self, floor):
         super().reset(floor)
         floor.player.resetSpeed()
+
+class GritCard(StrengthCard):
+    def __init__(self):
+        super().__init__(9)
+
+class KindnessCard(StrengthCard):
+    def __init__(self):
+        super().__init__(10)
+
+class LoveCard(StrengthCard):
+    def __init__(self):
+        super().__init__(11)
+
+class SocialCard(StrengthCard):
+    def __init__(self):
+        super().__init__(12)
+
+class CompassionCard(StrengthCard):
+    def __init__(self):
+        super().__init__(13)
+
+class FairnessCard(StrengthCard):
+    def __init__(self):
+        super().__init__(14)
+
+class LeadershipCard(StrengthCard):
+    def __init__(self):
+        super().__init__(15)
+
+class TeamworkCard(StrengthCard):
+    def __init__(self):
+        super().__init__(16)
 
 # Forgiveness card cleans nearby waters
 class ForgivenessCard(StrengthCard):
@@ -186,6 +231,10 @@ class PrudenceCard(StrengthCard):
     def reset(self, floor):
         super().reset(floor)
         floor.stopTime()
+
+class RegulationCard(StrengthCard):
+    def __init__(self):
+        super().__init__(20)
 
 # Appreciation card makes a new item appear somewhere in the room
 class AppreciationCard(StrengthCard):
@@ -278,9 +327,9 @@ class SpiritualityCard(StrengthCard):
 # Return a strength card respective to the given integer.
 def createStrengthCard(n):
     if n == 0:
-        pass
+        return CreativityCard()
     elif n == 1:
-        pass
+        return CuriosityCard()
     elif n == 2:
         return JudgementCard()
     elif n == 3:
@@ -288,29 +337,29 @@ def createStrengthCard(n):
     elif n == 4:
         return PerspectiveCard()
     elif n == 5:
-        pass
+        return BraveryCard()
     elif n == 6:
         return PerseveranceCard()
     elif n == 7:
-        pass
+        return HonestyCard()
     elif n == 8:
         return ZestCard()
     elif n == 9:
-        pass
+        return GritCard()
     elif n == 10:
-        pass
+        return KindnessCard()
     elif n == 11:
-        pass
+        return LoveCard()
     elif n == 12:
-        pass
+        return SocialCard()
     elif n == 13:
-        pass
+        return CompassionCard()
     elif n == 14:
-        pass
+        return FairnessCard()
     elif n == 15:
-        pass
+        return LeadershipCard()
     elif n == 16:
-        pass
+        return TeamworkCard()
     elif n == 17:
         return ForgivenessCard()
     elif n == 18:
@@ -318,7 +367,7 @@ def createStrengthCard(n):
     elif n == 19:
         return PrudenceCard()
     elif n == 20:
-        pass
+        return RegulationCard()
     elif n == 21:
         return AppreciationCard()
     elif n == 22:

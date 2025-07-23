@@ -7,17 +7,16 @@ import math
 
 # Class for storing the strength cards and handling their actions
 class StrengthDeck():
-    # cards: list of integers corresponding to the wanted strengths' numbers
+    # cards: list of strength cards
     # font: font used by the deck to show texts
     def __init__(self, cards):
+        print(cards)
         self.pos = (0,0)
         self.shinePhase = 0
         overlaySpriteSheet = pygame.image.load('images/card_overlay.png').convert() # Load strength spritesheet
         self.overlaySprite = spriteSheet.SpriteSheet(overlaySpriteSheet)
-        self.cards: list[strengthCard.StrengthCard] = [] # List of strength cards
+        self.cards = cards
         self.overlays: list[tuple[pygame.Surface, pygame.Rect]] = []  # List of overlays and their rects associated with the cards
-        for i in cards: # Create strengthcards according to the given numbers
-            self.cards.append(strengthCard.createStrengthCard(i))
         for i in range(len(self.cards)): # create overlay for every card
             overlay = self.overlaySprite.getImage(0,250,350,const.scale/2)
             rect = overlay.get_rect()

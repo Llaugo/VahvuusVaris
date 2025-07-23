@@ -15,6 +15,7 @@ import item
 import strengthCard
 import strengthDeck
 import floorClass
+import strengthMenu
 import random
 import math
 import time
@@ -44,22 +45,19 @@ startButton = button.Button(16,1,(0,0),const.scale)
 continueButton = button.Button(16,1,(0,0),const.scale)
 settingsButton = button.Button(16,1,(0,0),const.scale)
 infoButton = button.Button(16,1,(0,0),const.scale)
-backButton = button.Button(0,4,(0,0),const.scale*0.45, const.gameFont(13), "Takaisin päävalikkoon")
-readyButton = button.Button(0,4,(0,0),const.scale*0.45, const.gameFont(15), "Aloita seikkailu!")
 
 
 # All buttons are handled from this array
-buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton,backButton,readyButton]
+buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
 
-# Strength deck initialization
-deck = strengthDeck.StrengthDeck((4,8,18,19,24,25))
 
 # Background color
 backg = (160,209,255)
 menuback = (180,200,215)
 # Menu elements
 menuBackground = picture.Picture("images/menu_screen.png", (4000,2000), (0,0), 0.45)
-strengthBackground = picture.Picture("images/strength_menu.png", (2500,1500), (0,0), 0.45)
+strengthPicker = strengthMenu.StrengthMenu()
+
 
 async def main():
 
@@ -72,13 +70,14 @@ async def main():
     #   "menu": Game is at the starting menu
     #   "strengths": Game is at the strength picking menu
     #   "checkpoint": Game is at a state in between levels
-    gameStatus = "level"
+    gameStatus = "strengths"
 
     # Tracks the floor/level the player is at
     floorNumber = 1
     # The main floor object
     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons)
     lobby = room.Room(const.lobbyLayout[0])
+    deck = None
 
     # Shopping list
     shoppinglist = shoppingList.ShoppingList((0,0))
@@ -90,8 +89,9 @@ async def main():
     # Updates all positions of all elements on the screen, when the screen size is changed
     def updateAllPositions(newScreenSize):
         screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
-        lobby.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), (0,0))
-        floor.updatePos((newScreenSize[0]/2,newScreenSize[1]/2), screenMove)
+        newCenter = (newScreenSize[0]/2,newScreenSize[1]/2)
+        lobby.updatePos(newCenter, (0,0))
+        floor.updatePos(newCenter, screenMove)
         downButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-50))
         rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))
         upButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-225))
@@ -99,17 +99,16 @@ async def main():
         liftButton.updatePos((floor.currentRoom.rect.right+80,newScreenSize[1]/2))
         shoppinglist.updatePos((newScreenSize[0] - floor.currentRoom.rect.left/2, newScreenSize[1]/4))
         itemButton.updatePos((floor.currentRoom.rect.right+180,newScreenSize[1]/2))
-        deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
+        if deck:
+            deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
         startButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2-107))
         continueButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+14))
         settingsButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+135))
         infoButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+256))
-        menuBackground.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-        strengthBackground.updatePos((newScreenSize[0]/2,newScreenSize[1]/2))
-        backButton.updatePos(((newScreenSize[0]/2-450,newScreenSize[1]/2+295)))
-        readyButton.updatePos(((newScreenSize[0]/2+450,newScreenSize[1]/2+295)))
+        menuBackground.updatePos(newCenter)
+        strengthPicker.updatePos(newCenter)
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
 
@@ -125,8 +124,9 @@ async def main():
             else:
                 for btn in buttons:
                     btn.handleEvent(event, screenSize)
-                deck.handleCards(event, screenSize)
-
+                if deck:
+                    deck.handleCards(event, screenSize)
+                strengthPicker.handleEvent(event, screenSize)
 
         #########################################################
         # THE MAIN MENU
@@ -145,13 +145,13 @@ async def main():
         if gameStatus == "strengths":
             screen.fill(menuback)
             menuBackground.draw(screen)
-            strengthBackground.draw(screen)
-            backButton.draw(screen)
-            readyButton.draw(screen)
-            if backButton.activeFinger:
+            strengthPicker.draw(screen)
+            if strengthPicker.backButton.activeFinger:
                 gameStatus = "menu"
-            if readyButton.activeFinger:
+            if strengthPicker.readyButton.activeFinger:
                 gameStatus = "level"
+                deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())
+                deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
 
 
 
@@ -220,7 +220,7 @@ async def main():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_r]: # Show debug on pressing the R-key
             debugMode = not debugMode
-        if debugMode: # Show debug text info
+        if debugMode and deck: # Show debug text info
             debugText.draw(screen, f"\nFPS: {round(clock.get_fps())} Seed: {seed}\nRoom loc: {floor.currentLocation} Player pos: {floor.player.pos}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
 
         pygame.display.update()
