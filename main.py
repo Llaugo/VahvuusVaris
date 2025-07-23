@@ -148,6 +148,8 @@ async def main():
             strengthPicker.draw(screen)
             if strengthPicker.backButton.activeFinger:
                 gameStatus = "menu"
+            if strengthPicker.randomizeButton.activeFinger:
+                strengthPicker.randomizeFavo()
             if strengthPicker.readyButton.activeFinger:
                 gameStatus = "level"
                 deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())

@@ -10,7 +10,6 @@ class StrengthDeck():
     # cards: list of strength cards
     # font: font used by the deck to show texts
     def __init__(self, cards):
-        print(cards)
         self.pos = (0,0)
         self.shinePhase = 0
         overlaySpriteSheet = pygame.image.load('images/card_overlay.png').convert() # Load strength spritesheet
@@ -40,7 +39,7 @@ class StrengthDeck():
         self.background.fill((0, 0, 0, 0)) # Initialize background
         for i, overlay in enumerate(self.overlays): # Blit every card image and its overlay to background
             self.background.blit(self.cards[i].image, overlay[1])
-            self.background.blit(overlay[0], overlay[1])
+
 
     # Update all the cards
     def update(self, floor):
