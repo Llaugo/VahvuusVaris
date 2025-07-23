@@ -31,10 +31,10 @@ print(seed)
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set up screen
 
 # Initialize buttons
-downButton = button.Button(0,1,(0,0),const.scale)
-rightButton = button.Button(2,1,(0,0),const.scale)
-upButton = button.Button(4,1,(0,0),const.scale)
-leftButton = button.Button(6,1,(0,0),const.scale)
+downButton = button.Button(0,0,(0,0),const.scale)
+rightButton = button.Button(2,0,(0,0),const.scale)
+upButton = button.Button(4,0,(0,0),const.scale)
+leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), "HISSIIN", (8,63,6)) # Button to exit a level
 itemButton = button.Button(14,1,(0,0),const.scale, const.gameFont(23), " OTA\nESINE", (130,63,0)) # Button to pick up items
@@ -138,7 +138,8 @@ async def main():
             continueButton.draw(screen)
             settingsButton.draw(screen)
             infoButton.draw(screen)
-            if startButton.activeFinger:
+            if startButton.pressComplete:
+                startButton.unpress()
                 gameStatus = "strengths"
 
         # THE STRENGTH MENU
@@ -146,11 +147,14 @@ async def main():
             screen.fill(menuback)
             menuBackground.draw(screen)
             strengthPicker.draw(screen)
-            if strengthPicker.backButton.activeFinger:
+            if strengthPicker.backButton.pressComplete:
+                strengthPicker.backButton.unpress()
                 gameStatus = "menu"
-            if strengthPicker.randomizeButton.activeFinger:
+            if strengthPicker.randomizeButton.pressComplete:
+                strengthPicker.randomizeButton.unpress()
                 strengthPicker.randomizeFavo()
-            if strengthPicker.readyButton.activeFinger:
+            if strengthPicker.readyButton.pressComplete:
+                strengthPicker.readyButton.unpress()
                 gameStatus = "level"
                 deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())
                 deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
@@ -176,14 +180,16 @@ async def main():
             for item in floor.currentRoom.items:
                 if item.rect.colliderect(floor.player.rect):  # Show the button if player is on top of the item
                     itemButton.draw(screen)
-                    if itemButton.activeFinger:         # Take item if button is active
+                    if itemButton.pressComplete:         # Take item if button is active
+                        itemButton.unpress()
                         shoppinglist.receiveItem(item.name)
                         floor.currentRoom.removeItem(item)
 
             # Draw the exit button, if player is at the exit
             if floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(floor.player.rect):
                 liftButton.draw(screen)
-                if liftButton.activeFinger:
+                if liftButton.pressComplete:
+                    liftButton.unpress()
                     # EXIT THE LEVEL
                     gameStatus = "checkpoint" # Change the game status
                     deck.reset(floor) # Finish all active strengths
@@ -202,7 +208,8 @@ async def main():
             nextFloorButton.draw(screen)                                    # Next floor button
 
             # Check if nextFloorButton is pressed
-            if nextFloorButton.activeFinger:
+            if nextFloorButton.pressComplete:
+                nextFloorButton.unpress()
                 # START NEW LEVEL
                 gameStatus = "level"                        # Change game status
                 floorNumber += 1                            # Advance floor number

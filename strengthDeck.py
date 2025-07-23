@@ -20,7 +20,7 @@ class StrengthDeck():
             overlay = self.overlaySprite.getImage(0,250,350,const.scale/2)
             rect = overlay.get_rect()
             self.overlays.append((overlay,rect))
-        self.activateButton = button.Button(12,1,(0,0), const.scale, const.gameFont(19), "Aktivoi\nkortti")
+        self.activateButton = button.Button(12,0,(0,0), const.scale, const.gameFont(19), "Aktivoi\nkortti")
         self.background: pygame.Surface = None # Background to blit every card image
 
     # Update position of the cards on the screen
@@ -44,7 +44,7 @@ class StrengthDeck():
     # Update all the cards
     def update(self, floor):
         for i, card in enumerate(self.cards): 
-            if self.activateButton.activeFinger and card.ready:
+            if self.activateButton.pressComplete and card.ready:
                 card.tryActivate(floor)
             oldCooldownN = round((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
             oldTimerN = round(card.timer/10) % 4 + 5
@@ -74,7 +74,7 @@ class StrengthDeck():
                     self.overlays[i] = (self.overlaySprite.getImage(1,250,350,const.scale/2), overlay[1])
                     self.cards[i].press()
                     self.updateOverlays(self.pos)
-                elif not self.activateButton.activeFinger:
+                elif not self.activateButton.pressComplete:
                     self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), overlay[1])
                     self.cards[i].unpress()
                     self.updateOverlays(self.pos)
@@ -84,7 +84,7 @@ class StrengthDeck():
                     self.overlays[i] = (self.overlaySprite.getImage(1,250,350,const.scale/2), overlay[1])
                     self.cards[i].press()
                     self.updateOverlays(self.pos)
-                elif not self.activateButton.activeFinger:
+                elif not self.activateButton.pressComplete:
                     self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), overlay[1])
                     self.cards[i].unpress()
                     self.updateOverlays(self.pos)
@@ -100,6 +100,9 @@ class StrengthDeck():
                 self.overlays[i] = (newImg, self.overlays[i][1])
                 self.updateOverlays(self.pos)
             screen.blit(overlay[0], overlay[1])
-        self.activateButton.draw(screen)
+        for card in self.cards:
+            if card.ready:
+                self.activateButton.draw(screen)
+                break
         
         
