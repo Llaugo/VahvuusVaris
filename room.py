@@ -23,9 +23,9 @@ class Room():
         self.solidRects = []                    # walls and solid objects of the room
         self.waterRects = []
         self.items = []                         # items in the room
+        self.adverts = []
         self.showItemNames = False              # If True, item names are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
-        self.advertStreams = []
         self.darkness = None                    # None if room is dark
         self.litRadius = 0                      # Extra light space around the player in the dark
         self.lightDuration = 0                  # Duration of light space
@@ -33,7 +33,7 @@ class Room():
         if len(layout) > 5 and random.random() < const.darknessProbability and roomDistance != 0:
             self.darkness = pygame.Surface(((len(layout[0])-2)*const.tileSize, (len(layout)-2)*const.tileSize), flags=pygame.SRCALPHA) # dark square
             self.darkness.fill((0, 0, 0, 255))  # Fill with black
-        self.updatePos(self.pos,(0,0))          # Set positions correctly
+        #self.updatePos(self.pos,(0,0))          # Set positions correctly
 
     # Update room
     def update(self):
@@ -51,6 +51,7 @@ class Room():
         self.solidRects: list[pygame.Rect] = []     # Reset solids
         self.waterRects: list[pygame.Rect] = []     # Reset waters
         self.items: list[item.Item] = []            # Reset items
+        self.adverts = []                           # Reset adverts
         for i, row in enumerate(self.layout):       # Update all tile positions
             for j, tile in enumerate(row):
                 tilePos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize)
@@ -66,17 +67,31 @@ class Room():
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, 23, 25)
                     newRect.center = (tilePos[0]+5, tilePos[1]+5)
                     self.solidRects.append(newRect)
+                elif tile.isAdvert():
+                    self.adverts.append(tile.advert)
+                    tile.advert.setEnd(self.streamLength(j,i,tile.advert.dir))
                 if tile.item:                       # Update items
                     self.items.append(tile.item)
-        # Advert stream construction
-        
-                        
         random.shuffle(self.items)
         self.itemNamesTitle.updatePos((self.rect.left + 5, self.rect.top + 45))
         for i, itm in enumerate(self.items): # List of items, if needed for showing room items
             itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
+
+    # Calcuates the point where the stream ends
+    def streamLength(self,tx,ty,dir):
+        dx, dy = (dir%2*(dir-2)*-1, (dir-1)%2*(dir-1)*-1)
+        length = 0
+        x,y = tx+dx,ty+dy
+        # step until we hit bounds or a solid tile
+        while 0 <= y < len(self.layout) and 0 <= x < len(self.layout[0]):
+            if self.layout[y][x].solid:
+                break
+            length += 1
+            x += dx
+            y += dy
+        return (self.layout[ty][tx].pos[0] + dx*(length*const.tileSize + 23), self.layout[ty][tx].pos[1] + dy*(length*const.tileSize + 23))
 
     # Remove one entrence and make it wall
     # dir: (d=0,r=1,u=2,l=3)

@@ -115,6 +115,8 @@ class Floor():
                 self.player.update(self.currentRoom)
             self.currentRoom.update()
             self.timer -= 1/60
+            for add in self.currentRoom.adverts:
+                add.update(self.player, self.currentRoom)
 
     # update the position current room and the doors
     def updatePos(self, screenCenter, screenMove=(0,0)):

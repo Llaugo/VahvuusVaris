@@ -35,7 +35,7 @@ class StrengthDeck():
 
 
     def updateOverlays(self, pos):
-        self.background = pygame.Surface((pos[0],pos[1]*2)).convert_alpha()
+        self.background = pygame.Surface((abs(pos[0]),pos[1]*2)).convert_alpha()
         self.background.fill((0, 0, 0, 0)) # Initialize background
         for i, overlay in enumerate(self.overlays): # Blit every card image and its overlay to background
             self.background.blit(self.cards[i].image, overlay[1])
