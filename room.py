@@ -25,6 +25,7 @@ class Room():
         self.items = []                         # items in the room
         self.showItemNames = False              # If True, item names are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
+        self.advertStreams = []
         self.darkness = None                    # None if room is dark
         self.litRadius = 0                      # Extra light space around the player in the dark
         self.lightDuration = 0                  # Duration of light space
@@ -40,7 +41,7 @@ class Room():
         if not self.lightDuration: # Reset lights when timer runs out
             self.resetLights()
 
-    # Update room position
+    # Update room position and reset all object hitboxes
     # screenCenter: center of the screen
     # how much the screen size (x,y) has been changed
     def updatePos(self, screenCenter, screenMove=(0,0)):
@@ -67,6 +68,9 @@ class Room():
                     self.solidRects.append(newRect)
                 if tile.item:                       # Update items
                     self.items.append(tile.item)
+        # Advert stream construction
+        
+                        
         random.shuffle(self.items)
         self.itemNamesTitle.updatePos((self.rect.left + 5, self.rect.top + 45))
         for i, itm in enumerate(self.items): # List of items, if needed for showing room items
@@ -185,8 +189,7 @@ class Room():
         # Show item name list
         if self.showItemNames:
             self.itemNamesTitle.draw(screen)
-        for item in self.items:
-            if self.showItemNames:              # Show item names if True
+            for item in self.items:
                 item.text.draw(screen)
 
     # Generates the background image again from the matrix of tiles)
@@ -195,6 +198,9 @@ class Room():
         for i,row in enumerate(self.layout):    # Blit tile images to background 
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
+                if oneTile.isAdvert():
+                    self.background.blit(oneTile.advert.image, (j*const.tileSize+8, i*const.tileSize+1))
+        
     
     # Construct the room tiles from the given layout
     # Only use once upon creation
@@ -207,23 +213,27 @@ class Room():
             for j,c in enumerate(row):
                 if c == 0: # Wall
                     if lift: # Lift has special walls
-                        self.layout[i].append(tile.Tile(16))
+                        self.layout[i].append(tile.Tile(17))
                     else:
-                        self.layout[i].append(tile.Tile(6))
+                        self.layout[i].append(tile.Tile(7))
                 elif c == 1: # Floor
                     if lift: # Lift has special floor
                         self.layout[i].append(tile.Tile(4))
                     else:
                         self.layout[i].append(tile.Tile(random.randint(1,3)))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(7,15), self.roomDistance))
+                    self.layout[i].append(tile.Tile(random.randint(8,16), self.roomDistance))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0)
                     self.layout[i].append(self.exit)
-                elif c == 4: # crate
+                elif c == 4: # Crate
                     self.layout[i].append(tile.Tile(5))
-                elif c == 7:
-                    self.layout[i].append(tile.Tile(17))
+                elif c == 7: # Water
+                    self.layout[i].append(tile.Tile(18))
+                elif c >=80 and c <= 84:
+                    newTile = tile.Tile(6)
+                    newTile.setAdvert(c-80)
+                    self.layout[i].append(newTile)
                 elif c > 0:
                     self.layout[i].append(tile.Tile(4))
                 else:

@@ -50,7 +50,6 @@ infoButton = button.Button(16,1,(0,0),const.scale)
 # All buttons are handled from this array
 buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
 
-
 # Background color
 backg = (160,209,255)
 menuback = (180,200,215)
@@ -70,14 +69,14 @@ async def main():
     #   "menu": Game is at the starting menu
     #   "strengths": Game is at the strength picking menu
     #   "checkpoint": Game is at a state in between levels
-    gameStatus = "strengths"
+    gameStatus = "level"
 
     # Tracks the floor/level the player is at
     floorNumber = 1
     # The main floor object
     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons)
     lobby = room.Room(const.lobbyLayout[0])
-    deck = None
+    deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())
 
     # Shopping list
     shoppinglist = shoppingList.ShoppingList((0,0))
