@@ -78,7 +78,7 @@ class Tile():
         if self.item: # Update item pos
             self.item.updatePos(self.itemPos())
         if self.advert:
-            self.advert.updatePos((self.pos[0]+8,self.pos[1]+1))
+            self.advert.updatePos((self.pos[0],self.pos[1]))
 
     # Get the item's location on the tile
     def itemPos(self):

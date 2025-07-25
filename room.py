@@ -69,7 +69,7 @@ class Room():
                     self.solidRects.append(newRect)
                 elif tile.isAdvert():
                     self.adverts.append(tile.advert)
-                    tile.advert.setEnd(self.streamLength(j,i,tile.advert.dir))
+                    tile.advert.setStream(self.streamLength(j,i,tile.advert.dir))
                 if tile.item:                       # Update items
                     self.items.append(tile.item)
         random.shuffle(self.items)
@@ -201,6 +201,9 @@ class Room():
                         pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
                         pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0] + (2 - player.facing)*700, playerPos[1]], r)
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
+        #for add in self.adverts:
+        #    surf = pygame.Surface((add.stream.width,add.stream.height)).convert()
+        #    screen.blit(surf, add.stream.topleft)
         # Show item name list
         if self.showItemNames:
             self.itemNamesTitle.draw(screen)

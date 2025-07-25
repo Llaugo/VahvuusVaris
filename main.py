@@ -69,7 +69,7 @@ async def main():
     #   "menu": Game is at the starting menu
     #   "strengths": Game is at the strength picking menu
     #   "checkpoint": Game is at a state in between levels
-    gameStatus = "level"
+    gameStatus = "strengths"
 
     # Tracks the floor/level the player is at
     floorNumber = 1

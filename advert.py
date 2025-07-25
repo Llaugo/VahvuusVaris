@@ -13,26 +13,53 @@ class Advert():
         self.image = self.advertSprite.getImage(dir,30,30,const.scale)
         self.rect = self.image.get_rect()
         self.streamEnd = self.rect.center
+        self.stream = self.rect
 
     def update(self, player, room):
         # Push player to the direction if player is in front
-        if self.dir == 0 and player.rect.collidepoint((self.streamEnd[0],player.pos[1])) and self.streamEnd[1] > player.pos[1] > self.rect.centery:
+        if player.rect.colliderect(self.stream):
+            if self.dir == 0:
                 player.push(const.basePlayerSpeed, Vector2(0,1), room)
-        elif self.dir == 1 and player.rect.collidepoint((player.pos[0],self.streamEnd[1])) and self.streamEnd[0] > player.pos[0] > self.rect.centerx:
+            elif self.dir == 1:
                 player.push(const.basePlayerSpeed, Vector2(1,0), room)
-        elif self.dir == 2 and player.rect.collidepoint((self.streamEnd[0],player.pos[1])) and self.streamEnd[1] < player.pos[1] < self.rect.centery:
+            elif self.dir == 2:
                 player.push(const.basePlayerSpeed, Vector2(0,-1), room)
-        elif self.dir == 3 and player.rect.collidepoint((player.pos[0],self.streamEnd[1])) and self.streamEnd[0] < player.pos[0] < self.rect.centerx:
+            elif self.dir == 3:
                 player.push(const.basePlayerSpeed, Vector2(-1,0), room)
 
 
     def updatePos(self, pos):
         self.rect.center = pos
+        if self.dir == 0:
+            self.stream.midtop = self.rect.midtop
+        elif self.dir == 1:
+            self.stream.midleft = self.rect.midleft
+        elif self.dir == 2:
+            self.stream.midbottom = self.rect.midbottom
+        elif self.dir == 3:
+            self.stream.midright = self.rect.midright
 
-    def setEnd(self, pos):
+    # pos: Endpoint of the stream
+    def setStream(self, pos):
         self.streamEnd = pos
+        if self.dir == 0:
+            self.stream = pygame.Rect(0,0,const.tileSize,abs(self.rect.top-pos[1]))
+            self.stream.midtop = self.rect.midtop
+        elif self.dir == 1:
+            self.stream = pygame.Rect(0,0,abs(self.rect.left-pos[0]),const.tileSize)
+            self.stream.midleft = self.rect.midleft
+        elif self.dir == 2:
+            self.stream = pygame.Rect(0,0,const.tileSize,abs(self.rect.bottom-pos[1]))
+            self.stream.midbottom = self.rect.midbottom
+        elif self.dir == 3:
+            self.stream = pygame.Rect(0,0,abs(self.rect.right-pos[0]),const.tileSize)
+            self.stream.midright = self.rect.midright
+        #print(self.stream.topleft,self.stream.bottomright)
+        #print(self.rect.center)
 
-    # amount: how many 90 degree turns, positive integers clockwise
+
+    # amount: how many 90 degree turns, positive integers clockwise, negative counterclockwise
     def rotate(self, amount):
         self.dir = (self.dir + amount) % 4
         self.image = self.advertSprite.getImage(self.dir,30,30,const.scale)
+        self.stream = self.rect

@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
         
     # Handle player collision with a wall in a room
     # Returns True if a collition happened
-    def resolveCollision(self, room: room.Room):
+    def resolveCollision(self, room: room.Room, preferDir=None):
         self.rect.center = (self.pos.x, self.pos.y)
         solids = room.solidRects.copy()
         if not self.swimDuration:
@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
         for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid):
                 overlap = self.rect.clip(solid)             # Compute overlap rectangle
-                if overlap.width < overlap.height:          # Choose the smaller overlap dimension
+                if preferDir == "x" or (overlap.width < overlap.height and preferDir != "y"):          # Choose the smaller overlap dimension
                     if self.rect.centerx > solid.centerx:   # Player is on right side of tile -> push right
                         self.pos.x = solid.right + math.ceil(self.rect.width/2)
                     else:
@@ -163,7 +163,10 @@ class Player(pygame.sprite.Sprite):
     def push(self, pushSpeed, velocity, room):
         speed = pushSpeed*self.swimSpeed if self.isInWater(room) else pushSpeed
         self.pos += (velocity*speed)
-        self.resolveCollision(room) # Resolve collisions with walls etc.
+        if velocity.x:
+            self.resolveCollision(room, "x") # Resolve collisions with walls etc.
+        else:
+            self.resolveCollision(room)
         self.rect.center = (self.pos.x, self.pos.y)
 
     # Draw the player
