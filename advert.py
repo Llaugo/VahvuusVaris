@@ -60,6 +60,6 @@ class Advert():
 
     # amount: how many 90 degree turns, positive integers clockwise, negative counterclockwise
     def rotate(self, amount):
-        self.dir = (self.dir + amount) % 4
+        self.dir = (self.dir - amount) % 4
         self.image = self.advertSprite.getImage(self.dir,30,30,const.scale)
         self.stream = self.rect

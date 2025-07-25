@@ -66,6 +66,19 @@ class Floor():
     def advertBlockEnd(self):
         self.advertBlock = False
 
+    # Rotates nearby adverts
+    def rotateAdverts(self, dist):
+        zone = pygame.Rect(0,0,dist*2,dist*2)
+        zone.center = self.player.rect.center
+        rotated = False
+        for add in self.currentRoom.adverts:
+            if add.rect.colliderect(zone):
+                add.rotate(1)
+                rotated = True
+        if rotated:
+            self.currentRoom.updatePos(self.pos,(0,0))
+            self.currentRoom.reconstruct()
+
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
     def nextRoom(self, dir, player):

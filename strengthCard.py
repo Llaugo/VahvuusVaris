@@ -133,9 +133,15 @@ class PerseveranceCard(StrengthCard):
         super().reset(floor)
         floor.player.resetSwim()
 
+# Honesty card rotates the adverts
 class HonestyCard(StrengthCard):
     def __init__(self):
         super().__init__(7)
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.rotateAdverts(const.tileSize*2)
+    
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
     def __init__(self):
