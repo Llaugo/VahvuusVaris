@@ -14,6 +14,7 @@ class StrengthCard():
         self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
         self.image = self.cardSprite.getImage(imageNum,250,350,const.scale/2)
         self.ready = False
+        self.auraDist = 0
         self.timer = 0          # timer for the ability
         self.cooldown = 0       # timer for the cooldown
         self.timerMax = 300     # timer duration
@@ -137,10 +138,11 @@ class PerseveranceCard(StrengthCard):
 class HonestyCard(StrengthCard):
     def __init__(self):
         super().__init__(7)
+        self.auraDist = const.tileSize*2
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.rotateAdverts(const.tileSize*2)
+            floor.rotateAdverts(self.auraDist)
     
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):

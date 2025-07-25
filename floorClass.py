@@ -68,7 +68,7 @@ class Floor():
 
     # Rotates nearby adverts
     def rotateAdverts(self, dist):
-        zone = pygame.Rect(0,0,dist*2,dist*2)
+        zone = pygame.Rect(0,0,dist,dist)
         zone.center = self.player.rect.center
         rotated = False
         for add in self.currentRoom.adverts:

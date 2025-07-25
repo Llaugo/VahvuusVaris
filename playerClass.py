@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking (Animation helper)
+        self.aura = 0 # an area highlighted around the player to show distance of actions
         self.resetRect(pos) # Set player pos
         self.pos = Vector2(self.rect.center)
         self.controls = controls
@@ -168,6 +169,9 @@ class Player(pygame.sprite.Sprite):
         else:
             self.resolveCollision(room)
         self.rect.center = (self.pos.x, self.pos.y)
+    
+    def changeAura(self, dist):
+        self.aura = dist
 
     # Draw the player
     def draw(self, screen):
@@ -175,3 +179,5 @@ class Player(pygame.sprite.Sprite):
         drawRect.y -= 20*self.scale # Adjust hitbox position to center on the image
         drawRect.x -= 5*self.scale
         screen.blit(self.image, drawRect)
+        if self.aura:
+            pygame.draw.rect(screen, "black", [self.rect.centerx-self.aura/2, self.rect.centery-self.aura/2, self.aura, self.aura], 2)

@@ -43,9 +43,14 @@ class StrengthDeck():
 
     # Update all the cards
     def update(self, floor):
+        cardReady = False
         for i, card in enumerate(self.cards): 
-            if self.activateButton.pressComplete and card.ready:
-                card.tryActivate(floor)
+            if card.ready:
+                if self.activateButton.pressComplete:
+                    card.tryActivate(floor)
+                elif card.auraDist:
+                    floor.player.changeAura(card.auraDist)
+                    cardReady = True
             oldCooldownN = round((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
             oldTimerN = round(card.timer/10) % 4 + 5
             card.update(floor) # Update cards
@@ -59,6 +64,8 @@ class StrengthDeck():
                 newImg = self.overlaySprite.getImage(timerN,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
                 self.updateOverlays(self.pos)
+        if not cardReady:
+            floor.player.changeAura(0)
 
     # Reset all card actions
     def reset(self, floor):
