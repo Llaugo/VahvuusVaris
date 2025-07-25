@@ -232,9 +232,23 @@ class PrudenceCard(StrengthCard):
         super().reset(floor)
         floor.stopTime()
 
+# Regulation card stop the pushing of the advert screens
 class RegulationCard(StrengthCard):
     def __init__(self):
         super().__init__(20)
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.advertBlockStart()
+
+    def update(self, floor):
+        if self.timer == 1:
+            floor.advertBlockEnd()
+        self.updateTimers()
+
+    def reset(self,floor):
+        super().reset(floor)
+        floor.advertBlockEnd()
 
 # Appreciation card makes a new item appear somewhere in the room
 class AppreciationCard(StrengthCard):

@@ -26,6 +26,7 @@ class Floor():
         self.birdsEye = pygame.Surface((self.currentRoom.background.get_width(), self.currentRoom.background.get_height())).convert() # multiple rooms view
         self.birdsEyeLevel = 0
         self.timeStop = False
+        self.advertBlock = False
         # Four doors from the current room out [down, right, up, left]
         self.doors = [pygame.Rect(0, 0, const.tileSize, const.tileSize),
                       pygame.Rect(0, 0, const.tileSize, const.tileSize),
@@ -58,6 +59,12 @@ class Floor():
 
     def stopTime(self):
         self.timeStop = not self.timeStop
+
+    def advertBlockStart(self):
+        self.advertBlock = True
+
+    def advertBlockEnd(self):
+        self.advertBlock = False
 
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
@@ -113,10 +120,12 @@ class Floor():
         if not self.timeStop:
             if not self.birdsEyeLevel:
                 self.player.update(self.currentRoom)
+                if not self.advertBlock:
+                    for add in self.currentRoom.adverts:
+                        add.update(self.player, self.currentRoom)
             self.currentRoom.update()
             self.timer -= 1/60
-            for add in self.currentRoom.adverts:
-                add.update(self.player, self.currentRoom)
+            
 
     # update the position current room and the doors
     def updatePos(self, screenCenter, screenMove=(0,0)):
