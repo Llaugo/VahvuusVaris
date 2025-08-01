@@ -23,7 +23,7 @@ class Cart():
     def push(self, dir, vel, room):
         if dir != self.dir:
             self.newDir(dir)
-        self.pos += vel
+        self.pos += vel*0.75
         return not self.resolveCollision(room)
 
     def newDir(self, dir):

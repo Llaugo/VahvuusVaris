@@ -116,6 +116,7 @@ class PerspectiveCard(StrengthCard):
         super().reset(floor)
         floor.setBirdsEye(0)
 
+# Bravery card makes the player able to push heavier carts
 class BraveryCard(StrengthCard):
     def __init__(self):
         super().__init__(5)
