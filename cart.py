@@ -11,11 +11,11 @@ class Cart():
     # dir: direction where the cart is facing
     # pos: location on screen
     # roomDist: distance from the middle room (further away carts weigh more)
-    def __init__(self, dir, pos):
-        self.dir = dir
+    def __init__(self, pos):
+        self.dir = random.randint(0,3)
         cartSpriteSheet = pygame.image.load('images/cart.png').convert() # Load player's spritesheet
         self.cartSprite = spriteSheet.SpriteSheet(cartSpriteSheet)
-        self.image = self.cartSprite.getImage(dir,38,38,const.scale)
+        self.image = self.cartSprite.getImage(self.dir,38,38,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.pos = Vector2(self.rect.center)
 

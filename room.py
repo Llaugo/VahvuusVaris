@@ -275,11 +275,11 @@ class Room():
                     self.layout[i].append(self.exit)
                 elif c == 4: # Crate
                     self.layout[i].append(tile.Tile(5))
-                elif c >= 60 and c <= 63:
+                elif c == 6:
                     self.layout[i].append(tile.Tile(random.randint(1,3)))
                     halfLength = round((len(layout)-1)/2)
                     cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
-                    self.carts.append(cart.Cart(c-60,cartPos))
+                    self.carts.append(cart.Cart(cartPos))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(18))
                 elif c >= 80 and c <= 83:
