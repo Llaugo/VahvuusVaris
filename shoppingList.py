@@ -36,7 +36,7 @@ class ShoppingList():
         for i in range(len(self.contents)):
             if self.contents[i][0] == itemName: # Check if item is in the list
                 self.contents[i][1] = min(self.contents[i][1] + 1, self.contents[i][2]) # Increase item count
-                self.text2.setText(f'{self.contents[i][1]} / {self.contents[i][2]}' for i in range(len(self.contents))) # Change display text
+                self.text2.setText(f'{self.contents[i][1]}/{self.contents[i][2]}' for i in range(len(self.contents))) # Change display text
                 imgNum = 0
                 for i,name in enumerate([x for xs in const.shop for x in xs]): # Find item name in flattened list of all items
                     if name == itemName:

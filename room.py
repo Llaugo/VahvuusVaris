@@ -3,6 +3,7 @@ import const
 import tile
 import item
 import text
+import cart
 import random
 
 # A class for rooms which consist of tiles in a grid.
@@ -15,15 +16,16 @@ class Room():
         self.pos = (0,0)                        # Room center
         self.roomDistance = roomDistance
         self.exit = None                        # Does the room have an exit
+        self.carts = []                         # carts in the room
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
         self.rect = self.background.get_rect(center = self.pos)
         self.reconstruct()                      # Blit all the tiles to a single background image
         self.solidRects = []                    # walls and solid objects of the room
-        self.waterRects = []
+        self.waterRects = []                    # watertiles in the room
         self.items = []                         # items in the room
-        self.adverts = []
+        self.adverts = []                       # adverts in the room
         self.showItemNames = False              # If True, item names are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
         self.darkness = None                    # None if room is dark
@@ -78,6 +80,8 @@ class Room():
             itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
+        for crt in self.carts:
+            crt.updatePos(screenMove)
 
     # Calcuates the point where the stream ends
     def streamLength(self,tx,ty,dir):
@@ -215,9 +219,8 @@ class Room():
                         pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
                         pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0] + (2 - player.facing)*700, playerPos[1]], r)
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
-        #for add in self.adverts:
-        #    surf = pygame.Surface((add.stream.width,add.stream.height)).convert()
-        #    screen.blit(surf, add.stream.topleft)
+        for cart in self.carts:
+            cart.draw(screen)
         # Show item name list
         if self.showItemNames:
             self.itemNamesTitle.draw(screen)
@@ -260,9 +263,14 @@ class Room():
                     self.layout[i].append(self.exit)
                 elif c == 4: # Crate
                     self.layout[i].append(tile.Tile(5))
+                elif c >= 60 and c <= 63:
+                    self.layout[i].append(tile.Tile(random.randint(1,3)))
+                    halfLength = round((len(layout)-1)/2)
+                    cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
+                    self.carts.append(cart.Cart(c-60,cartPos,self.roomDistance))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(18))
-                elif c >=80 and c <= 84:
+                elif c >= 80 and c <= 83:
                     newTile = tile.Tile(6)
                     newTile.setAdvert(c-80)
                     self.layout[i].append(newTile)
