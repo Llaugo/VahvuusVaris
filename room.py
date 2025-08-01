@@ -199,6 +199,8 @@ class Room():
     # Returns wheather the the carts were pushed
     def collideCarts(self, player, dir, vel):
         success = True
+        if player.strength < self.roomDistance:
+            return False
         for cart in self.carts:
             if cart.rect.colliderect(player.rect):
                 if not cart.push(dir, vel, self):
@@ -277,7 +279,7 @@ class Room():
                     self.layout[i].append(tile.Tile(random.randint(1,3)))
                     halfLength = round((len(layout)-1)/2)
                     cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
-                    self.carts.append(cart.Cart(c-60,cartPos,self.roomDistance))
+                    self.carts.append(cart.Cart(c-60,cartPos))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(18))
                 elif c >= 80 and c <= 83:

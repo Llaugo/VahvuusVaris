@@ -119,6 +119,20 @@ class PerspectiveCard(StrengthCard):
 class BraveryCard(StrengthCard):
     def __init__(self):
         super().__init__(5)
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.player.changeStrength(8)
+
+    def update(self, floor):
+        if self.timer == 1:
+            floor.player.changeStrength(const.basePlayerStrength)
+        self.updateTimers()
+
+    def reset(self, floor):
+        super().reset(floor)
+        floor.player.changeStrength(const.basePlayerStrength)
+
 # Perseverance card makes player to be able to walk through water
 class PerseveranceCard(StrengthCard):
     def __init__(self):

@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking (Animation helper)
+        self.strength = const.basePlayerStrength
         self.aura = 0 # an area highlighted around the player to show distance of actions
         self.resetRect(pos) # Set player pos
         self.pos = Vector2(self.rect.center)
@@ -160,6 +161,9 @@ class Player(pygame.sprite.Sprite):
             if self.rect.colliderect(water):
                 return True
         return False
+    
+    def changeStrength(self, newStr):
+        self.strength = newStr
 
     # Push player to a direction
     def push(self, pushSpeed, dir, velocity, room):
