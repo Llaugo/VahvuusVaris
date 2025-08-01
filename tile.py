@@ -52,6 +52,10 @@ class Tile():
             self.solid = False
             self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
 
+    def clearAdvert(self):
+        if self.isAdvert():
+            self.advert = None
+
     # Returns True if this tile is a shelf tile and False otherwise
     def isShelf(self):
         if self.tileType >= 8 and self.tileType <= 16:
@@ -67,6 +71,12 @@ class Tile():
         
     def isAdvert(self):
         if self.tileType == 6:
+            return True
+        else:
+            return False
+
+    def hasAdvert(self):
+        if self.advert:
             return True
         else:
             return False

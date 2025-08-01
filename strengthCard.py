@@ -159,9 +159,15 @@ class ZestCard(StrengthCard):
         super().reset(floor)
         floor.player.resetSpeed()
 
+# Grit card destroys advert in front of the player
 class GritCard(StrengthCard):
     def __init__(self):
         super().__init__(9)
+        self.auraDist = 100
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.destroyAdvert(self.auraDist)
 
 class KindnessCard(StrengthCard):
     def __init__(self):
@@ -195,11 +201,12 @@ class TeamworkCard(StrengthCard):
 class ForgivenessCard(StrengthCard):
     def __init__(self):
         super().__init__(17)
+        self.auraDist = const.tileSize
 
     # Clean nearby water from the room if not on cooldown
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.cleanWater()
+            floor.cleanWater(self.auraDist)
 
 # Humility card makes the player smaller to fit through small spaces
 class HumilityCard(StrengthCard):

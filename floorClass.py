@@ -36,8 +36,8 @@ class Floor():
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)
 
-    def cleanWater(self):
-        self.currentRoom.cleanWater(self.player)
+    def cleanWater(self, dist):
+        self.currentRoom.cleanWater(self.player, dist)
 
     # Draw the current birdseye view
     def setBirdsEye(self, lvl):
@@ -78,6 +78,9 @@ class Floor():
         if rotated:
             self.currentRoom.updatePos(self.pos,(0,0))
             self.currentRoom.reconstruct()
+
+    def destroyAdvert(self, dist):
+        self.currentRoom.destroyAdvert(self.player, dist)
 
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)

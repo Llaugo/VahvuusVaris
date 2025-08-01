@@ -167,7 +167,7 @@ class Player(pygame.sprite.Sprite):
         if velocity.x:
             self.resolveCollision(room, "x") # Resolve collisions with walls etc.
         else:
-            self.resolveCollision(room)
+            self.resolveCollision(room, "y")
         self.rect.center = (self.pos.x, self.pos.y)
     
     def changeAura(self, dist):

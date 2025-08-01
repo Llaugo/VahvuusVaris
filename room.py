@@ -67,7 +67,7 @@ class Room():
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, 23, 25)
                     newRect.center = (tilePos[0]+5, tilePos[1]+5)
                     self.solidRects.append(newRect)
-                elif tile.isAdvert():
+                elif tile.hasAdvert():
                     self.adverts.append(tile.advert)
                     tile.advert.setStream(self.streamLength(j,i,tile.advert.dir))
                 if tile.item:                       # Update items
@@ -161,9 +161,9 @@ class Room():
         self.litRadius = 0
         self.lightDuration = 0
 
-    # Clean the four adjactent tiles from water
-    def cleanWater(self, player):
-        clearradius = pygame.Rect(0, 0, const.tileSize, const.tileSize)
+    # Clean the nearby tiles from water
+    def cleanWater(self, player, dist):
+        clearradius = pygame.Rect(0, 0, dist, dist)
         clearradius.center = player.pos
         for tile in self.tiles:
             if tile.rect.colliderect(clearradius):
@@ -176,6 +176,20 @@ class Room():
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
                     newRect.center = tile.pos
                     self.waterRects.append(newRect)
+
+    def destroyAdvert(self, player, dist):
+        clearradius = pygame.Rect(0, 0, dist, dist)
+        clearradius.center = player.pos
+        for tile in self.tiles:
+            if tile.rect.colliderect(clearradius):
+                tile.clearAdvert()
+        self.reconstruct()
+        self.adverts = [] # Reset adverts
+        for i, row in enumerate(self.layout):
+            for j, tile in enumerate(row):
+                if tile.hasAdvert():
+                    self.adverts.append(tile.advert)
+                    tile.advert.setStream(self.streamLength(j,i,tile.advert.dir))
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -216,7 +230,7 @@ class Room():
         for i,row in enumerate(self.layout):    # Blit tile images to background 
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
-                if oneTile.isAdvert():
+                if oneTile.hasAdvert():
                     self.background.blit(oneTile.advert.image, (j*const.tileSize+8, i*const.tileSize+1))
         
     
