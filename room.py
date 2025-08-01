@@ -4,6 +4,7 @@ import tile
 import item
 import text
 import cart
+import npc
 import random
 
 # A class for rooms which consist of tiles in a grid.
@@ -17,6 +18,7 @@ class Room():
         self.roomDistance = roomDistance
         self.exit = None                        # Does the room have an exit
         self.carts = []                         # carts in the room
+        self.npcs = []                          # npcs in the room
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
@@ -83,6 +85,10 @@ class Room():
         for cart in self.carts:
             cart.updatePos(screenMove)
             self.solidRects.append(cart.rect)
+        for npc in self.npcs:
+            npc.updatePos(screenMove)
+            self.solidRects.append(npc.rect)
+
 
     # Calcuates the point where the stream ends
     def streamLength(self,tx,ty,dir):
@@ -233,6 +239,8 @@ class Room():
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
         for cart in self.carts:
             cart.draw(screen)
+        for npc in self.npcs:
+            npc.draw(screen)
         # Show item name list
         if self.showItemNames:
             self.itemNamesTitle.draw(screen)
@@ -275,11 +283,16 @@ class Room():
                     self.layout[i].append(self.exit)
                 elif c == 4: # Crate
                     self.layout[i].append(tile.Tile(5))
-                elif c == 6:
+                elif c == 5:
                     self.layout[i].append(tile.Tile(random.randint(1,3)))
                     halfLength = round((len(layout)-1)/2)
                     cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
                     self.carts.append(cart.Cart(cartPos))
+                elif c >= 60 and c <= 63:
+                    self.layout[i].append(tile.Tile(random.randint(1,3)))
+                    halfLength = round((len(layout)-1)/2)
+                    npcPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
+                    self.npcs.append(npc.Npc(npcPos,c-60))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(18))
                 elif c >= 80 and c <= 83:
