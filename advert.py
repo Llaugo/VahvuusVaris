@@ -19,13 +19,13 @@ class Advert():
         # Push player to the direction if player is in front
         if player.rect.colliderect(self.stream):
             if self.dir == 0:
-                player.push(const.basePlayerSpeed*1.5, Vector2(0,1), room)
+                player.push(const.basePlayerSpeed*1.5, self.dir, Vector2(0,1), room)
             elif self.dir == 1:
-                player.push(const.basePlayerSpeed*1.5, Vector2(1,0), room)
+                player.push(const.basePlayerSpeed*1.5, self.dir, Vector2(1,0), room)
             elif self.dir == 2:
-                player.push(const.basePlayerSpeed*1.5, Vector2(0,-1), room)
+                player.push(const.basePlayerSpeed*1.5, self.dir, Vector2(0,-1), room)
             elif self.dir == 3:
-                player.push(const.basePlayerSpeed*1.5, Vector2(-1,0), room)
+                player.push(const.basePlayerSpeed*1.5, self.dir, Vector2(-1,0), room)
 
 
     def updatePos(self, pos):

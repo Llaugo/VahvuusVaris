@@ -162,9 +162,11 @@ class Player(pygame.sprite.Sprite):
         return False
 
     # Push player to a direction
-    def push(self, pushSpeed, velocity, room):
+    def push(self, pushSpeed, dir, velocity, room):
         speed = pushSpeed*self.swimSpeed if self.isInWater(room) else pushSpeed
         self.pos += (velocity*speed)
+        self.rect.center = (self.pos.x, self.pos.y)
+        room.collideCarts(self, dir, (velocity*speed))
         if velocity.x:
             self.resolveCollision(room, "x") # Resolve collisions with walls etc.
         else:
