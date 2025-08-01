@@ -80,8 +80,9 @@ class Room():
             itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
-        for crt in self.carts:
-            crt.updatePos(screenMove)
+        for cart in self.carts:
+            cart.updatePos(screenMove)
+            self.solidRects.append(cart.rect)
 
     # Calcuates the point where the stream ends
     def streamLength(self,tx,ty,dir):
@@ -194,6 +195,15 @@ class Room():
                 if tile.hasAdvert():
                     self.adverts.append(tile.advert)
                     tile.advert.setStream(self.streamLength(j,i,tile.advert.dir))
+
+    # Returns wheather the the carts were pushed
+    def collideCarts(self, player, dir, vel):
+        success = True
+        for cart in self.carts:
+            if cart.rect.colliderect(player.rect):
+                if not cart.push(dir, vel, self):
+                    success = False
+        return success
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):

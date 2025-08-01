@@ -55,9 +55,11 @@ class Player(pygame.sprite.Sprite):
             self.walking = 0
         else:
             self.pos += (velocity*speed)
-            self.walking = (self.walking + speed/20.0) % 4
+            self.rect.center = (self.pos.x, self.pos.y)
+            room.collideCarts(self, self.facing, (velocity*speed))
             self.resolveCollision(room) # Resolve collisions with walls etc.
             self.rect.center = (self.pos.x, self.pos.y)
+            self.walking = (self.walking + speed/20.0) % 4
         animationFrame = self.facing*4 + round(self.walking) % 4 # Get the correct image (frame of the animation)
         self.image = self.playerSprite.getImage(animationFrame,36,41,self.scale)
         
@@ -72,7 +74,7 @@ class Player(pygame.sprite.Sprite):
         for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid):
                 overlap = self.rect.clip(solid)             # Compute overlap rectangle
-                if preferDir == "x" or (overlap.width < overlap.height and preferDir != "y"):          # Choose the smaller overlap dimension
+                if preferDir == "x" or (overlap.width < overlap.height and preferDir != "y"): # Choose the smaller overlap dimension if there is no preferation
                     if self.rect.centerx > solid.centerx:   # Player is on right side of tile -> push right
                         self.pos.x = solid.right + math.ceil(self.rect.width/2)
                     else:
@@ -86,8 +88,6 @@ class Player(pygame.sprite.Sprite):
                 collided = True
         return collided
                 
-            
-
     # Update player's state in the room
     def update(self, room):
         self.playerInput(room) # Take input
@@ -161,6 +161,7 @@ class Player(pygame.sprite.Sprite):
                 return True
         return False
 
+    # Push player to a direction
     def push(self, pushSpeed, velocity, room):
         speed = pushSpeed*self.swimSpeed if self.isInWater(room) else pushSpeed
         self.pos += (velocity*speed)
