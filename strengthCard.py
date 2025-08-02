@@ -60,9 +60,17 @@ class StrengthCard():
 class CreativityCard(StrengthCard):
     def __init__(self):
         super().__init__(0)
+# Curiosity card breaks open boxes that are in the way
 class CuriosityCard(StrengthCard):
     def __init__(self):
         super().__init__(1)
+        self.timer = 1
+        self.auraDist = 80
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.breakBox(self.auraDist)
+
 # Judgement cards shows what items there are in the room
 class JudgementCard(StrengthCard):
     def __init__(self):

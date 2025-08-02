@@ -117,6 +117,18 @@ class Room():
             self.layout[len(self.layout)-1][(len(self.layout)//2)].makeWall()
         self.reconstruct()
 
+    def breakBox(self, player, dist):
+        clearradius = pygame.Rect(0, 0, dist, dist)
+        clearradius.center = player.pos
+        broken = False
+        for tile in self.tiles:
+            if tile.rect.colliderect(clearradius):
+                if tile.breakBox():
+                    broken = True
+        if broken:
+            self.reconstruct()
+            self.updatePos(self.pos)
+
     # Remove item from the rooms memory
     # item: the item to be removed
     def removeItem(self, item: item.Item):
@@ -205,7 +217,7 @@ class Room():
     # Returns wheather the the carts were pushed
     def collideCarts(self, player, dir, vel):
         success = True
-        if player.strength < self.roomDistance:
+        if not player.strength:
             return False
         for cart in self.carts:
             if cart.rect.colliderect(player.rect):
@@ -268,16 +280,16 @@ class Room():
             for j,c in enumerate(row):
                 if c == 0: # Wall
                     if lift: # Lift has special walls
-                        self.layout[i].append(tile.Tile(17))
+                        self.layout[i].append(tile.Tile(18))
                     else:
-                        self.layout[i].append(tile.Tile(7))
+                        self.layout[i].append(tile.Tile(8))
                 elif c == 1: # Floor
                     if lift: # Lift has special floor
                         self.layout[i].append(tile.Tile(4))
                     else:
                         self.layout[i].append(tile.Tile(random.randint(1,3)))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(8,16), self.roomDistance))
+                    self.layout[i].append(tile.Tile(random.randint(9,17), self.roomDistance))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0)
                     self.layout[i].append(self.exit)
@@ -294,9 +306,9 @@ class Room():
                     npcPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
                     self.npcs.append(npc.Npc(npcPos,c-60))
                 elif c == 7: # Water
-                    self.layout[i].append(tile.Tile(18))
+                    self.layout[i].append(tile.Tile(19))
                 elif c >= 80 and c <= 83:
-                    newTile = tile.Tile(6)
+                    newTile = tile.Tile(7)
                     newTile.setAdvert(c-80)
                     self.layout[i].append(newTile)
                 elif c > 0:

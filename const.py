@@ -18,7 +18,7 @@ tileSize = 46
 
 # Player's base speed
 basePlayerSpeed = 2
-basePlayerStrength = 1
+basePlayerStrength = 0
 
 # How much time (sec) there is in each level (300 = 5min)
 floorTime = 300

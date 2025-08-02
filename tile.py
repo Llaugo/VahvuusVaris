@@ -24,7 +24,7 @@ class Tile():
         self.solid = True # Can the tile be walked on
         self.item = None # A possible item the tile holds
         self.advert = None
-        if tileType < 7: self.solid = False # The first six tile types are not solid and can be walked on
+        if tileType < 8: self.solid = False # The first six tile types are not solid and can be walked on
         self.neighbours = [None, None, None, None] # Down, Right, Up, Left
         if self.isShelf() and const.itemProbability > random.random(): # Randomize if a shelf tile has an item or not
             self.item = item.Item(self.itemPos(), roomDistance)
@@ -41,7 +41,7 @@ class Tile():
 
     # Make this tile a wall
     def makeWall(self):
-        self.tileType = 7
+        self.tileType = 8
         self.solid = True
         self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
         
@@ -56,21 +56,28 @@ class Tile():
         if self.isAdvert():
             self.advert = None
 
+    def breakBox(self):
+        if self.tileType == 5:
+            self.tileType = 6
+            self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
+            return True
+        return False
+
     # Returns True if this tile is a shelf tile and False otherwise
     def isShelf(self):
-        if self.tileType >= 8 and self.tileType <= 16:
+        if self.tileType >= 9 and self.tileType <= 17:
             return True
         else:
             return False
         
     def isWater(self):
-        if self.tileType == 18:
+        if self.tileType == 19:
             return True
         else:
             return False
         
     def isAdvert(self):
-        if self.tileType == 6:
+        if self.tileType == 7:
             return True
         else:
             return False
