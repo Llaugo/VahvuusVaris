@@ -19,6 +19,7 @@ class Room():
         self.exit = None                        # Does the room have an exit
         self.carts = []                         # carts in the room
         self.npcs = []                          # npcs in the room
+        self.npcCartPairs = []                  # pairs of npcs and carts
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
@@ -28,9 +29,12 @@ class Room():
         self.waterRects = []                    # watertiles in the room
         self.items = []                         # items in the room
         self.adverts = []                       # adverts in the room
-        self.showItemNames = False              # If True, item names are shown
+        self.itemNameView = False              # If True, item names are shown
+        self.cartOwnerView = False              # If True, npc-cart pairs are shown
         self.stones = []                        # stones in the room (list[(image,rect)])
         self.darkness = None                    # None if room is dark
+        self.owners = pygame.Surface(((len(self.layout[0]))*const.tileSize, (len(self.layout))*const.tileSize), flags=pygame.SRCALPHA)
+        self.owners.fill((0, 0, 0, 0))
         self.litRadius = 0                      # Extra light space around the player in the dark
         self.lightDuration = 0                  # Duration of light space
         # Chance for setting the room as dark if the room isn't a lift
@@ -144,13 +148,8 @@ class Room():
         rect = image.get_rect(center = pos) # Get rect
         self.stones.append((image, rect))
 
-    # Turn on item name showing
-    def revealItems(self):
-        self.showItemNames = True
-
-    # Turn off item name showing
-    def hideItems(self):
-        self.showItemNames = False
+    def showItemNames(self, bool):
+        self.itemNameView = bool
 
     # Add one item randomly into the room
     def addItem(self, rarity=1):
@@ -241,6 +240,9 @@ class Room():
             player.facing = (player.facing + 2) % 4
             return True
         return False
+    
+    def showCartOwners(self, bool):
+        self.cartOwnerView = bool
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -266,10 +268,18 @@ class Room():
                         pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
                         pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0] + (2 - player.facing)*700, playerPos[1]], r)
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
+        if self.cartOwnerView:
+            self.owners.fill((0, 0, 0, 0))
+            for i,pair in enumerate(self.npcCartPairs):
+                npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-3-self.rect.top-4)
+                cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
+                pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
+                pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
+            screen.blit(self.owners,self.rect.topleft)
         for cart in self.carts:
             cart.draw(screen)
         # Show item name list
-        if self.showItemNames:
+        if self.itemNameView:
             self.itemNamesTitle.draw(screen)
             for item in self.items:
                 item.text.draw(screen)
@@ -339,3 +349,13 @@ class Room():
                     self.layout[j][i-1].setNeighbour(1,c)
         # Set the title for the item names list
         self.itemNamesTitle = text.Text(const.gameFont(32),"Huoneessa olevat esineet:",(0,0),(25, 28, 54))
+        # pair npcs with carts
+        random.shuffle(self.carts)              # Shuffle carts to randomize pairing with npcs
+        for i in range(min(len(self.npcs),len(self.carts))): # Zip the list with Nones as fillers
+            if i < len(self.npcs):  npc1  = self.npcs[i]
+            else:                   npc1  = None
+            if i < len(self.carts): cart1 = self.carts[i]
+            else:                   cart1 = None
+            pair = (npc1, cart1)
+            self.npcCartPairs.append(pair)
+        #self.npcCartPairs = zip(self.npcs,self.carts)

@@ -80,18 +80,18 @@ class JudgementCard(StrengthCard):
     def tryActivate(self, floor):
         if super().tryActivate(floor):
             self.timer = self.timerMax
-            floor.currentRoom.revealItems()
+            floor.showItemNames(True)
 
     # Hide item names, if timer ends
     def update(self, floor):
         if self.timer == 1:
-            floor.currentRoom.hideItems()
+            floor.showItemNames(False)
         self.updateTimers()
 
     # Reset timers and hide item names
     def reset(self, floor):
         super().reset(floor)
-        floor.currentRoom.hideItems()
+        floor.showItemNames(False)
 
 # Learning card gets rid of darkness in the dark rooms
 class LearningCard(StrengthCard):
@@ -209,9 +209,23 @@ class LoveCard(StrengthCard):
     def __init__(self):
         super().__init__(11)
 
+# Shows the cart-npc pairs
 class SocialCard(StrengthCard):
     def __init__(self):
         super().__init__(12)
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.showCartOwners(True)
+
+    def update(self, floor):
+        if self.timer == 1:
+            floor.showCartOwners(False)
+        self.updateTimers()
+
+    def reset(self, floor):
+        floor.showCartOwners(False)
+        super().reset(floor)
 
 # Compassion card swaps the player with an npc
 class CompassionCard(StrengthCard):

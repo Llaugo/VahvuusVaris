@@ -39,6 +39,9 @@ class Floor():
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)
 
+    def showItemNames(self, bool):
+        self.currentRoom.showItemNames(bool)
+
     def cleanWater(self, dist):
         self.currentRoom.cleanWater(self.player, dist)
 
@@ -87,6 +90,9 @@ class Floor():
 
     def swapPlayer(self):
         self.currentRoom.swapPlayer(self.player)
+
+    def showCartOwners(self, bool):
+        self.currentRoom.showCartOwners(bool)
 
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
@@ -172,8 +178,8 @@ class Floor():
         self.floorText.draw(screen)
         if not self.birdsEyeLevel:
             playerDrawn = False
-            for npc in self.currentRoom.npcs: # Draw player in front of the npc's if it's lower down
-                if not playerDrawn and npc.pos.y > self.player.pos.y:
+            for npc in self.currentRoom.npcs: # Draw player in front of the npc if it's lower down
+                if not playerDrawn and npc.pos.y+2 > self.player.pos.y:
                     self.player.draw(screen)
                     playerDrawn = True
                 npc.draw(screen)
