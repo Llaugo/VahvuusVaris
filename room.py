@@ -87,7 +87,7 @@ class Room():
             self.solidRects.append(cart.rect)
         for npc in self.npcs:
             npc.updatePos(screenMove)
-            self.solidRects.append(npc.rect)
+            #self.solidRects.append(npc.rect)
 
 
     # Calcuates the point where the stream ends

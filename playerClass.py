@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.speedDuration = 0 # Duration of a possible speed boost
         self.swimSpeed = 0     # Player's speed on water
         self.swimDuration = 0  # Duration of the swim speed
+        self.npcCollDuration = 0 # Does the player collide with npc's
         playerSpriteSheet = pygame.image.load('images/player_sheet.png').convert() # Load player's spritesheet
         self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
@@ -71,6 +72,9 @@ class Player(pygame.sprite.Sprite):
         solids = room.solidRects.copy()
         if not self.swimDuration:
             solids += room.waterRects
+        if not self.npcCollDuration:
+            for npc in room.npcs:
+                solids.append(npc.rect)
         collided = False
         for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid):
@@ -101,6 +105,8 @@ class Player(pygame.sprite.Sprite):
             self.swimDuration = max(self.swimDuration-1, 0) # update swimming timer
         if not self.swimDuration:
             self.resetSwim()
+        if self.npcCollDuration != 1 or not self.isOnNpc(room):
+            self.npcCollDuration = max(self.npcCollDuration-1, 0) # update npc passthrough timer
 
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
@@ -164,6 +170,15 @@ class Player(pygame.sprite.Sprite):
     
     def changeStrength(self, newStr):
         self.strength = newStr
+
+    def isOnNpc(self, room):
+        for npc in room.npcs:
+            if self.rect.colliderect(npc.rect):
+                return True
+        return False
+
+    def setNpcCollitionTimer(self, time):
+        self.npcCollDuration = time
 
     # Push player to a direction
     def push(self, pushSpeed, dir, velocity, room):

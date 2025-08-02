@@ -11,7 +11,7 @@ class Npc():
         self.facing = dir
         npcSpriteSheet = pygame.image.load('images/npc_sheet.png').convert() # Load player's spritesheet
         self.npcSprite = spriteSheet.SpriteSheet(npcSpriteSheet)
-        self.image = self.npcSprite.getImage(self.facing,36,41,const.scale)
+        self.image = self.npcSprite.getImage(self.facing*4,36,41,const.scale)
         self.rect = self.image.get_rect(center = self.pos)
         self.pos = Vector2(self.rect.center)
 

@@ -172,7 +172,7 @@ class Floor():
         self.floorText.draw(screen)
         if not self.birdsEyeLevel:
             playerDrawn = False
-            for npc in self.currentRoom.npcs:
+            for npc in self.currentRoom.npcs: # Draw player in front of the npc's if it's lower down
                 if not playerDrawn and npc.pos.y > self.player.pos.y:
                     self.player.draw(screen)
                     playerDrawn = True

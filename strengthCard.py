@@ -192,9 +192,18 @@ class GritCard(StrengthCard):
         if super().tryActivate(floor):
             floor.destroyAdvert(self.auraDist)
 
+# Kindness card makes it possible to move through/past npcs
 class KindnessCard(StrengthCard):
     def __init__(self):
         super().__init__(10)
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.player.setNpcCollitionTimer(self.timerMax)
+
+    def reset(self, floor):
+        floor.player.setNpcCollitionTimer(0)
+        super().reset(floor)
 
 class LoveCard(StrengthCard):
     def __init__(self):
@@ -209,7 +218,6 @@ class CompassionCard(StrengthCard):
     def __init__(self):
         super().__init__(13)
         self.timerMax = 1
-        self.cooldownMax = 1
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
