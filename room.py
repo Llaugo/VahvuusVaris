@@ -224,6 +224,23 @@ class Room():
                 if not cart.push(dir, vel, self):
                     success = False
         return success
+    
+    # Switches places between the player and a possible npc in front
+    def swapPlayer(self, player):
+        npc = player.npcInFront(self)
+        if npc:
+            if player.facing % 2 == 0:
+                playerPos = ((player.rect.centerx+npc.rect.centerx)/2, player.rect.centery)
+                player.resetRect(((player.rect.centerx+npc.rect.centerx)/2 + 5, npc.rect.centery + 10))
+                npc.setPos((playerPos[0] + 0, playerPos[1] + 0))
+            else:
+                playerPos = (player.rect.centerx, (player.rect.centery+npc.rect.centery)/2)
+                player.resetRect((npc.rect.centerx + 5, (player.rect.centery+npc.rect.centery)/2 + 10))
+                npc.setPos((playerPos[0] + 0, playerPos[1] + 0))
+            npc.turn(player.facing)
+            player.facing = (player.facing + 2) % 4
+            return True
+        return False
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -251,8 +268,6 @@ class Room():
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
         for cart in self.carts:
             cart.draw(screen)
-        for npc in self.npcs:
-            npc.draw(screen)
         # Show item name list
         if self.showItemNames:
             self.itemNamesTitle.draw(screen)
@@ -303,7 +318,7 @@ class Room():
                 elif c >= 60 and c <= 63:
                     self.layout[i].append(tile.Tile(random.randint(1,3)))
                     halfLength = round((len(layout)-1)/2)
-                    npcPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
+                    npcPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize+3)
                     self.npcs.append(npc.Npc(npcPos,c-60))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(19))

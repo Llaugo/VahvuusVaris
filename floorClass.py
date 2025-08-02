@@ -85,6 +85,9 @@ class Floor():
     def destroyAdvert(self, dist):
         self.currentRoom.destroyAdvert(self.player, dist)
 
+    def swapPlayer(self):
+        self.currentRoom.swapPlayer(self.player)
+
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
     def nextRoom(self, dir, player):
@@ -168,4 +171,11 @@ class Floor():
         self.timerText.draw(screen,time.strftime('%M:%S', time.gmtime(self.timer)))
         self.floorText.draw(screen)
         if not self.birdsEyeLevel:
-            self.player.draw(screen)
+            playerDrawn = False
+            for npc in self.currentRoom.npcs:
+                if not playerDrawn and npc.pos.y > self.player.pos.y:
+                    self.player.draw(screen)
+                    playerDrawn = True
+                npc.draw(screen)
+            if not playerDrawn:
+                self.player.draw(screen)

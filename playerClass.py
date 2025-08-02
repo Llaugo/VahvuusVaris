@@ -116,7 +116,7 @@ class Player(pygame.sprite.Sprite):
     # Set a new position for the rect and make it smaller than the image
     def resetRect(self, pos):
         self.image = self.playerSprite.getImage(self.facing*4,36,41,self.scale)
-        self.rect = self.image.get_rect(center = pos)
+        self.rect = self.image.get_rect(center = (pos[0],pos[1]))
         self.rect.height -= 20*self.scale # Make the player rect slimmer
         self.rect.width -= 10*self.scale  # Make the player rect shorter
         self.pos = Vector2(self.rect.center)
@@ -176,6 +176,23 @@ class Player(pygame.sprite.Sprite):
         else:
             self.resolveCollision(room, "y")
         self.rect.center = (self.pos.x, self.pos.y)
+
+    # Returns the npc standing in front of the player, or None if there is no npc
+    def npcInFront(self, room):
+        if self.facing == 0:
+            playerFront = self.pos + (0,23)
+        elif self.facing == 1:
+            playerFront = self.pos + (23,0)
+        elif self.facing == 2:
+            playerFront = self.pos + (0,-23)
+        elif self.facing == 3:
+            playerFront = self.pos + (-23,0)
+        frontRect = pygame.Rect(0, 0, 10, 10)
+        frontRect.center = playerFront
+        for c in room.npcs:
+            if c.rect.colliderect(frontRect):
+                return c
+        return None
     
     def changeAura(self, dist):
         self.aura = dist

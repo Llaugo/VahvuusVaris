@@ -15,13 +15,24 @@ class Npc():
         self.rect = self.image.get_rect(center = self.pos)
         self.pos = Vector2(self.rect.center)
 
+    def turn(self, faceDir):
+        self.facing = faceDir
+        self.image = self.npcSprite.getImage(self.facing*4,36,41,const.scale)
+
     def updatePos(self, screenMove):
         self.setPos((self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 20))
 
     def setPos(self, pos):
         self.pos = pos
         self.rect.center = self.pos
+        self.resetRect()
+
+    def resetRect(self):
+        self.rect.height = 35
+        self.pos = Vector2(self.rect.center)
         
     # Draw the npc on the screen
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
+        drawRect = self.rect.copy()
+        drawRect.y -= 12
+        screen.blit(self.image, drawRect)

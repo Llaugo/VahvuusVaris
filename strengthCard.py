@@ -204,9 +204,16 @@ class SocialCard(StrengthCard):
     def __init__(self):
         super().__init__(12)
 
+# Compassion card swaps the player with an npc
 class CompassionCard(StrengthCard):
     def __init__(self):
         super().__init__(13)
+        self.timerMax = 1
+        self.cooldownMax = 1
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.swapPlayer()
 
 class FairnessCard(StrengthCard):
     def __init__(self):
