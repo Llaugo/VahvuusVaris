@@ -20,7 +20,16 @@ class Cart():
         self.rect = self.image.get_rect(center = pos)
         self.pos = Vector2(self.rect.center)
         self.roomDist = roomDist
-        self.item = item.Item(self.pos, min(self.roomDist+2, const.roomDistMax)) # Items rarities in the carts are boosted by two rooms
+        self.item = item.Item(self.pos, min(self.roomDist+2, const.roomDistMax),12) # Items rarities in the carts are boosted by two rooms
+
+    # Returns the old item
+    def switchItem(self, newItem):
+        oldItem = self.item
+        addedItem = item.Item(self.pos, 0, 12)
+        addedItem.setName(newItem)
+        addedItem.updatePos(self.pos)
+        self.item = addedItem
+        return oldItem
 
     # Returns wheather the push was successfull
     def push(self, dir, vel, room):

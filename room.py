@@ -5,6 +5,7 @@ import item
 import text
 import cart
 import npc
+import tradeMenu
 import random
 
 # A class for rooms which consist of tiles in a grid.
@@ -20,6 +21,7 @@ class Room():
         self.carts = []                         # carts in the room
         self.npcs = []                          # npcs in the room
         self.npcCartPairs = []                  # pairs of npcs and carts
+        self.talkNpc = None                     # The npc the player is currently interacting with
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
@@ -29,8 +31,9 @@ class Room():
         self.waterRects = []                    # watertiles in the room
         self.items = []                         # items in the room
         self.adverts = []                       # adverts in the room
-        self.itemNameView = False              # If True, item names are shown
+        self.itemNameView = False               # If True, item names are shown
         self.cartOwnerView = False              # If True, npc-cart pairs are shown
+        self.tradeView = None                   # If True, show trading buttons
         self.stones = []                        # stones in the room (list[(image,rect)])
         self.darkness = None                    # None if room is dark
         self.owners = pygame.Surface(((len(self.layout[0]))*const.tileSize, (len(self.layout))*const.tileSize), flags=pygame.SRCALPHA)
@@ -44,10 +47,17 @@ class Room():
         #self.updatePos(self.pos,(0,0))          # Set positions correctly
 
     # Update room
-    def update(self):
+    def update(self, player):
         self.lightDuration = max(self.lightDuration-1, 0) # update light duration timer
         if not self.lightDuration: # Reset lights when timer runs out
             self.resetLights()
+        frontNpc = player.npcInFront(self)
+        if self.talkNpc != frontNpc: # Change the active npc
+            if self.talkNpc:
+                self.talkNpc.turnBack()
+            self.talkNpc = frontNpc
+            if frontNpc:
+                frontNpc.turn((player.facing+2)%4)
 
     # Update room position and reset all object hitboxes
     # screenCenter: center of the screen
@@ -92,6 +102,8 @@ class Room():
         for npc in self.npcs:
             npc.updatePos(screenMove)
             #self.solidRects.append(npc.rect)
+        if self.tradeView:
+            self.tradeView.updatePos(screenCenter)
 
 
     # Calcuates the point where the stream ends
@@ -243,6 +255,25 @@ class Room():
     
     def showCartOwners(self, bool):
         self.cartOwnerView = bool
+
+    # Returns True if tradeMenu could be created, False if not
+    def tradeWithNpc(self, list):
+        foundCart = None
+        if self.talkNpc:
+            npci = self.npcs.index(self.talkNpc)
+            if len(self.carts) > npci:
+                foundCart = self.carts[npci]
+        if foundCart:
+            self.tradeView = tradeMenu.TradeMenu(list, foundCart, self.pos)
+            if self.tradeView.listItem:
+                return True
+            else:
+                self.deleteTradeView()
+                return False
+        return False
+    
+    def deleteTradeView(self):
+        self.tradeView = None
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):

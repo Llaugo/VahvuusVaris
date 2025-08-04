@@ -18,6 +18,7 @@ import floorClass
 import strengthMenu
 import cart
 import npc
+import tradeMenu
 import random
 import math
 import time
@@ -39,7 +40,6 @@ upButton = button.Button(4,0,(0,0),const.scale)
 leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), "HISSIIN", (8,63,6)) # Button to exit a level
-itemButton = button.Button(14,1,(0,0),const.scale, const.gameFont(23), " OTA\nESINE", (130,63,0)) # Button to pick up items
 # Checkpoint buttons
 nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), "Seuraava kerros", (8,63,6)) # Button to start a new level
 # Menu buttons
@@ -50,7 +50,7 @@ infoButton = button.Button(16,1,(0,0),const.scale)
 
 
 # All buttons are handled from this array
-buttons = [downButton,rightButton,upButton,leftButton,liftButton,itemButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
+buttons = [downButton,rightButton,upButton,leftButton,liftButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
 
 # Background color
 backg = (160,209,255)
@@ -59,6 +59,7 @@ menuback = (180,200,215)
 menuBackground = picture.Picture("images/menu_screen.png", (4000,2000), (0,0), 0.45)
 strengthPicker = strengthMenu.StrengthMenu()
 
+shoppinglist = shoppingList.ShoppingList((0,0))
 
 async def main():
 
@@ -76,12 +77,10 @@ async def main():
     # Tracks the floor/level the player is at
     floorNumber = 1
     # The main floor object
-    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons)
+    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist)
     lobby = room.Room(const.lobbyLayout[0])
     deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())
 
-    # Shopping list
-    shoppinglist = shoppingList.ShoppingList((0,0))
 
     # Texts
     checkpointText = text.Text(const.gameFont(50), f'Kerros {floorNumber} suoritettu.', (0,0))   # Checkpoint text
@@ -92,14 +91,12 @@ async def main():
         screenMove = (newScreenSize[0]-screenSize[0], newScreenSize[1]-screenSize[1])
         newCenter = (newScreenSize[0]/2,newScreenSize[1]/2)
         lobby.updatePos(newCenter, (0,0))
-        floor.updatePos(newCenter, screenMove)
+        floor.updatePos(newScreenSize, newCenter, screenMove)
         downButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-50))
         rightButton.updatePos((newScreenSize[0]-50,newScreenSize[1]-138))
         upButton.updatePos((newScreenSize[0]-138,newScreenSize[1]-225))
         leftButton.updatePos((newScreenSize[0]-225,newScreenSize[1]-138))
         liftButton.updatePos((floor.currentRoom.rect.right+80,newScreenSize[1]/2))
-        shoppinglist.updatePos((newScreenSize[0] - floor.currentRoom.rect.left/2, newScreenSize[1]/4))
-        itemButton.updatePos((floor.currentRoom.rect.right+180,newScreenSize[1]/2))
         if deck:
             deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
         checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
@@ -128,6 +125,7 @@ async def main():
                 if deck:
                     deck.handleCards(event, screenSize)
                 strengthPicker.handleEvent(event, screenSize)
+                floor.handleButtons(event, screenSize)
 
         #########################################################
         # THE MAIN MENU
@@ -173,18 +171,8 @@ async def main():
             floor.draw(screen)                                   # current room
             for b in moveButtons:                                               # buttons
                 b.draw(screen)               
-            shoppinglist.draw(screen)                                           # shopping list
             deck.update(floor)
             deck.draw(screen)                                                   # Strength deck
-
-            # Picking up items from the room
-            for item in floor.currentRoom.items:
-                if item.rect.colliderect(floor.player.rect):  # Show the button if player is on top of the item
-                    itemButton.draw(screen)
-                    if itemButton.pressComplete:         # Take item if button is active
-                        itemButton.unpress()
-                        shoppinglist.receiveItem(item.name)
-                        floor.currentRoom.removeItem(item)
 
             # Draw the exit button, if player is at the exit
             if floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(floor.player.rect):
@@ -214,10 +202,9 @@ async def main():
                 # START NEW LEVEL
                 gameStatus = "level"                        # Change game status
                 floorNumber += 1                            # Advance floor number
-                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons)   # Create a new room
-                floor.updatePos((screenSize[0]/2,screenSize[1]/2))
+                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist)   # Create a new room
+                floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
                 floor.player.resetPos(screenSize)                 # Move player to the middle
-                timer = const.floorTime                     # Reset timer
                 #deck.reset(player, floor)                   # Reset the card deck
 
         # Update all positions if the screen size is changed

@@ -4,13 +4,15 @@ import const
 import playerClass
 import picture
 import text
+import shoppingList
+import button
 import random
 import time
 
 # A floor is a nxn  matrix of rooms.
 class Floor():
     # n: size of the floor
-    def __init__(self, n, floorNumber, moveButtons):
+    def __init__(self, n, floorNumber, moveButtons, shoppinglist):
         self.pos = (0,0)
         self.rooms: list[list[room.Room]] = [[None]*n for _ in range(n)]
         self.half = n // 2
@@ -19,10 +21,12 @@ class Floor():
         self.currentLocation = (self.half,self.half) # Player's current room coords (start from the middle)
         self.currentRoom: room.Room = self.rooms[self.half][self.half] # Player's current room
         self.player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2)) # Player initialization
+        self.shoppinglist = shoppinglist
         self.frame = picture.Picture("images/frame.png", (710,710), (0,0)) # Frame image for game area
         self.timer = const.floorTime # Timer
         self.timerText = text.Text(const.gameFont(32), time.strftime('%M:%S',time.gmtime(self.timer)),(0,0))   # Timer
         self.floorText = text.Text(const.gameFont(32), f'Kerros {floorNumber}', (0,0)) # Floor number
+        self.itemButton = button.Button(14,1,(0,0),const.scale, const.gameFont(23), " OTA\nESINE", (130,63,0)) # Button to pick up items
         self.birdsEye = pygame.Surface((self.currentRoom.background.get_width(), self.currentRoom.background.get_height())).convert() # multiple rooms view
         self.birdsEyeLevel = 0
         self.timeStop = False
@@ -94,6 +98,9 @@ class Floor():
     def showCartOwners(self, bool):
         self.currentRoom.showCartOwners(bool)
 
+    def tradeWithNpc(self):
+        self.currentRoom.tradeWithNpc(self.shoppinglist)
+
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
     def nextRoom(self, dir, player):
@@ -139,6 +146,11 @@ class Floor():
                 newRoom.removeDoor(3)
             newRoom.updatePos(self.pos)
         return newRoom
+    
+    def handleButtons(self, event, screenSize):
+        self.itemButton.handleEvent(event, screenSize)
+        if self.currentRoom.tradeView:
+            self.currentRoom.tradeView.handleButtons(event, screenSize)
         
     # Update floor
     def update(self):
@@ -147,22 +159,30 @@ class Floor():
                 self.nextRoom(i, self.player)
         if not self.timeStop:
             if not self.birdsEyeLevel:
-                self.player.update(self.currentRoom)
+                if not self.currentRoom.tradeView:
+                    self.player.update(self.currentRoom)
+                else:
+                    if self.currentRoom.tradeView.yesButton.pressComplete:
+                        self.currentRoom.tradeView.confirmTrade()
+                        self.currentRoom.deleteTradeView()
+                    elif self.currentRoom.tradeView.noButton.pressComplete:
+                        self.currentRoom.deleteTradeView()
                 if not self.advertBlock:
                     for add in self.currentRoom.adverts:
                         add.update(self.player, self.currentRoom)
-            self.currentRoom.update()
+            self.currentRoom.update(self.player)
             self.timer -= 1/60
             
-
     # update the position current room and the doors
-    def updatePos(self, screenCenter, screenMove=(0,0)):
+    def updatePos(self, newScreenSize, screenCenter, screenMove=(0,0)):
         self.pos = screenCenter
         self.currentRoom.updatePos(screenCenter, screenMove)
         self.player.updatePos(screenMove)
+        self.shoppinglist.updatePos((newScreenSize[0] - self.currentRoom.rect.left/2, newScreenSize[1]/4))
         self.frame.updatePos(screenCenter)
         self.timerText.updatePos((screenCenter[0]-143,screenCenter[1]-341))
         self.floorText.updatePos((screenCenter[0]+46,screenCenter[1]-341))
+        self.itemButton.updatePos((self.currentRoom.rect.right+180,newScreenSize[1]/2))
         self.doors[0].center = (screenCenter[0], screenCenter[1] + const.tileSize*8)
         self.doors[1].center = (screenCenter[0] + const.tileSize*8, screenCenter[1])
         self.doors[2].center = (screenCenter[0], screenCenter[1] - const.tileSize*8+10)
@@ -185,3 +205,15 @@ class Floor():
                 npc.draw(screen)
             if not playerDrawn:
                 self.player.draw(screen)
+        if self.currentRoom.tradeView:
+            self.currentRoom.tradeView.draw(screen)
+        self.shoppinglist.draw(screen)
+        # Picking up items from the room
+        if not self.currentRoom.tradeView:
+            for item in self.currentRoom.items:
+                if item.rect.colliderect(self.player.rect):  # Show the button if player is on top of the item
+                    self.itemButton.draw(screen)
+                    if self.itemButton.pressComplete:         # Take item if button is active
+                        self.itemButton.unpress()
+                        self.shoppinglist.receiveItem(item.name)
+                        self.currentRoom.removeItem(item)

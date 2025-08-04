@@ -245,9 +245,15 @@ class LeadershipCard(StrengthCard):
     def __init__(self):
         super().__init__(15)
 
+# Teamwork card makes it possible to trade items with npcs
 class TeamworkCard(StrengthCard):
     def __init__(self):
         super().__init__(16)
+        self.timerMax = 1
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.tradeWithNpc()
 
 # Forgiveness card cleans nearby waters
 class ForgivenessCard(StrengthCard):

@@ -8,7 +8,7 @@ import random
 class Item():
     # pos: location of the item
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, pos, roomDistance=0):
+    def __init__(self, pos, roomDistance=0, fontSize=30):
         self.picType = random.randint(0,3)*4 # Randomize item image
         self.shinePhase = 0 # Goes from 0 to 4 (Animation helper)
         itemSpriteSheet = pygame.image.load('images/item_sheet.png').convert() # Load items' spritesheet
@@ -16,7 +16,12 @@ class Item():
         self.image = self.itemSprite.getImage(self.picType,35,35,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.name = self.rollItem(roomDistance) # Determine item name/type
-        self.text = text.Text(const.gameFont(12),self.name,pos,(46, 49, 79)) # Item name as text
+        self.text = text.Text(const.gameFont(fontSize),self.name,pos,(46, 49, 79)) # Item name as text
+
+
+    def setName(self, newName):
+        self.name = newName
+        self.text.setText(self.name)
 
     # Update item pos
     def updatePos(self, pos):
