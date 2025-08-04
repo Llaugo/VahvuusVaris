@@ -2,6 +2,7 @@ import pygame
 import const
 import spriteSheet
 import room
+import item
 import math
 import random
 from pygame.math import Vector2
@@ -10,21 +11,25 @@ from pygame.math import Vector2
 class Cart():
     # dir: direction where the cart is facing
     # pos: location on screen
-    # roomDist: distance from the middle room (further away carts weigh more)
-    def __init__(self, pos):
+    # roomDist: distance from the middle room (for item generation)
+    def __init__(self, pos, roomDist):
         self.dir = random.randint(0,3)
         cartSpriteSheet = pygame.image.load('images/cart.png').convert() # Load player's spritesheet
         self.cartSprite = spriteSheet.SpriteSheet(cartSpriteSheet)
         self.image = self.cartSprite.getImage(self.dir,38,38,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.pos = Vector2(self.rect.center)
+        self.roomDist = roomDist
+        self.item = item.Item(self.pos, min(self.roomDist+2, const.roomDistMax)) # Items rarities in the carts are boosted by two rooms
 
     # Returns wheather the push was successfull
     def push(self, dir, vel, room):
         if dir != self.dir:
             self.newDir(dir)
         self.pos += vel*0.75
-        return not self.resolveCollision(room)
+        result = not self.resolveCollision(room)
+        self.item.updatePos(self.pos)
+        return result
 
     def newDir(self, dir):
         self.dir = dir
@@ -56,6 +61,7 @@ class Cart():
         self.image = self.cartSprite.getImage(self.dir,38,38,const.scale)
         self.rect = self.image.get_rect(center = newPos)
         self.pos = Vector2(self.rect.center)
+        self.item.updatePos(self.pos)
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

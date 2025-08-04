@@ -21,8 +21,8 @@ class ShoppingList():
         self.contents.append([const.shop[0][randint(0,4)],0,10])
         self.back = picture.Picture("images/shoplist.png", (230,230), pos) # Background image
         self.title = text.Text(const.gameFont(), "Ostoslista",(0,0)) # Title text
-        self.text1 = text.Text(const.gameFont(13), [self.contents[i][0] for i in range(len(self.contents))], (0,0), (0,0,0), 10) # Item names
-        self.text2 = text.Text(const.gameFont(13), [f'{self.contents[i][1]}/{self.contents[i][2]}' for i in range(len(self.contents))], (0,0),(0,0,0), 10) # item quantities / needs
+        self.text1 = text.Text(const.gameFont(12), [self.contents[i][0] for i in range(len(self.contents))], (0,0), (0,0,0), 10) # Item names
+        self.text2 = text.Text(const.gameFont(12), [f'{self.contents[i][1]}/{self.contents[i][2]}' for i in range(len(self.contents))], (0,0),(0,0,0), 10) # item quantities / needs
         # Rest are for showing item icon upon receiving item
         itemSpriteSheet = pygame.image.load('images/items.png').convert() # Load items' spritesheet
         self.itemSprite = spriteSheet.SpriteSheet(itemSpriteSheet)

@@ -275,6 +275,7 @@ class Room():
                 cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
                 pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
                 pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
+                pair[1].item.text.draw(screen)
             screen.blit(self.owners,self.rect.topleft)
         for cart in self.carts:
             cart.draw(screen)
@@ -324,7 +325,7 @@ class Room():
                     self.layout[i].append(tile.Tile(random.randint(1,3)))
                     halfLength = round((len(layout)-1)/2)
                     cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
-                    self.carts.append(cart.Cart(cartPos))
+                    self.carts.append(cart.Cart(cartPos, self.roomDistance))
                 elif c >= 60 and c <= 63:
                     self.layout[i].append(tile.Tile(random.randint(1,3)))
                     halfLength = round((len(layout)-1)/2)

@@ -16,11 +16,12 @@ class Item():
         self.image = self.itemSprite.getImage(self.picType,35,35,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.name = self.rollItem(roomDistance) # Determine item name/type
-        self.text = text.Text(const.gameFont(),self.name,pos,(46, 49, 79)) # Item name as text
+        self.text = text.Text(const.gameFont(12),self.name,pos,(46, 49, 79)) # Item name as text
 
     # Update item pos
     def updatePos(self, pos):
         self.rect.center = pos
+        self.text.updatePos((pos[0],pos[1]+23), True)
 
     # Draw item with animated shine effect
     def draw(self, screen):
