@@ -38,7 +38,8 @@ class Floor():
                       pygame.Rect(0, 0, const.tileSize, const.tileSize)]
 
     def breakBox(self, dist):
-        self.currentRoom.breakBox(self.player, dist)
+        if not self.currentRoom.breakBox(self.player, dist):
+            self.player.speak("Ei ole laatikoita tutkittavaksi.")
 
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)

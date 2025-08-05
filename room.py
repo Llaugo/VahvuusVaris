@@ -149,6 +149,8 @@ class Room():
         if broken:
             self.reconstruct()
             self.updatePos(self.pos)
+            return True
+        return False
 
     # Remove item from the rooms memory
     # item: the item to be removed

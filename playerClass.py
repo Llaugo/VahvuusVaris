@@ -4,6 +4,7 @@ import spriteSheet
 import button
 import tile
 import room
+import text
 import math
 from pygame.math import Vector2
 
@@ -26,6 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking (Animation helper)
         self.strength = const.basePlayerStrength
         self.aura = 0 # an area highlighted around the player to show distance of actions
+        self.speechText = text.Text(const.gameFont(14),"Default speech text",pos,(0,0,0))
+        self.speechDuration = 0
         self.resetRect(pos) # Set player pos
         self.pos = Vector2(self.rect.center)
         self.controls = controls
@@ -91,6 +94,7 @@ class Player(pygame.sprite.Sprite):
                         self.pos.y = solid.top - math.ceil(self.rect.height/2)
                 self.rect.center = (self.pos.x, self.pos.y)
                 collided = True
+        self.updateSpeech()
         return collided
                 
     # Update player's state in the room
@@ -107,6 +111,8 @@ class Player(pygame.sprite.Sprite):
             self.resetSwim()
         if self.npcCollDuration != 1 or not self.isOnNpc(room):
             self.npcCollDuration = max(self.npcCollDuration-1, 0) # update npc passthrough timer
+        if self.speechDuration:
+            self.speechDuration = max(self.speechDuration-1, 0)
 
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
@@ -126,6 +132,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.height -= 20*self.scale # Make the player rect slimmer
         self.rect.width -= 10*self.scale  # Make the player rect shorter
         self.pos = Vector2(self.rect.center)
+        self.updateSpeech()
+    
+    def updateSpeech(self):
+        self.speechText.updatePos(self.pos + (0,-36*self.scale), True)
 
     # Toggle the player size
     # room: room the player is in
@@ -212,6 +222,11 @@ class Player(pygame.sprite.Sprite):
     def changeAura(self, dist):
         self.aura = dist
 
+    def speak(self, text):
+        self.speechDuration = const.basePlayerSpeechDuration
+        self.speechText.setText(text)
+        self.updateSpeech()
+
     # Draw the player
     def draw(self, screen):
         drawRect = self.rect.copy()
@@ -220,3 +235,5 @@ class Player(pygame.sprite.Sprite):
         screen.blit(self.image, drawRect)
         if self.aura:
             pygame.draw.rect(screen, "black", [self.rect.centerx-self.aura/2, self.rect.centery-self.aura/2, self.aura, self.aura], 2)
+        if self.speechDuration:
+            self.speechText.draw(screen)

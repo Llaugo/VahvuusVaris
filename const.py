@@ -16,9 +16,10 @@ def gameFont(size=30):
 # Tile size (square of (tileSize x tileSize))
 tileSize = 46
 
-# Player's base speed
+# Player's base stats
 basePlayerSpeed = 2
 basePlayerStrength = 0
+basePlayerSpeechDuration = 180
 
 # How much time (sec) there is in each level (300 = 5min)
 floorTime = 300
