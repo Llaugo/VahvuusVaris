@@ -209,22 +209,17 @@ class LoveCard(StrengthCard):
     def __init__(self):
         super().__init__(11)
 
-# Shows the cart-npc pairs
+# Social card Shows the cart-npc pairs
 class SocialCard(StrengthCard):
     def __init__(self):
         super().__init__(12)
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.showCartOwners(True)
-
-    def update(self, floor):
-        if self.timer == 1:
-            floor.showCartOwners(False)
-        self.updateTimers()
+            floor.showCartOwners(self.timerMax)
 
     def reset(self, floor):
-        floor.showCartOwners(False)
+        floor.resetCartOwnerView()
         super().reset(floor)
 
 # Compassion card swaps the player with an npc
@@ -237,9 +232,19 @@ class CompassionCard(StrengthCard):
         if super().tryActivate(floor):
             floor.swapPlayer()
 
+# Fairness card gives the player the ability to push certain npc's cart
 class FairnessCard(StrengthCard):
     def __init__(self):
         super().__init__(14)
+        # Here timer counts how long the accessed cart is higlighted
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.askCartPushing(self.timerMax)
+
+    def reset(self, floor):
+        floor.resetCartOwnerView()
+        super().reset(floor)
 
 class LeadershipCard(StrengthCard):
     def __init__(self):

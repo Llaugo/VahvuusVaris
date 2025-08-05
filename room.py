@@ -21,6 +21,7 @@ class Room():
         self.carts = []                         # carts in the room
         self.npcs = []                          # npcs in the room
         self.npcCartPairs = []                  # pairs of npcs and carts
+        self.pushableCarts = []                 # carts that can be pushed
         self.talkNpc = None                     # The npc the player is currently interacting with
         self.initialize(layout)                 # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
@@ -32,7 +33,8 @@ class Room():
         self.items = []                         # items in the room
         self.adverts = []                       # adverts in the room
         self.itemNameView = False               # If True, item names are shown
-        self.cartOwnerView = False              # If True, npc-cart pairs are shown
+        self.cartOwnerView = None               # If not specified, show all carts
+        self.cartOwnerDuration = 0              # How long to show carts for
         self.tradeView = None                   # If True, show trading buttons
         self.stones = []                        # stones in the room (list[(image,rect)])
         self.darkness = None                    # None if room is dark
@@ -58,6 +60,9 @@ class Room():
             self.talkNpc = frontNpc
             if frontNpc:
                 frontNpc.turn((player.facing+2)%4)
+        if self.cartOwnerDuration == 1:
+            self.cartOwnerView = None
+        self.cartOwnerDuration = max(self.cartOwnerDuration-1, 0)
 
     # Update room position and reset all object hitboxes
     # screenCenter: center of the screen
@@ -229,8 +234,10 @@ class Room():
     def collideCarts(self, player, dir, vel):
         success = True
         if not player.strength:
-            return False
-        for cart in self.carts:
+            pushCarts = self.pushableCarts
+        else:
+            pushCarts = self.carts
+        for cart in pushCarts:
             if cart.rect.colliderect(player.rect):
                 if not cart.push(dir, vel, self):
                     success = False
@@ -253,8 +260,12 @@ class Room():
             return True
         return False
     
-    def showCartOwners(self, bool):
-        self.cartOwnerView = bool
+    # bool: If True, show only one cart, otherwise show all
+    def showCartOwners(self, bool, timer):
+        if timer > self.cartOwnerDuration:
+            self.cartOwnerDuration = timer
+            if bool:
+                self.cartOwnerView = None
 
     # Returns True if tradeMenu could be created, False if not
     def tradeWithNpc(self, list):
@@ -274,6 +285,22 @@ class Room():
     
     def deleteTradeView(self):
         self.tradeView = None
+
+    def askCartPushing(self,timer):
+        foundCart = None
+        if self.talkNpc:
+            npci = self.npcs.index(self.talkNpc)
+            if len(self.carts) > npci:
+                foundCart = self.carts[npci]
+        if foundCart:
+            self.pushableCarts.append(foundCart)
+            self.cartOwnerView = foundCart
+            self.showCartOwners(False, timer)
+            return True
+        return False
+    
+    def resetCartOwnerView(self):
+        self.cartOwnerDuration = 0
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -299,15 +326,24 @@ class Room():
                         pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
                         pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0] + (2 - player.facing)*700, playerPos[1]], r)
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
-        if self.cartOwnerView:
+        if self.cartOwnerDuration:
             self.owners.fill((0, 0, 0, 0))
-            for i,pair in enumerate(self.npcCartPairs):
-                npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-3-self.rect.top-4)
-                cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
-                pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
-                pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
-                pair[1].item.text.draw(screen)
-            screen.blit(self.owners,self.rect.topleft)
+            if not self.cartOwnerView: # Show all cart npc pairs
+                for i,pair in enumerate(self.npcCartPairs):
+                    npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-3-self.rect.top-4)
+                    cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
+                    pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
+                    pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
+                    pair[1].item.text.draw(screen)
+                screen.blit(self.owners,self.rect.topleft)
+            else:   # Show only one cart npc pair
+                for i,pair in enumerate(self.npcCartPairs):
+                    if self.npcCartPairs[i][1] == self.cartOwnerView:
+                        npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-3-self.rect.top-4)
+                        cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
+                        pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
+                        pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
+                screen.blit(self.owners,self.rect.topleft)
         for cart in self.carts:
             cart.draw(screen)
         # Show item name list

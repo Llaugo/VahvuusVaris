@@ -95,11 +95,17 @@ class Floor():
     def swapPlayer(self):
         self.currentRoom.swapPlayer(self.player)
 
-    def showCartOwners(self, bool):
-        self.currentRoom.showCartOwners(bool)
+    def showCartOwners(self, timer):
+        self.currentRoom.showCartOwners(True, timer)
 
     def tradeWithNpc(self):
         self.currentRoom.tradeWithNpc(self.shoppinglist)
+
+    def askCartPushing(self, timer):
+        self.currentRoom.askCartPushing(timer)
+
+    def resetCartOwnerView(self):
+        self.currentRoom.resetCartOwnerView()
 
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
