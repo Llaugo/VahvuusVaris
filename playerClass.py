@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking (Animation helper)
         self.strength = const.basePlayerStrength
         self.aura = 0 # an area highlighted around the player to show distance of actions
-        self.speechText = text.Text(const.gameFont(14),"Default speech text",pos,(0,0,0))
+        self.speechText = text.Text(const.gameFont(14),"Init player text",pos,(0,0,0))
         self.speechDuration = 0
         self.resetRect(pos) # Set player pos
         self.pos = Vector2(self.rect.center)

@@ -29,14 +29,6 @@ floorSize = 9
 itemProbability = 0.05 # Probability that a shelf tile has an item on it
 darknessProbability = 0.1 # Probability that a room is dark
 
-# All the items that can appear in the shopping list and in the shop
-# The first list has the most common items and the last list has the least common items
-shop = [["Kirsikkatomaatti", "Satsuma", "Valkosipuli", "Myskikurpitsa", "Mango"],
-        ["Välipalakeksi", "Fusilli", "Kaurahiutale", "Kvinoa", "Linssisipsit"],
-        ["Rasvaton maito", "Kreikkalainen jogurtti", "Pakaste katkaravut", "Manchego", "Halloumi"],
-        ["Kasvisliemikuutio", "Rosmariini", "Oliiviöljy", "Inkivääri", "Balsamico"],
-        ["Viiriäisen munat", "Karambola", "Sahrami", "Murot", "Runebergin torttu"]]
-
 # Item type rarities with cumulative distributions from the most common item type on the left to the rarest item type on the right.
 # The item rarities change with respect to the room distance from the starting room
 # Example: The first list tells that the starting room has 78% chance to spawn rarity 1 items
@@ -59,10 +51,113 @@ One layout is a square of numbers, each number representing a type of tile.
 0 = Wall
 1 = Floor
 2 = Shelf (Produces collectable items)
-3 = Start
+3 = Start/Exit
 4 = Crate (can't be passed by without an active strength)
+5 = Cart
+6 = NPC
+7 = Water
+8 = Advert screen
 '''
 lobbyLayout  = layoutLoader.readLayout("rooms/lift.csv")
 startLayouts = layoutLoader.readLayout("rooms/startRooms.csv")
 roomLayouts  = layoutLoader.readLayout("rooms/roomLayouts.csv")
 testRoom     = layoutLoader.readLayout("rooms/testRoom.csv")
+
+'''
+All the words and sentences used in the game in different languages.
+i=0: Suomi
+i=1: English
+i=2: Svenska
+'''
+phrase = [
+["HISSIIN",                                 # 0: hissinapissa
+     "Seuraava kerros",                     # 1: levelin aloitusnapissa
+     "Kerros",                              # 2: checkpoint otsikon osa 1 & Kerrosnumeron edessä
+     "suoritettu",                          # 3: checkpoint otsikon osa 2
+     " OTA\nESINE",                         # 4: esinenapissa
+     "", # 5: 
+     "Huoneessa olevat esineet:",           # 6: huoneen esinelista
+     "Ostoslista",                          # 7: Ostoslistan otsikko
+     "AKTIVOI\nKORTTI",                     # 8: kortin aktivointinappi
+     "Vahvistetaanko kauppa?",              # 9: kaupankäyntinäkymän otsikko
+     "KYLLÄ",                               # 10: kaupankäynnin hyväksyntä
+     "EI",                                  # 11: kaupankäynnin kielto
+     "Takaisin päävalikkoon",               # 12: vahvuusvalikon paluunapissa
+     "Arvo vahvuudet",                      # 13: vahvuuksien arpomisnapissa
+     "Aloita seikkailu!",                   # 14: vahvuusvalikon hyväksymisnappi
+     "Viisaus ja tieto",                    # 15: Vahvuusvalikon vahvuusotsikko
+     "Rohkeus",                             # 16: ––––––––––––||––––––––––––
+     "Inhimillisyys",                       # 17: ––––––––––––||––––––––––––
+     "Oikeudenmukaisuus",                   # 18: ––––––––––––||––––––––––––
+     "Kohtuullisuus",                       # 19: ––––––––––––||––––––––––––
+     "Henkisyys",                           # 20: ––––––––––––||––––––––––––
+     "Kirsikkatomaatti",                    # 21: Kaupan esineet ->
+     "Satsuma",                             # 22
+     "Valkosipuli",                         # 23
+     "Myskikurpitsa",                       # 24
+     "Mango",                               # 25
+     "Välipalakeksi",                       # 26
+     "Fusilli",                             # 27
+     "Kaurahiutale",                        # 28
+     "Kvinoa",                              # 29
+     "Linssisipsit",                        # 30
+     "Rasvaton maito",                      # 31
+     "Kreikkalainen jogurtti",              # 32
+     "Pakaste katkaravut",                  # 33
+     "Manchego",                            # 34
+     "Halloumi",                            # 35
+     "Kasvisliemikuutio",                   # 36
+     "Rosmariini",                          # 37
+     "Oliiviöljy",                          # 38
+     "Inkivääri",                           # 39
+     "Balsamico",                           # 40
+     "Viiriäisen munat",                    # 41
+     "Karambola",                           # 42
+     "Sahrami",                             # 43
+     "Murot",                               # 44
+     "Runebergin torttu",                   # 45 <- kaupan esineet
+     "Ei ole laatikoita tutkittavaksi.",    # 46: uteliaisuuden aktivointi liian kaukana laatikoista
+     "Huoneessa on jo valoisaa.",           # 47: oppimisen ilon aktivointi jos huoneessa ei ole pimeä
+     "Ei tarjouksia näkyvillä.",            # 48: rehellisyyden aktivointi ei käännä yhtään tarjousta
+     "",
+     "",
+     "Luovuuden lennokki",                  # ??: Vahvuuskorttien otsikot
+     "Uteliaisuuden suurennuslasi",
+     "Arviointikyvyn kaukoputki",
+     "Oppimisen ilon hehkulamppu",
+     "Näkökulmanottokyvyn nelikopteri",
+     "Rohkeuden rukkaset",
+     "Sinnikyyden saappaat",
+     "Rehellisyyden radio",
+     "Innostuksen juoksukengät",
+     "Sisukkuuden sapeli",
+     "Ystävällisyyden kukkakimppu",
+     "Rakkauden rakettireppu",
+     "Sosiaalisen älykkyyden silmälasit",
+     "Myötätunnon peili",
+     "Reiluuden lapaset",
+     "Johtajuuden päähine",
+     "Ryhmätyötaitojen tarjotin",
+     "Anteeksiantavuuden pyyhe",
+     "Vaatimattomuuden viitta",
+     "Harkitsevuuden hörppy",
+     "Itsesäätelyn suojakilpi",
+     "Kauneuden arvostuksen kamera",
+     "Kiitollisuuden kivet",
+     "Toiveikkuuden taskulamppu",
+     "Huumorintajun räpylät",
+     "Hengellisyyden kynttilä",
+     ""],
+["EXIT",
+     ""],
+["HISSEN",
+     ""]]
+
+# All the items that can appear in the shopping list and in the shop
+# The first list has the most common items and the last list has the least common items
+def shop(lang):
+    return [[phrase[lang][21], phrase[lang][22], phrase[lang][23], phrase[lang][24], phrase[lang][25]],
+            [phrase[lang][26], phrase[lang][27], phrase[lang][28], phrase[lang][29], phrase[lang][30]],
+            [phrase[lang][31], phrase[lang][32], phrase[lang][33], phrase[lang][34], phrase[lang][35]],
+            [phrase[lang][36], phrase[lang][37], phrase[lang][38], phrase[lang][39], phrase[lang][40]],
+            [phrase[lang][41], phrase[lang][42], phrase[lang][43], phrase[lang][44], phrase[lang][45]]]

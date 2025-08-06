@@ -101,7 +101,7 @@ class LearningCard(StrengthCard):
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.currentRoom.changeDarkness(0, 0, True)
+            floor.changeDarkness(0, 0, True)
 
 # Perspective card shows the rooms around the current room
 class PerspectiveCard(StrengthCard):

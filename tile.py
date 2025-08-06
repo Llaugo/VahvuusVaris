@@ -9,13 +9,13 @@ import random
 # Class for different tiles in the rooms
 class Tile():
     # tileType: The number tells what kind of tile this is and what image to use for it
-    # pos: A double for the x and y coordinates of the tile center
-    # scale: For determining the image size
+    # lang: language of the game
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, tileType, roomDistance=0):
+    def __init__(self, tileType, lang, roomDistance=0):
         tileSpriteSheet = pygame.image.load('images/shopsprite.png').convert() # Load tile spritesheet
         self.tileSprite = spriteSheet.SpriteSheet(tileSpriteSheet)
         self.tileType = tileType
+        self.lang = lang
         self.pos = (0,0)
         self.scale = const.scale
         self.itemCorner = (random.randint(0,1)*2-1, random.randint(0,1)*2-1) # helps to figure out and randomize item location on the tile
@@ -27,7 +27,7 @@ class Tile():
         if tileType < 8: self.solid = False # The first six tile types are not solid and can be walked on
         self.neighbours = [None, None, None, None] # Down, Right, Up, Left
         if self.isShelf() and const.itemProbability > random.random(): # Randomize if a shelf tile has an item or not
-            self.item = item.Item(self.itemPos(), roomDistance)
+            self.item = item.Item(self.itemPos(), self.lang, roomDistance)
 
 
     # Method for setting another tile as a neighbour for this one

@@ -7,7 +7,9 @@ import shoppingList
 
 
 class TradeMenu():
-    def __init__(self, list: shoppingList.ShoppingList, cart, pos):
+    # lang: language of the game
+    def __init__(self, list: shoppingList.ShoppingList, cart, pos, lang):
+        self.lang = lang
         self.list = list
         self.listItem = None
         self.itemI = 0
@@ -20,11 +22,11 @@ class TradeMenu():
         self.cart = cart
         #self.pos = (0,0)
         self.background = picture.Picture("images/trade_view.png", (710,710), (0,0))
-        self.infoText = text.Text(const.gameFont(46), "Vahvistetaanko kauppa?",(0,0))
+        self.infoText = text.Text(const.gameFont(46), const.phrase[self.lang][9],(0,0))
         self.oldItem = text.Text(const.gameFont(40), f"- {self.listItem}", (0,0), (255,0,0))
         self.newItem = text.Text(const.gameFont(40), f"+ {self.cart.item.name}", (0,0), (0,255,0))
-        self.yesButton = button.Button(10,1,(0,0),const.scale, const.gameFont(23), "KYLLÄ")
-        self.noButton = button.Button(12,1,(0,0),const.scale, const.gameFont(23), "EI")
+        self.yesButton = button.Button(10,1,(0,0),const.scale, const.gameFont(23), const.phrase[self.lang][10])
+        self.noButton = button.Button(12,1,(0,0),const.scale, const.gameFont(23), const.phrase[self.lang][11])
         self.background.blitOnto(self.infoText.surfaces[0], (-self.infoText.surfaces[0].get_width()/2,-200), True)
         self.background.blitOnto(self.oldItem.surfaces[0], (-self.oldItem.surfaces[0].get_width()/2,-100), True)
         self.background.blitOnto(self.newItem.surfaces[0], (-self.newItem.surfaces[0].get_width()/2,-50), True)

@@ -9,8 +9,10 @@ import math
 class StrengthDeck():
     # cards: list of strength cards
     # font: font used by the deck to show texts
-    def __init__(self, cards):
+    # lang: language of the game
+    def __init__(self, cards, lang):
         self.pos = (0,0)
+        self.lang = lang
         self.shinePhase = 0
         overlaySpriteSheet = pygame.image.load('images/card_overlay.png').convert() # Load strength spritesheet
         self.overlaySprite = spriteSheet.SpriteSheet(overlaySpriteSheet)
@@ -20,7 +22,7 @@ class StrengthDeck():
             overlay = self.overlaySprite.getImage(0,250,350,const.scale/2)
             rect = overlay.get_rect()
             self.overlays.append((overlay,rect))
-        self.activateButton = button.Button(12,0,(0,0), const.scale, const.gameFont(19), "AKTIVOI\nKORTTI")
+        self.activateButton = button.Button(12,0,(0,0), const.scale, const.gameFont(19), const.phrase[self.lang][8])
         self.background: pygame.Surface = None # Background to blit every card image
 
     # Update position of the cards on the screen

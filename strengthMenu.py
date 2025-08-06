@@ -8,7 +8,9 @@ import random
 
 # Class for the menu where the strength cards can be looked at and selected
 class StrengthMenu():
-    def __init__(self):
+    # lang: language of the game
+    def __init__(self, lang):
+        self.lang = lang
         self.pos = (0,0)
         self.background = None
         self.decks: list[list[tuple[strengthCard.StrengthCard,pygame.Rect]]] = [] # every card in categorized lists
@@ -22,19 +24,19 @@ class StrengthMenu():
         self.cardPiles = []
         for i in range(6):
             self.cardPiles.append(picture.Picture("images/card_pile.png",(246,386), (0,0), 0.45))
-        self.titles = [text.Text(const.gameFont(15), "Viisaus ja tieto", (0,0)),
-                       text.Text(const.gameFont(15), "Rohkeus", (0,0)),
-                       text.Text(const.gameFont(15), "Inhimillisyys", (0,0)),
-                       text.Text(const.gameFont(15), "Oikeudenmukaisuus", (0,0)),
-                       text.Text(const.gameFont(15), "Kohtuullisuus", (0,0)),
-                       text.Text(const.gameFont(15), "Henkisyys", (0,0))]
+        self.titles = [text.Text(const.gameFont(15), const.phrase[self.lang][15], (0,0)),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][16], (0,0)),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][17], (0,0)),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][18], (0,0)),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][19], (0,0)),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][20], (0,0))]
         self.inspectPile = 0
         self.strengthBackground = picture.Picture("images/strength_menu.png", (2500,1500), (0,0), 0.45)
         self.otter = picture.Picture("images/otter_1.png", (140,195), (0,0), 0.45)
         self.randomizeFavo()
-        self.backButton = button.Button(0,4,(0,0), 0.45, const.gameFont(13), "Takaisin päävalikkoon")
-        self.randomizeButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), "Arvo vahvuudet")
-        self.readyButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), "Aloita seikkailu!")
+        self.backButton = button.Button(0,4,(0,0), 0.45, const.gameFont(13), const.phrase[self.lang][12])
+        self.randomizeButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), const.phrase[self.lang][13])
+        self.readyButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), const.phrase[self.lang][14])
         self.buttons = [self.backButton,self.randomizeButton,self.readyButton]
 
     def getDeck(self):

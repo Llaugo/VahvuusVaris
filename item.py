@@ -7,8 +7,10 @@ import random
 
 class Item():
     # pos: location of the item
+    # lang: language of the game
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, pos, roomDistance=0, fontSize=30):
+    def __init__(self, pos, lang, roomDistance=0, fontSize=30):
+        self.lang = lang
         self.picType = random.randint(0,3)*4 # Randomize item image
         self.shinePhase = 0 # Goes from 0 to 4 (Animation helper)
         itemSpriteSheet = pygame.image.load('images/item_sheet.png').convert() # Load items' spritesheet
@@ -41,7 +43,7 @@ class Item():
         randomFloat = random.random()
         for i in range(len(const.itemRarity[roomDistance])): # Get item rarities according to the room distance
             if randomFloat <= const.itemRarity[roomDistance][i]: # Compare rarity list to the random float
-                return const.shop[i][random.randint(0,4)]
+                return const.shop(self.lang)[i][random.randint(0,4)]
         raise ValueError('Could not determine item based on rarity level.')
         
 

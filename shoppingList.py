@@ -10,17 +10,19 @@ class ShoppingList():
     # titleFont: font for the title text
     # textFont: font for the (smaller) text used for the item list
     # pos: position of the list on the screen
-    def __init__(self, pos):
+    # lang: language of the game
+    def __init__(self, pos, lang):
         # self.contents has 5 lists of type [item name, items posessed, items needed] for each item rarity level
         self.pos = pos
+        self.lang = lang
         self.contents = []
-        self.contents.append([const.shop[4][randint(0,4)],0,1]) # Item from each rarity level is picked at random
-        self.contents.append([const.shop[3][randint(0,4)],0,2])
-        self.contents.append([const.shop[2][randint(0,4)],0,4])
-        self.contents.append([const.shop[1][randint(0,4)],0,6])
-        self.contents.append([const.shop[0][randint(0,4)],5,10])
+        self.contents.append([const.shop(self.lang)[4][randint(0,4)],0,1]) # Item from each rarity level is picked at random
+        self.contents.append([const.shop(self.lang)[3][randint(0,4)],0,2])
+        self.contents.append([const.shop(self.lang)[2][randint(0,4)],0,4])
+        self.contents.append([const.shop(self.lang)[1][randint(0,4)],0,6])
+        self.contents.append([const.shop(self.lang)[0][randint(0,4)],5,10])
         self.back = picture.Picture("images/shoplist.png", (260,230), pos) # Background image
-        self.title = text.Text(const.gameFont(), "Ostoslista",(0,0)) # Title text
+        self.title = text.Text(const.gameFont(), const.phrase[self.lang][7],(0,0)) # Title text
         self.text1 = text.Text(const.gameFont(14), [self.contents[i][0] for i in range(len(self.contents))], (0,0), (0,0,0), 10) # Item names
         self.text2 = text.Text(const.gameFont(14), [f'{self.contents[i][1]}/{self.contents[i][2]}' for i in range(len(self.contents))], (0,0),(0,0,0), 10) # item quantities / needs
         # Rest are for showing item icon upon receiving item
@@ -38,7 +40,7 @@ class ShoppingList():
                 self.contents[i][1] = min(self.contents[i][1] + 1, self.contents[i][2]) # Increase item count
                 self.text2.setText(f'{self.contents[i][1]}/{self.contents[i][2]}' for i in range(len(self.contents))) # Change display text
                 imgNum = 0
-                for i,name in enumerate([x for xs in const.shop for x in xs]): # Find item name in flattened list of all items
+                for i,name in enumerate([x for xs in const.shop(self.lang) for x in xs]): # Find item name in flattened list of all items
                     if name == itemName:
                         imgNum = i
                 self.itemImage = self.itemSprite.getImage(imgNum,46,46,const.scale) # show item image

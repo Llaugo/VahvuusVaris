@@ -12,12 +12,14 @@ import time
 # A floor is a nxn  matrix of rooms.
 class Floor():
     # n: size of the floor
-    def __init__(self, n, floorNumber, moveButtons, shoppinglist):
+    # lang: language of the game
+    def __init__(self, n, floorNumber, moveButtons, shoppinglist, lang):
         self.pos = (0,0)
+        self.lang = lang
         self.rooms: list[list[room.Room]] = [[None]*n for _ in range(n)]
         self.half = n // 2
-        #self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts))
-        self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom)) # FOR TESTING
+        #self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang)
+        self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang) # FOR TESTING
         self.currentLocation = (self.half,self.half) # Player's current room coords (start from the middle)
         self.currentRoom: room.Room = self.rooms[self.half][self.half] # Player's current room
         self.player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2)) # Player initialization
@@ -25,8 +27,8 @@ class Floor():
         self.frame = picture.Picture("images/frame.png", (710,710), (0,0)) # Frame image for game area
         self.timer = const.floorTime # Timer
         self.timerText = text.Text(const.gameFont(32), time.strftime('%M:%S',time.gmtime(self.timer)),(0,0))   # Timer
-        self.floorText = text.Text(const.gameFont(32), f'Kerros {floorNumber}', (0,0)) # Floor number
-        self.itemButton = button.Button(14,1,(0,0),const.scale, const.gameFont(23), " OTA\nESINE", (130,63,0)) # Button to pick up items
+        self.floorText = text.Text(const.gameFont(32), f'{const.phrase[self.lang][2]} {floorNumber}', (0,0)) # Floor number
+        self.itemButton = button.Button(14,1,(0,0),const.scale, const.gameFont(23), const.phrase[self.lang][4], (130,63,0)) # Button to pick up items
         self.birdsEye = pygame.Surface((self.currentRoom.background.get_width(), self.currentRoom.background.get_height())).convert() # multiple rooms view
         self.birdsEyeLevel = 0
         self.timeStop = False
@@ -39,13 +41,17 @@ class Floor():
 
     def breakBox(self, dist):
         if not self.currentRoom.breakBox(self.player, dist):
-            self.player.speak("Ei ole laatikoita tutkittavaksi.")
+            self.player.speak(const.phrase[self.lang][46])
 
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)
 
     def showItemNames(self, bool):
         self.currentRoom.showItemNames(bool)
+
+    def changeDarkness(self, radius, duration, clear=False):
+        if not self.currentRoom.changeDarkness(radius, duration, clear):
+            self.player.speak(const.phrase[self.lang][47])
 
     def cleanWater(self, dist):
         self.currentRoom.cleanWater(self.player, dist)
@@ -89,6 +95,8 @@ class Floor():
         if rotated:
             self.currentRoom.updatePos(self.pos,(0,0))
             self.currentRoom.reconstruct()
+        else:
+            self.player.speak(const.phrase[self.lang][48])
 
     def destroyAdvert(self, dist):
         self.currentRoom.destroyAdvert(self.player, dist)
@@ -140,7 +148,7 @@ class Floor():
             newRoom = self.rooms[x][y]
         else:
             distFromMiddle = abs(x - self.half) + abs(y - self.half)
-            newRoom = room.Room(random.choice(const.roomLayouts), distFromMiddle)
+            newRoom = room.Room(random.choice(const.roomLayouts), self.lang, distFromMiddle)
             self.rooms[x][y] = newRoom
             # Delete doors that would out of index
             if x == 0:

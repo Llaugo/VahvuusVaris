@@ -11,8 +11,10 @@ from pygame.math import Vector2
 class Cart():
     # dir: direction where the cart is facing
     # pos: location on screen
+    # lang: language of the game
     # roomDist: distance from the middle room (for item generation)
-    def __init__(self, pos, roomDist):
+    def __init__(self, pos, lang, roomDist):
+        self.lang = lang
         self.dir = random.randint(0,3)
         cartSpriteSheet = pygame.image.load('images/cart.png').convert() # Load player's spritesheet
         self.cartSprite = spriteSheet.SpriteSheet(cartSpriteSheet)
@@ -20,12 +22,12 @@ class Cart():
         self.rect = self.image.get_rect(center = pos)
         self.pos = Vector2(self.rect.center)
         self.roomDist = roomDist
-        self.item = item.Item(self.pos, min(self.roomDist+2, const.roomDistMax),12) # Items rarities in the carts are boosted by two rooms
+        self.item = item.Item(self.pos, self.lang, min(self.roomDist+2, const.roomDistMax),12) # Items rarities in the carts are boosted by two rooms
 
     # Returns the old item
     def switchItem(self, newItem):
         oldItem = self.item
-        addedItem = item.Item(self.pos, 0, 12)
+        addedItem = item.Item(self.pos, self.lang, 0, 12)
         addedItem.setName(newItem)
         addedItem.updatePos(self.pos)
         self.item = addedItem

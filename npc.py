@@ -24,7 +24,7 @@ class Npc():
         self.turn(self.baseDir)
 
     def updatePos(self, screenMove):
-        self.setPos((self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 20))
+        self.setPos((self.rect[0] + screenMove[0]/2 + 18, self.rect[1] + screenMove[1]/2 + 17))
 
     def setPos(self, pos):
         self.pos = pos

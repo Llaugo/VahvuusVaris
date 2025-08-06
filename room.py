@@ -12,8 +12,10 @@ import random
 class Room():
     # layout: the tile layout in the room
     # pos: position of the room
+    # lang: language of the game
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, layout, roomDistance=0):
+    def __init__(self, layout, lang, roomDistance=0):
+        self.lang = lang
         self.layout: list[list[tile.Tile]] = [] # Matrix of every tile
         self.pos = (0,0)                        # Room center
         self.roomDistance = roomDistance
@@ -31,6 +33,7 @@ class Room():
         self.solidRects = []                    # walls and solid objects of the room
         self.waterRects = []                    # watertiles in the room
         self.items = []                         # items in the room
+        self.itemNamesTitle = text.Text(const.gameFont(32), const.phrase[self.lang][6],(0,0),(25, 28, 54)) # Title for the item names list
         self.adverts = []                       # adverts in the room
         self.itemNameView = False               # If True, item names are shown
         self.cartOwnerView = None               # If not specified, show all carts
@@ -69,7 +72,7 @@ class Room():
     # how much the screen size (x,y) has been changed
     def updatePos(self, screenCenter, screenMove=(0,0)):
         self.pos = screenCenter
-        self.rect = self.background.get_rect(center = self.pos)
+        self.rect.center = self.pos
         halfLength = round((len(self.layout)-1)/2)  # Helper value
         self.solidRects: list[pygame.Rect] = []     # Reset solids
         self.waterRects: list[pygame.Rect] = []     # Reset waters
@@ -188,7 +191,10 @@ class Room():
     # radius: radius of the lit area, negative numbers create a beam of light in front of the player
     # duration: duration of the light being on
     # clear: if True, get rid of darkness altogether
+    # Returns True if there was darkness to be changed
     def changeDarkness(self, radius, duration, clear=False):
+        if not self.darkness:
+            return False
         if clear:
             self.darkness = None
             self.litRadius = 0
@@ -196,6 +202,7 @@ class Room():
         elif duration > self.lightDuration:
             self.litRadius = radius
             self.lightDuration = duration
+        return True
 
     # Reset the lit area around the player
     def resetLights(self):
@@ -277,7 +284,7 @@ class Room():
             if len(self.carts) > npci:
                 foundCart = self.carts[npci]
         if foundCart:
-            self.tradeView = tradeMenu.TradeMenu(list, foundCart, self.pos)
+            self.tradeView = tradeMenu.TradeMenu(list, foundCart, self.pos, self.lang)
             if self.tradeView.listItem:
                 return True
             else:
@@ -375,39 +382,39 @@ class Room():
             for j,c in enumerate(row):
                 if c == 0: # Wall
                     if lift: # Lift has special walls
-                        self.layout[i].append(tile.Tile(18))
+                        self.layout[i].append(tile.Tile(18, self.lang))
                     else:
-                        self.layout[i].append(tile.Tile(8))
+                        self.layout[i].append(tile.Tile(8, self.lang))
                 elif c == 1: # Floor
                     if lift: # Lift has special floor
-                        self.layout[i].append(tile.Tile(4))
+                        self.layout[i].append(tile.Tile(4, self.lang))
                     else:
-                        self.layout[i].append(tile.Tile(random.randint(1,3)))
+                        self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(9,17), self.roomDistance))
+                    self.layout[i].append(tile.Tile(random.randint(9,17), self.lang, self.roomDistance))
                 elif c == 3: # Exit
-                    self.exit = tile.Tile(0)
+                    self.exit = tile.Tile(0, self.lang)
                     self.layout[i].append(self.exit)
                 elif c == 4: # Crate
-                    self.layout[i].append(tile.Tile(5))
+                    self.layout[i].append(tile.Tile(5, self.lang))
                 elif c == 5:
-                    self.layout[i].append(tile.Tile(random.randint(1,3)))
+                    self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)
                     cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
-                    self.carts.append(cart.Cart(cartPos, self.roomDistance))
+                    self.carts.append(cart.Cart(cartPos, self.lang, self.roomDistance))
                 elif c >= 60 and c <= 63:
-                    self.layout[i].append(tile.Tile(random.randint(1,3)))
+                    self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)
                     npcPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize+3)
                     self.npcs.append(npc.Npc(npcPos,c-60))
                 elif c == 7: # Water
-                    self.layout[i].append(tile.Tile(19))
+                    self.layout[i].append(tile.Tile(19, self.lang))
                 elif c >= 80 and c <= 83:
-                    newTile = tile.Tile(7)
+                    newTile = tile.Tile(7, self.lang)
                     newTile.setAdvert(c-80)
                     self.layout[i].append(newTile)
                 elif c > 0:
-                    self.layout[i].append(tile.Tile(4))
+                    self.layout[i].append(tile.Tile(4, self.lang))
                 else:
                     raise ValueError(f'The room layout contains unknown value: {c}')
         # Set the neighbours for the tiles
@@ -417,8 +424,6 @@ class Room():
                     self.layout[j-1][i].setNeighbour(0,c)
                 if i: # Set the previous tile as neighbour if this isn't the first tile
                     self.layout[j][i-1].setNeighbour(1,c)
-        # Set the title for the item names list
-        self.itemNamesTitle = text.Text(const.gameFont(32),"Huoneessa olevat esineet:",(0,0),(25, 28, 54))
         # pair npcs with carts
         random.shuffle(self.carts)              # Shuffle carts to randomize pairing with npcs
         for i in range(min(len(self.npcs),len(self.carts))): # Zip the list with Nones as fillers

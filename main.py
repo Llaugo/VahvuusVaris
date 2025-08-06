@@ -32,6 +32,8 @@ random.seed(seed)
 print(seed)
 
 screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RESIZABLE) # Set up screen
+# Language of the game (Default in Finnish)
+lang = 0
 
 # Initialize buttons
 downButton = button.Button(0,0,(0,0),const.scale)
@@ -39,9 +41,9 @@ rightButton = button.Button(2,0,(0,0),const.scale)
 upButton = button.Button(4,0,(0,0),const.scale)
 leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
-liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), "HISSIIN", (8,63,6)) # Button to exit a level
+liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), const.phrase[lang][0], (8,63,6)) # Button to exit a level
 # Checkpoint buttons
-nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), "Seuraava kerros", (8,63,6)) # Button to start a new level
+nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), const.phrase[lang][1], (8,63,6)) # Button to start a new level
 # Menu buttons
 startButton = button.Button(16,1,(0,0),const.scale)
 continueButton = button.Button(16,1,(0,0),const.scale)
@@ -57,9 +59,9 @@ backg = (160,209,255)
 menuback = (180,200,215)
 # Menu elements
 menuBackground = picture.Picture("images/menu_screen.png", (4000,2000), (0,0), 0.45)
-strengthPicker = strengthMenu.StrengthMenu()
+strengthPicker = strengthMenu.StrengthMenu(lang)
 
-shoppinglist = shoppingList.ShoppingList((0,0))
+shoppinglist = shoppingList.ShoppingList((0,0), lang)
 
 async def main():
 
@@ -77,13 +79,13 @@ async def main():
     # Tracks the floor/level the player is at
     floorNumber = 1
     # The main floor object
-    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist)
-    lobby = room.Room(const.lobbyLayout[0])
-    deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())
+    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang)
+    lobby = room.Room(const.lobbyLayout[0],lang)
+    deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
 
 
     # Texts
-    checkpointText = text.Text(const.gameFont(50), f'Kerros {floorNumber} suoritettu.', (0,0))   # Checkpoint text
+    checkpointText = text.Text(const.gameFont(50), f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.', (0,0))   # Checkpoint text
     debugText = text.Text(const.gameFont(20), f'FPS: {round(clock.get_fps())}',(20,20))          # Debug text
 
     # Updates all positions of all elements on the screen, when the screen size is changed
@@ -155,7 +157,7 @@ async def main():
             if strengthPicker.readyButton.pressComplete:
                 strengthPicker.readyButton.unpress()
                 gameStatus = "level"
-                deck = strengthDeck.StrengthDeck(strengthPicker.getDeck())
+                deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
                 deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
 
 
@@ -193,7 +195,7 @@ async def main():
             lobby.draw(screen, floor.player)                                              # Room
             floor.player.draw(screen)                                       # Player
             floor.player.update(lobby)
-            checkpointText.draw(screen,f'Kerros {floorNumber} suoritettu.') # Text
+            checkpointText.draw(screen,f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.') # Text
             nextFloorButton.draw(screen)                                    # Next floor button
 
             # Check if nextFloorButton is pressed
@@ -202,7 +204,7 @@ async def main():
                 # START NEW LEVEL
                 gameStatus = "level"                        # Change game status
                 floorNumber += 1                            # Advance floor number
-                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist)   # Create a new room
+                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang)   # Create a new room
                 floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
                 floor.player.resetPos(screenSize)                 # Move player to the middle
                 #deck.reset(player, floor)                   # Reset the card deck
