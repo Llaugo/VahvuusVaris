@@ -21,7 +21,6 @@ import npc
 import tradeMenu
 import random
 import math
-import time
 
 
 

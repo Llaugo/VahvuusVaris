@@ -75,7 +75,7 @@ phrase = [
      "Kerros",                              # 2: checkpoint otsikon osa 1 & Kerrosnumeron edessä
      "suoritettu",                          # 3: checkpoint otsikon osa 2
      " OTA\nESINE",                         # 4: esinenapissa
-     "", # 5: 
+     "TOINEN\nESINE",                       # 5: vaihda kaupattavaa esinettä
      "Huoneessa olevat esineet:",           # 6: huoneen esinelista
      "Ostoslista",                          # 7: Ostoslistan otsikko
      "AKTIVOI\nKORTTI",                     # 8: kortin aktivointinappi
