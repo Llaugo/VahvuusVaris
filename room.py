@@ -66,6 +66,8 @@ class Room():
         if self.cartOwnerDuration == 1:
             self.cartOwnerView = None
         self.cartOwnerDuration = max(self.cartOwnerDuration-1, 0)
+        for npc in self.npcs:
+            npc.update(self, player)
 
     # Update room position and reset all object hitboxes
     # screenCenter: center of the screen
@@ -253,15 +255,16 @@ class Room():
         return advertHit
 
     # Returns wheather the the carts were pushed
-    def collideCarts(self, player, dir, vel):
+    # pusher: entity pushing the cart, player/npc (has to have .strength and .rect)
+    def collideCarts(self, pusher, dir, vel, player):
         success = True
-        if not player.strength:
+        if not pusher.strength:
             pushCarts = self.pushableCarts
         else:
             pushCarts = self.carts
         for cart in pushCarts:
-            if cart.rect.colliderect(player.rect):
-                if not cart.push(dir, vel, self):
+            if cart.rect.colliderect(pusher.rect):
+                if not cart.push(dir, vel, self, pusher, player):
                     success = False
         return success
     
@@ -327,6 +330,25 @@ class Room():
             return 1
         return 0
     
+    # Returns -1 if no NPC, 0 if no NPC's cart, 1 if cart obstructed and 2 if successful
+    def leadCartPushing(self):
+        foundCart = None
+        if self.talkNpc:
+            npci = self.npcs.index(self.talkNpc)
+            if len(self.carts) > npci:
+                foundCart = self.carts[npci]
+        else:
+            return -1
+        if foundCart:
+            cartPushPos = foundCart.pos + (37*(foundCart.dir%2)*(foundCart.dir-2), 37*((foundCart.dir-1)%2*(foundCart.dir-1)))
+            if self.talkNpc.teleport(cartPushPos, self):
+                self.talkNpc.turnBack(foundCart.dir)
+                self.talkNpc.walk(const.npcWalkDur)
+                return 2
+            else:
+                return 1
+        return 0
+    
     def resetCartOwnerView(self):
         self.cartOwnerDuration = 0
 
@@ -358,8 +380,8 @@ class Room():
             self.owners.fill((0, 0, 0, 0))
             if not self.cartOwnerView: # Show all cart npc pairs
                 for i,pair in enumerate(self.npcCartPairs):
-                    npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-3-self.rect.top-4)
-                    cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
+                    npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-self.rect.top+1)
+                    cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-self.rect.top+1)
                     pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
                     pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
                     pair[1].item.text.draw(screen)
@@ -371,8 +393,8 @@ class Room():
             else:   # Show only one cart npc pair
                 for i,pair in enumerate(self.npcCartPairs):
                     if self.npcCartPairs[i][1] == self.cartOwnerView:
-                        npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-3-self.rect.top-4)
-                        cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-3-self.rect.top+4)
+                        npcPos = (pair[0].rect.centerx-self.rect.left, pair[0].rect.centery-self.rect.top+1)
+                        cartPos = (pair[1].rect.centerx-self.rect.left, pair[1].rect.centery-self.rect.top+1)
                         pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
                         pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
                 screen.blit(self.owners,self.rect.topleft)

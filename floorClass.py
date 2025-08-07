@@ -130,6 +130,15 @@ class Floor():
         elif ans == 0:
             self.player.speak(const.phrase[self.lang][53])
 
+    def leadCartPushing(self):
+        ans = self.currentRoom.leadCartPushing()
+        if ans == -1:
+            self.player.speak(const.phrase[self.lang][52])
+        elif ans == 0:
+            self.player.speak(const.phrase[self.lang][53])
+        elif ans == 1:
+            self.player.speak(const.phrase[self.lang][57])
+
     def resetCartOwnerView(self):
         self.currentRoom.resetCartOwnerView()
 

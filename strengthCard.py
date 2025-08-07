@@ -250,6 +250,10 @@ class LeadershipCard(StrengthCard):
     def __init__(self):
         super().__init__(15)
 
+    def  tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.leadCartPushing()
+
 # Teamwork card makes it possible to trade items with npcs
 class TeamworkCard(StrengthCard):
     def __init__(self):

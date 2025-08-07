@@ -34,11 +34,14 @@ class Cart():
         return oldItem
 
     # Returns wheather the push was successfull
-    def push(self, dir, vel, room):
+    def push(self, dir, vel, room, pusher, player):
         if dir != self.dir:
             self.newDir(dir)
-        self.pos += vel*0.75
-        result = not self.resolveCollision(room)
+        if pusher == player:
+            self.pos += vel*0.75
+        else:
+            self.pos += vel
+        result = not self.resolveCollision(room, pusher, player)
         self.item.updatePos(self.pos)
         return result
 
@@ -46,9 +49,14 @@ class Cart():
         self.dir = dir
         self.image = self.cartSprite.getImage(dir,38,38,const.scale)
     
-    def resolveCollision(self, room):
+    def resolveCollision(self, room, pusher, player):
         self.rect.center = (self.pos.x, self.pos.y)
         solids = room.solidRects.copy()
+        for npc in room.npcs:
+            if npc != pusher:
+                solids.append(npc.rect)
+        if player != pusher:
+            solids.append(player.rect)
         collided = False
         for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid) and solid != self.rect:

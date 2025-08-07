@@ -61,7 +61,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.pos += (velocity*speed)
             self.rect.center = (self.pos.x, self.pos.y)
-            room.collideCarts(self, self.facing, (velocity*speed))
+            room.collideCarts(self, self.facing, (velocity*speed), self)
             self.resolveCollision(room) # Resolve collisions with walls etc.
             self.rect.center = (self.pos.x, self.pos.y)
             self.walking = (self.walking + speed/20.0) % 4
