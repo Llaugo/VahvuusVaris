@@ -46,6 +46,10 @@ class Floor():
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)
 
+    def addItem(self):
+        if not self.currentRoom.addItem():
+            self.player.speak(const.phrase[self.lang][56])
+
     def showItemNames(self, bool):
         self.currentRoom.showItemNames(bool)
 
@@ -54,7 +58,8 @@ class Floor():
             self.player.speak(const.phrase[self.lang][47])
 
     def cleanWater(self, dist):
-        self.currentRoom.cleanWater(self.player, dist)
+        if not self.currentRoom.cleanWater(self.player, dist):
+            self.player.speak(const.phrase[self.lang][55])
 
     # Draw the current birdseye view
     def setBirdsEye(self, lvl):
@@ -99,19 +104,31 @@ class Floor():
             self.player.speak(const.phrase[self.lang][48])
 
     def destroyAdvert(self, dist):
-        self.currentRoom.destroyAdvert(self.player, dist)
+        if not self.currentRoom.destroyAdvert(self.player, dist):
+            self.player.speak(const.phrase[self.lang][48])
 
     def swapPlayer(self):
-        self.currentRoom.swapPlayer(self.player)
+        if not self.currentRoom.swapPlayer(self.player):
+            self.player.speak(const.phrase[self.lang][51])
 
     def showCartOwners(self, timer):
         self.currentRoom.showCartOwners(True, timer)
 
     def tradeWithNpc(self):
-        self.currentRoom.tradeWithNpc(self.shoppinglist)
+        ans = self.currentRoom.tradeWithNpc(self.shoppinglist)
+        if ans == -1:
+            self.player.speak(const.phrase[self.lang][52])
+        elif ans == 0:
+            self.player.speak(const.phrase[self.lang][54])
+        elif ans == 1:
+            self.player.speak(const.phrase[self.lang][53])
 
     def askCartPushing(self, timer):
-        self.currentRoom.askCartPushing(timer)
+        ans = self.currentRoom.askCartPushing(timer)
+        if ans == -1:
+            self.player.speak(const.phrase[self.lang][52])
+        elif ans == 0:
+            self.player.speak(const.phrase[self.lang][53])
 
     def resetCartOwnerView(self):
         self.currentRoom.resetCartOwnerView()

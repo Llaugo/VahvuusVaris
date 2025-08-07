@@ -174,7 +174,8 @@ class Room():
         self.itemNameView = bool
 
     # Add one item randomly into the room
-    def addItem(self, rarity=1):
+    # Returns True if item was added, False if no shelves to add to
+    def addItem(self):
         freeTiles = []
         for tile in self.tiles: # Check all free shelves
             if tile.isShelf() and not tile.item:
@@ -186,6 +187,8 @@ class Room():
             random.shuffle(self.items)
             for i, itm in enumerate(self.items): # List of items, if needed for showing room items
                 itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
+            return True
+        return False
     
     # Lighten up a dark room
     # radius: radius of the lit area, negative numbers create a beam of light in front of the player
@@ -210,34 +213,44 @@ class Room():
         self.lightDuration = 0
 
     # Clean the nearby tiles from water
+    # Returns True if water was cleared, False if there was no water
     def cleanWater(self, player, dist):
+        waterHit = False
         clearradius = pygame.Rect(0, 0, dist, dist)
         clearradius.center = player.pos
         for tile in self.tiles:
             if tile.rect.colliderect(clearradius):
-                tile.clearWater()
-        self.reconstruct()
-        self.waterRects: list[pygame.Rect] = []     # Reset waters
-        for i, row in enumerate(self.layout):       # Update all tile positions
-            for j, tile in enumerate(row):
-                if tile.isWater():
-                    newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
-                    newRect.center = tile.pos
-                    self.waterRects.append(newRect)
+                if tile.clearWater():
+                    waterHit = True
+        if waterHit:
+            self.reconstruct()
+            self.waterRects: list[pygame.Rect] = []     # Reset waters
+            for i, row in enumerate(self.layout):       # Update all tile positions
+                for j, tile in enumerate(row):
+                    if tile.isWater():
+                        newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, const.tileSize, const.tileSize)
+                        newRect.center = tile.pos
+                        self.waterRects.append(newRect)
+        return waterHit
 
+    # Returns True if advert was destroyed
     def destroyAdvert(self, player, dist):
+        advertHit = False
         clearradius = pygame.Rect(0, 0, dist, dist)
         clearradius.center = player.pos
         for tile in self.tiles:
             if tile.rect.colliderect(clearradius):
-                tile.clearAdvert()
-        self.reconstruct()
-        self.adverts = [] # Reset adverts
-        for i, row in enumerate(self.layout):
-            for j, tile in enumerate(row):
-                if tile.hasAdvert():
-                    self.adverts.append(tile.advert)
-                    tile.advert.setStream(self.streamLength(j,i,tile.advert.dir))
+                if tile.clearAdvert():
+                    advertHit = True
+        if advertHit:
+            self.reconstruct()
+            self.adverts = [] # Reset adverts
+            for i, row in enumerate(self.layout):
+                for j, tile in enumerate(row):
+                    if tile.hasAdvert():
+                        self.adverts.append(tile.advert)
+                        tile.advert.setStream(self.streamLength(j,i,tile.advert.dir))
+        return advertHit
 
     # Returns wheather the the carts were pushed
     def collideCarts(self, player, dir, vel):
@@ -253,6 +266,7 @@ class Room():
         return success
     
     # Switches places between the player and a possible npc in front
+    # Return True if there was NPC to swap places with
     def swapPlayer(self, player):
         npc = player.npcInFront(self)
         if npc:
@@ -269,44 +283,49 @@ class Room():
             return True
         return False
     
-    # bool: If True, show only one cart, otherwise show all
+    # bool: If True, show all the carts, otherwise show one (self.cartOwnerView)
     def showCartOwners(self, bool, timer):
         if timer > self.cartOwnerDuration:
             self.cartOwnerDuration = timer
             if bool:
                 self.cartOwnerView = None
 
-    # Returns True if tradeMenu could be created, False if not
+    # Returns -1 if no NPC, 0 if no items to trade, 1 if NPC has no cart, 2 if Success
     def tradeWithNpc(self, list):
         foundCart = None
         if self.talkNpc:
             npci = self.npcs.index(self.talkNpc)
             if len(self.carts) > npci:
                 foundCart = self.carts[npci]
+        else:
+            return -1
         if foundCart:
             self.tradeView = tradeMenu.TradeMenu(list, foundCart, self.pos, self.lang)
             if self.tradeView.listItem:
-                return True
+                return 2
             else:
                 self.deleteTradeView()
-                return False
-        return False
+                return 0
+        return 1
     
     def deleteTradeView(self):
         self.tradeView = None
 
+    # Returns -1 if no NPC, 0 if no NPC's cart and 1 if NPC has cart
     def askCartPushing(self,timer):
         foundCart = None
         if self.talkNpc:
             npci = self.npcs.index(self.talkNpc)
             if len(self.carts) > npci:
                 foundCart = self.carts[npci]
+        else:
+            return -1
         if foundCart:
             self.pushableCarts.append(foundCart)
             self.cartOwnerView = foundCart
             self.showCartOwners(False, timer)
-            return True
-        return False
+            return 1
+        return 0
     
     def resetCartOwnerView(self):
         self.cartOwnerDuration = 0
@@ -345,6 +364,10 @@ class Room():
                     pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
                     pair[1].item.text.draw(screen)
                 screen.blit(self.owners,self.rect.topleft)
+                if not self.carts:
+                    player.speak(const.phrase[self.lang][49])
+                elif not self.npcs:
+                    player.speak(const.phrase[self.lang][50])
             else:   # Show only one cart npc pair
                 for i,pair in enumerate(self.npcCartPairs):
                     if self.npcCartPairs[i][1] == self.cartOwnerView:

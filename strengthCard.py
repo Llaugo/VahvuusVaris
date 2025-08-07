@@ -337,7 +337,7 @@ class AppreciationCard(StrengthCard):
     # Adds an item to room if not on cooldown
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.currentRoom.addItem()
+            floor.addItem()
 
 # Gratitude card can drop stones on the ground, to keep track of steps and gives a speed boost when walking over the stones
 class GratitudeCard(StrengthCard):
@@ -378,7 +378,7 @@ class HopeCard(StrengthCard):
     # Makes the visible beam in front of the player if in a dark room
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.currentRoom.changeDarkness(-50, self.timerMax)
+            floor.changeDarkness(-50, self.timerMax)
 
     # Reset visible area and timers
     def reset(self, floor):
@@ -408,7 +408,7 @@ class SpiritualityCard(StrengthCard):
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.currentRoom.changeDarkness(70, self.timerMax)
+            floor.changeDarkness(70, self.timerMax)
 
     # Reset visible area and timers
     def reset(self, floor):

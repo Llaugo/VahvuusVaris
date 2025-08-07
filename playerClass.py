@@ -222,8 +222,8 @@ class Player(pygame.sprite.Sprite):
     def changeAura(self, dist):
         self.aura = dist
 
-    def speak(self, text):
-        self.speechDuration = const.basePlayerSpeechDuration
+    def speak(self, text, duration=const.basePlayerSpeechDuration):
+        self.speechDuration = duration
         self.speechText.setText(text)
         self.updateSpeech()
 

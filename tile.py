@@ -46,15 +46,21 @@ class Tile():
         self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
         
     # Make this tile a floor if it is water
+    # Returns True if tile was water, False if not
     def clearWater(self):
         if self.isWater():
             self.tileType = 1
             self.solid = False
             self.image = self.tileSprite.getImage(self.tileType, const.tileSize, const.tileSize, self.scale)
+            return True
+        return False
 
+    # Returns True if advert was cleared
     def clearAdvert(self):
-        if self.isAdvert():
+        if self.hasAdvert():
             self.advert = None
+            return True
+        return False
 
     def breakBox(self):
         if self.tileType == 5:

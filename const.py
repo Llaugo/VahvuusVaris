@@ -116,9 +116,20 @@ phrase = [
      "Sahrami",                             # 43
      "Murot",                               # 44
      "Runebergin torttu",                   # 45 <- kaupan esineet
-     "Ei ole laatikoita tutkittavaksi.",    # 46: uteliaisuuden aktivointi liian kaukana laatikoista
+     "En näe laatikoita tutkittavaksi.",    # 46: uteliaisuuden aktivointi liian kaukana laatikoista
      "Huoneessa on jo valoisaa.",           # 47: oppimisen ilon aktivointi jos huoneessa ei ole pimeä
-     "Ei tarjouksia näkyvillä.",            # 48: rehellisyyden aktivointi ei käännä yhtään tarjousta
+     "En näe tarjouksia lähettyvillä.",     # 48: rehellisyyden aktivointi ei käännä yhtään tarjousta & Sisu ei tuhoa yhtään tarjousta
+     "En näe kärryjä huoneessa.",           # 49: Sosiaalisen älykkyyden aktivointi, jos kärryjä ei ole huoneessa
+     "En näe kärryjen omistajia.",          # 50: Sosiaalisen älykkyyden aktivointi, jos ihmisiä ei ole huoneessa
+     "En näe ketään ketä peilata.",         # 51: Myötätunnon aktivointi ilman ihmistä edessä
+     "Ei ketään kenelle jutella.",          # 52: Reiluuden/Ryhmätyön aktivointi ilman ihmistä edessä
+     "Hänellä ei ole kärryjä.",             # 53: Reiluuden aktivointi kun ihmisellä ei ole kärryjä huoneessa
+     "Ei ole esineitä millä käydä kauppaa.",# 54: Ryhmätyötaitojen aktivointi kun ei ole esineitä kerättynä
+     "En näe vettä kuivattavaksi.",         # 55: Anteeksiannon aktivointi ilman vettä lähellä
+     "Kaikki hyllyt ovat jo täynnä jotakin kiinnostavaa.", # 56: kauneuden arvostuksen aktivointi kun hyllyt ovat täynnä
+     "",
+     "",
+     "",
      "",
      "",
      "Luovuuden lennokki",                  # ??: Vahvuuskorttien otsikot
