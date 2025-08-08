@@ -19,6 +19,7 @@ class StrengthCard():
         self.cooldown = 0       # timer for the cooldown
         self.timerMax = 300     # timer duration
         self.cooldownMax = 300  # cooldown duration
+        self.level = 1          # Level of the card
 
     # Activates the card and starts the active timer if the card is not on cooldown
     # Returns True if activation was successful, False otherwise
@@ -58,9 +59,17 @@ class StrengthCard():
     def unpress(self):
         self.ready = False
 
+# Creativity card jumps the player over a tile in a semirandom direction
 class CreativityCard(StrengthCard):
     def __init__(self):
         super().__init__(0)
+        self.level = 3
+        self.auraDist = 184
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            floor.jumpGap(self.level)
+
 # Curiosity card breaks open boxes that are in the way
 class CuriosityCard(StrengthCard):
     def __init__(self):
@@ -206,15 +215,14 @@ class KindnessCard(StrengthCard):
         floor.player.setNpcCollitionTimer(0)
         super().reset(floor)
 
+# Love card loads the card five times with speaking to npcs and then is used to fly over obstacles
 class LoveCard(StrengthCard):
     def __init__(self):
         super().__init__(11)
         cardSpriteSheet = pygame.image.load('images/love_jetpack.png').convert() # Load strength spritesheet
         self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
         self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
-        self.battery = 6
-        #self.timerMax = 60
-        self.cooldownMax = 60
+        self.battery = 1
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
@@ -223,7 +231,7 @@ class LoveCard(StrengthCard):
                     self.battery += 1
             elif self.battery >= 6:
                 floor.player.fly(self.timerMax)
-                #self.battery = 1
+                self.battery = 1
 
     def reset(self, floor):
         super().reset(floor)
@@ -237,7 +245,6 @@ class LoveCard(StrengthCard):
     def unpress(self):
         self.ready = False
         self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
-
 
 # Social card Shows the cart-npc pairs
 class SocialCard(StrengthCard):

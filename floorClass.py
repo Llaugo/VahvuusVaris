@@ -150,6 +150,9 @@ class Floor():
             self.player.speak(const.phrase[self.lang][52])
             return False
 
+    def jumpGap(self, level):
+        self.currentRoom.jumpGap(level, self.player)
+
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
     def nextRoom(self, dir, player):
@@ -170,8 +173,8 @@ class Floor():
         # Transfer the state of darkness
         newRoom.litRadius = self.currentRoom.litRadius
         newRoom.lightDuration = self.currentRoom.lightDuration
-        self.currentRoom.litRadius = 0
-        self.currentRoom.lightDuration = 0
+        self.currentRoom.resetLights()
+        self.currentRoom.resetCartOwnerView()
         self.currentRoom = newRoom
 
     # Get a room from memory or create one if not yet generated

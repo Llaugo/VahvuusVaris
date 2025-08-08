@@ -219,7 +219,7 @@ async def main():
         if keys[pygame.K_r]: # Show debug on pressing the R-key
             debugMode = not debugMode
         if debugMode and deck: # Show debug text info
-            debugText.draw(screen, f"\nFPS: {round(clock.get_fps())} Seed: {seed}\nRoom loc: {floor.currentLocation} Player pos: {floor.player.pos}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
+            debugText.draw(screen, f"\nFPS: {round(clock.get_fps())} Seed: {seed}\nPlayer pos: {floor.player.pos} Room loc: {floor.currentLocation}\nPlayer inroom pos: {floor.player.pos-floor.currentRoom.rect.topleft}\nActive cards: {[c.timer for c in deck.cards]}\nCard cooldowns: {[c.cooldown for c in deck.cards]}\nN:{len(floor.currentRoom.items)} Items: {[floor.currentRoom.items[i].name + str(floor.currentRoom.items[i].rect.center) for i in range(len(floor.currentRoom.items))]}")
 
         pygame.display.update()
         clock.tick(60)

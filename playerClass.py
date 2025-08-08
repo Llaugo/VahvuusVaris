@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
         self.speechText = text.Text(const.gameFont(14),"Init player text",pos,(0,0,0))
         self.speechDuration = 0
         self.resetRect(pos) # Set player pos
-        self.pos = Vector2(self.rect.center)
+        self.pos: Vector2 = Vector2(self.rect.center)
         self.controls = controls
 
         
@@ -128,7 +128,7 @@ class Player(pygame.sprite.Sprite):
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
     def updatePos(self, screenMove):
-        self.resetRect((self.rect[0] + screenMove[0]/2 + 18*self.scale, self.rect[1] + screenMove[1]/2 + 20*self.scale))
+        self.resetRect((self.pos.x + screenMove[0]/2, self.pos.y + screenMove[1]/2))
 
     # Reset player to the center of the screen
     # screenSize: dimensions of the window
@@ -138,11 +138,15 @@ class Player(pygame.sprite.Sprite):
 
     # Set a new position for the rect and make it smaller than the image
     def resetRect(self, pos):
+        self.pos = Vector2(pos)
         self.image = self.playerSprite.getImage(self.facing*4,36,41,self.scale)
-        self.rect = self.image.get_rect(center = (pos[0],pos[1]))
-        self.rect.height -= 20*self.scale # Make the player rect slimmer
-        self.rect.width -= 10*self.scale  # Make the player rect shorter
-        self.pos = Vector2(self.rect.center)
+        self.rect = self.image.get_rect()
+        #self.rect.height -= 20*self.scale # Make the player rect slimmer
+        #self.rect.width -= 10*self.scale  # Make the player rect shorter
+        self.rect.height = 21*self.scale
+        self.rect.width = 26*self.scale
+        self.rect.center = self.pos
+
     
     def updateSpeech(self):
         self.speechText.updatePos(self.pos + (0,-36*self.scale), True)
@@ -153,10 +157,9 @@ class Player(pygame.sprite.Sprite):
     def toggleSize(self, room, newScale=1):
         if self.scale == const.scale:           # If the scale is normal
             self.scale = const.scale*newScale   # Change scale to new scale
-            self.updatePos((10,0))
         else:
             self.scale = const.scale            # Set scale back to normal
-            self.updatePos((-10,0))
+        self.resetRect(self.pos)
         self.resolveCollision(room)             # Resolve any collitions from changing the size
 
     # Change player speed
@@ -202,6 +205,25 @@ class Player(pygame.sprite.Sprite):
 
     def fly(self, time):
         self.flyDuration = time
+
+    # Return True if teleport was successful, False if collision happened
+    def teleport(self, newPos, room):
+        oldPos = self.pos
+        self.resetRect(newPos)
+        solids = room.solidRects.copy()
+        solids += room.waterRects
+        for npc in room.npcs:
+            solids.append(npc.rect)
+        for cart in room.carts:
+            solids.append(cart.rect)
+        collided = False
+        for solid in solids:
+            if self.rect.colliderect(solid):
+                collided = True
+                break
+        if collided:
+            self.resetRect(oldPos)
+        return not collided
 
     # Push player to a direction
     def push(self, pushSpeed, dir, velocity, room):

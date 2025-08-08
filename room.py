@@ -275,11 +275,11 @@ class Room():
         if npc:
             if player.facing % 2 == 0:
                 playerPos = ((player.rect.centerx+npc.rect.centerx)/2, player.rect.centery)
-                player.resetRect(((player.rect.centerx+npc.rect.centerx)/2 + 5, npc.rect.centery + 10))
+                player.resetRect(((player.rect.centerx+npc.rect.centerx)/2, npc.rect.centery))
                 npc.setPos((playerPos[0] + 0, playerPos[1] + 0))
             else:
                 playerPos = (player.rect.centerx, (player.rect.centery+npc.rect.centery)/2)
-                player.resetRect((npc.rect.centerx + 5, (player.rect.centery+npc.rect.centery)/2 + 10))
+                player.resetRect((npc.rect.centerx, (player.rect.centery+npc.rect.centery)/2))
                 npc.setPos((playerPos[0] + 0, playerPos[1] + 0))
             npc.turn(player.facing)
             player.facing = (player.facing + 2) % 4
@@ -351,6 +351,26 @@ class Room():
     
     def resetCartOwnerView(self):
         self.cartOwnerDuration = 0
+
+    def jumpGap(self, level, player):
+        dir = player.facing
+        randomFloat = random.random()
+        if level <= 2:
+            if randomFloat <= 0.25: dir -= 1
+            elif randomFloat <= 0.5: dir += 1
+            if level == 1:
+                if randomFloat <= 0.75: dir += 2
+        dir = dir % 4
+        if dir == 0:
+            newPos = (player.pos.x, player.pos.y+92)
+        elif dir == 1:
+            newPos = (player.pos.x+92, player.pos.y)
+        elif dir == 2:
+            newPos = (player.pos.x ,player.pos.y-92)
+        elif dir == 3:
+            newPos = (player.pos.x-92, player.pos.y)
+        if not player.teleport(newPos, self):
+            player.speak(const.phrase[self.lang][62])
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
