@@ -223,7 +223,7 @@ class LoveCard(StrengthCard):
                     self.battery += 1
             elif self.battery >= 6:
                 floor.player.fly(self.timerMax)
-                self.battery = 1
+                #self.battery = 1
 
     def reset(self, floor):
         super().reset(floor)

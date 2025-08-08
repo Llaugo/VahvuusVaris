@@ -63,8 +63,6 @@ class Player(pygame.sprite.Sprite):
             self.pos += (velocity*speed)
             self.rect.center = (self.pos.x, self.pos.y)
             room.collideCarts(self, self.facing, (velocity*speed), self)
-            if not self.flyDuration:
-                self.resolveCollision(room) # Resolve collisions with walls etc.
             self.rect.center = (self.pos.x, self.pos.y)
             self.walking = (self.walking + speed/20.0) % 4
         animationFrame = self.facing*4 + round(self.walking) % 4 # Get the correct image (frame of the animation)
@@ -100,7 +98,6 @@ class Player(pygame.sprite.Sprite):
                         self.pos.y = max(self.pos.y - 5, solid.top - math.ceil(self.rect.height/2))
                 self.rect.center = (self.pos.x, self.pos.y)
                 collided = True
-        self.updateSpeech()
         return collided
                 
     # Update player's state in the room
@@ -119,10 +116,14 @@ class Player(pygame.sprite.Sprite):
             self.npcCollDuration = max(self.npcCollDuration-1, 0) # update npc passthrough timer
         if self.speechDuration:
             self.speechDuration = max(self.speechDuration-1, 0)
-        if self.flyDuration:
-            self.flyDuration = max(self.flyDuration-1,0)
         if not self.flyDuration:
             self.resolveCollision(room)
+        elif self.flyDuration == 1:
+            if self.resolveCollision(room,'x') or self.resolveCollision(room,'y'):
+                self.flyDuration -= 1
+        else:
+            self.flyDuration = max(self.flyDuration-1,0)
+        self.updateSpeech()
 
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
@@ -142,7 +143,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.height -= 20*self.scale # Make the player rect slimmer
         self.rect.width -= 10*self.scale  # Make the player rect shorter
         self.pos = Vector2(self.rect.center)
-        self.updateSpeech()
     
     def updateSpeech(self):
         self.speechText.updatePos(self.pos + (0,-36*self.scale), True)
@@ -208,11 +208,12 @@ class Player(pygame.sprite.Sprite):
         speed = pushSpeed*self.swimSpeed if self.isInWater(room) else pushSpeed
         self.pos += (velocity*speed)
         self.rect.center = (self.pos.x, self.pos.y)
-        room.collideCarts(self, dir, (velocity*speed))
-        if velocity.x:
-            self.resolveCollision(room, "x") # Resolve collisions with walls etc.
-        else:
-            self.resolveCollision(room, "y")
+        room.collideCarts(self, dir, (velocity*speed), self)
+        if not self.flyDuration:
+            if velocity.x:
+                self.resolveCollision(room, "x") # Resolve collisions with walls etc.
+            else:
+                self.resolveCollision(room, "y")
         self.rect.center = (self.pos.x, self.pos.y)
 
     # Returns the npc standing in front of the player, or None if there is no npc
@@ -238,7 +239,6 @@ class Player(pygame.sprite.Sprite):
     def speak(self, text, duration=const.basePlayerSpeechDuration):
         self.speechDuration = duration
         self.speechText.setText(text)
-        self.updateSpeech()
 
     # Draw the player
     def draw(self, screen):
