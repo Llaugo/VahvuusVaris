@@ -8,18 +8,19 @@ import shoppingList
 import button
 import random
 import time
+from pygame.math import Vector2
 
 # A floor is a nxn  matrix of rooms.
 class Floor():
     # n: size of the floor
     # lang: language of the game
-    def __init__(self, n, floorNumber, moveButtons, shoppinglist, lang):
-        self.pos = (0,0)
+    def __init__(self, n, floorNumber, moveButtons, shoppinglist, lang, screenCenter):
+        self.pos = screenCenter
         self.lang = lang
         self.rooms: list[list[room.Room]] = [[None]*n for _ in range(n)]
         self.half = n // 2
-        #self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang)
-        self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang) # FOR TESTING
+        #self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang, self.pos)
+        self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang, 0, self.pos) # FOR TESTING
         self.currentLocation = (self.half,self.half) # Player's current room coords (start from the middle)
         self.currentRoom: room.Room = self.rooms[self.half][self.half] # Player's current room
         self.player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2)) # Player initialization
@@ -72,7 +73,11 @@ class Floor():
                     room = self.getRoom(self.currentLocation[0]+i-half, self.currentLocation[1]+j-half)
                     if room and not room.darkness:
                         roomPic = room.background.copy()
-                        roomPic = pygame.transform.rotozoom(room.background,0,frac).convert()
+                        for cart in room.carts:
+                            roomPic.blit(cart.image, Vector2(cart.rect.topleft) - self.currentRoom.rect.topleft)
+                        for npc in room.npcs:
+                            roomPic.blit(npc.image, Vector2(npc.rect.topleft) - self.currentRoom.rect.topleft)
+                        roomPic = pygame.transform.rotozoom(roomPic,0,frac).convert()
                     else:
                         roomPic = pygame.Surface((len(self.currentRoom.layout)*const.tileSize*frac, len(self.currentRoom.layout)*const.tileSize*frac)).convert()
                     self.birdsEye.blit(roomPic,(i*roomPic.get_width(),j*roomPic.get_height()))
@@ -185,7 +190,7 @@ class Floor():
             newRoom = self.rooms[x][y]
         else:
             distFromMiddle = abs(x - self.half) + abs(y - self.half)
-            newRoom = room.Room(random.choice(const.roomLayouts), self.lang, distFromMiddle)
+            newRoom = room.Room(random.choice(const.roomLayouts), self.lang, distFromMiddle, self.pos)
             self.rooms[x][y] = newRoom
             # Delete doors that would out of index
             if x == 0:

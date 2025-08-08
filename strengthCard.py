@@ -68,13 +68,13 @@ class CreativityCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.jumpGap(self.level)
+            floor.jumpGap(floor(self.level))
 
 # Curiosity card breaks open boxes that are in the way
 class CuriosityCard(StrengthCard):
     def __init__(self):
         super().__init__(1)
-        self.timer = 1
+        self.timerMax = 1
         self.auraDist = 80
 
     def tryActivate(self, floor):
@@ -107,6 +107,7 @@ class JudgementCard(StrengthCard):
 class LearningCard(StrengthCard):
     def __init__(self):
         super().__init__(3)
+        self.timerMax = 1
 
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, floor):
@@ -171,6 +172,7 @@ class PerseveranceCard(StrengthCard):
 class HonestyCard(StrengthCard):
     def __init__(self):
         super().__init__(7)
+        self.timerMax = 1
         self.auraDist = const.tileSize*2
 
     def tryActivate(self, floor):
@@ -196,6 +198,7 @@ class ZestCard(StrengthCard):
 class GritCard(StrengthCard):
     def __init__(self):
         super().__init__(9)
+        self.timerMax = 1
         self.auraDist = 100
 
     def tryActivate(self, floor):
@@ -287,6 +290,7 @@ class FairnessCard(StrengthCard):
 class LeadershipCard(StrengthCard):
     def __init__(self):
         super().__init__(15)
+        self.timerMax = 1
 
     def  tryActivate(self, floor):
         if super().tryActivate(floor):
@@ -306,6 +310,7 @@ class TeamworkCard(StrengthCard):
 class ForgivenessCard(StrengthCard):
     def __init__(self):
         super().__init__(17)
+        self.timerMax = 1
         self.auraDist = const.tileSize
 
     # Clean nearby water from the room if not on cooldown

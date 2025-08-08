@@ -133,7 +133,7 @@ phrase = [
      "Kaikki hyllyt ovat jo täynnä jotakin kiinnostavaa.", # 56: kauneuden arvostuksen aktivointi, kun hyllyt ovat täynnä
      "Hänen kärrynsä ovat jumissa.",        # 57: johtajuuden aktivointi, kun NPC ei pääse kärrynsä luo
      "<3",                                  # 58: Rakkauden onnistunut aktivointi (lataa reppua)
-     "",
+     "Ei tilaa laskeutua.",                 # 59: luovuuden lennokki yrittää laskeutua esteen päälle
      "",
      "",
      "Luovuuden lennokki",                  # ??: Vahvuuskorttien otsikot

@@ -78,7 +78,7 @@ async def main():
     # Tracks the floor/level the player is at
     floorNumber = 1
     # The main floor object
-    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang)
+    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))
     lobby = room.Room(const.lobbyLayout[0],lang)
     deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
 
@@ -203,10 +203,10 @@ async def main():
                 # START NEW LEVEL
                 gameStatus = "level"                        # Change game status
                 floorNumber += 1                            # Advance floor number
-                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang)   # Create a new room
+                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))   # Create a new room
                 floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
-                floor.player.resetPos(screenSize)                 # Move player to the middle
-                #deck.reset(player, floor)                   # Reset the card deck
+                floor.player.resetPos(screenSize)           # Move player to the middle
+                #deck.reset(player, floor)                  # Reset the card deck
 
         # Update all positions if the screen size is changed
         newScreenSize = pygame.display.get_window_size()

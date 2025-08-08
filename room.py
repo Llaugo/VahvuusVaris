@@ -14,7 +14,7 @@ class Room():
     # pos: position of the room
     # lang: language of the game
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
-    def __init__(self, layout, lang, roomDistance=0):
+    def __init__(self, layout, lang, roomDistance=0, screenCenter=(0,0)):
         self.lang = lang
         self.layout: list[list[tile.Tile]] = [] # Matrix of every tile
         self.pos = (0,0)                        # Room center
@@ -25,7 +25,7 @@ class Room():
         self.npcCartPairs = []                  # pairs of npcs and carts
         self.pushableCarts = []                 # carts that can be pushed
         self.talkNpc = None                     # The npc the player is currently interacting with
-        self.initialize(layout)                 # Initialize room's tiles
+        self.initialize(layout, screenCenter)   # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
         self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
         self.rect = self.background.get_rect(center = self.pos)
@@ -370,7 +370,7 @@ class Room():
         elif dir == 3:
             newPos = (player.pos.x-92, player.pos.y)
         if not player.teleport(newPos, self):
-            player.speak(const.phrase[self.lang][62])
+            player.speak(const.phrase[self.lang][59])
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -439,7 +439,7 @@ class Room():
     # Construct the room tiles from the given layout
     # Only use once upon creation
     # layout: the number matrix of the room's layout
-    def initialize(self, layout):
+    def initialize(self, layout, screenCenter):
         lift = (len(layout) <= 5) # The layout represents a lift
         # Create the correct tile by the number
         for i,row in enumerate(layout):
@@ -465,12 +465,12 @@ class Room():
                 elif c == 5:
                     self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)
-                    cartPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize)
+                    cartPos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize)
                     self.carts.append(cart.Cart(cartPos, self.lang, self.roomDistance))
                 elif c >= 60 and c <= 63:
                     self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)
-                    npcPos = (const.worldWidth/2+(j-halfLength)*const.tileSize, const.worldHeight/2+(i-halfLength)*const.tileSize+3)
+                    npcPos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize+3)
                     self.npcs.append(npc.Npc(npcPos,c-60))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(19, self.lang))
