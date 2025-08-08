@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.swimSpeed = 0     # Player's speed on water
         self.swimDuration = 0  # Duration of the swim speed
         self.npcCollDuration = 0 # Does the player collide with npc's
+        self.flyDuration = 0    # Duration of being able to fly
         playerSpriteSheet = pygame.image.load('images/player_sheet.png').convert() # Load player's spritesheet
         self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
@@ -62,7 +63,8 @@ class Player(pygame.sprite.Sprite):
             self.pos += (velocity*speed)
             self.rect.center = (self.pos.x, self.pos.y)
             room.collideCarts(self, self.facing, (velocity*speed), self)
-            self.resolveCollision(room) # Resolve collisions with walls etc.
+            if not self.flyDuration:
+                self.resolveCollision(room) # Resolve collisions with walls etc.
             self.rect.center = (self.pos.x, self.pos.y)
             self.walking = (self.walking + speed/20.0) % 4
         animationFrame = self.facing*4 + round(self.walking) % 4 # Get the correct image (frame of the animation)
@@ -84,14 +86,18 @@ class Player(pygame.sprite.Sprite):
                 overlap = self.rect.clip(solid)             # Compute overlap rectangle
                 if preferDir == "x" or (overlap.width < overlap.height and preferDir != "y"): # Choose the smaller overlap dimension if there is no preferation
                     if self.rect.centerx > solid.centerx:   # Player is on right side of tile -> push right
-                        self.pos.x = solid.right + math.ceil(self.rect.width/2)
+                        #self.pos.x = (solid.right+self.pos.x + math.ceil(self.rect.width/2))/2
+                        self.pos.x = min(self.pos.x + 5, solid.right + math.ceil(self.rect.width/2))
                     else:
-                        self.pos.x = solid.left - math.ceil(self.rect.width/2)
+                        #self.pos.x = (solid.left+self.pos.x - math.ceil(self.rect.width/2))/2
+                        self.pos.x = max(self.pos.x - 5, solid.left - math.ceil(self.rect.width/2))
                 else:
                     if self.rect.centery > solid.centery:   # Player is below tile -> push down
-                        self.pos.y = solid.bottom + math.ceil(self.rect.height/2)
+                        #self.pos.y = (solid.bottom+self.pos.y + math.ceil(self.rect.height/2))/2
+                        self.pos.y = min(self.pos.y + 5, solid.bottom + math.ceil(self.rect.height/2))
                     else:
-                        self.pos.y = solid.top - math.ceil(self.rect.height/2)
+                        #self.pos.y = (solid.top+self.pos.y - math.ceil(self.rect.height/2))/2
+                        self.pos.y = max(self.pos.y - 5, solid.top - math.ceil(self.rect.height/2))
                 self.rect.center = (self.pos.x, self.pos.y)
                 collided = True
         self.updateSpeech()
@@ -113,6 +119,10 @@ class Player(pygame.sprite.Sprite):
             self.npcCollDuration = max(self.npcCollDuration-1, 0) # update npc passthrough timer
         if self.speechDuration:
             self.speechDuration = max(self.speechDuration-1, 0)
+        if self.flyDuration:
+            self.flyDuration = max(self.flyDuration-1,0)
+        if not self.flyDuration:
+            self.resolveCollision(room)
 
     # Update the pos of the player
     # screenMove: how much the screen size (x,y) has been changed
@@ -189,6 +199,9 @@ class Player(pygame.sprite.Sprite):
 
     def setNpcCollitionTimer(self, time):
         self.npcCollDuration = time
+
+    def fly(self, time):
+        self.flyDuration = time
 
     # Push player to a direction
     def push(self, pushSpeed, dir, velocity, room):

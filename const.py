@@ -126,13 +126,13 @@ phrase = [
      "En näe kärryjä huoneessa.",           # 49: Sosiaalisen älykkyyden aktivointi, jos kärryjä ei ole huoneessa
      "En näe kärryjen omistajia.",          # 50: Sosiaalisen älykkyyden aktivointi, jos ihmisiä ei ole huoneessa
      "En näe ketään ketä peilata.",         # 51: Myötätunnon aktivointi ilman ihmistä edessä
-     "Ei ketään kenelle jutella.",          # 52: Reiluuden/Ryhmätyön/johtajuuden aktivointi ilman ihmistä edessä
+     "Ei ketään kenelle jutella.",          # 52: Reiluuden/Ryhmätyön/johtajuuden/rakkauden aktivointi ilman ihmistä edessä
      "Hänellä ei ole kärryjä.",             # 53: Reiluuden/johtajuuden aktivointi, kun ihmisellä ei ole kärryjä huoneessa
      "Ei ole esineitä millä käydä kauppaa.",# 54: Ryhmätyötaitojen aktivointi, kun ei ole esineitä kerättynä
      "En näe vettä kuivattavaksi.",         # 55: Anteeksiannon aktivointi ilman vettä lähellä
      "Kaikki hyllyt ovat jo täynnä jotakin kiinnostavaa.", # 56: kauneuden arvostuksen aktivointi, kun hyllyt ovat täynnä
      "Hänen kärrynsä ovat jumissa.",        # 57: johtajuuden aktivointi, kun NPC ei pääse kärrynsä luo
-     "",
+     "<3",                                  # 58: Rakkauden onnistunut aktivointi (lataa reppua)
      "",
      "",
      "",

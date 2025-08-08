@@ -45,6 +45,7 @@ class StrengthCard():
     def reset(self, floor):
         self.timer = 0
         self.cooldown = 0
+        self.unpress()
 
     # Returns True if timer is on, False if not
     def isActive(self):
@@ -208,6 +209,35 @@ class KindnessCard(StrengthCard):
 class LoveCard(StrengthCard):
     def __init__(self):
         super().__init__(11)
+        cardSpriteSheet = pygame.image.load('images/love_jetpack.png').convert() # Load strength spritesheet
+        self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
+        self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
+        self.battery = 6
+        #self.timerMax = 60
+        self.cooldownMax = 60
+
+    def tryActivate(self, floor):
+        if super().tryActivate(floor):
+            if self.battery < 6:
+                if floor.findLove():
+                    self.battery += 1
+            elif self.battery >= 6:
+                floor.player.fly(self.timerMax)
+                self.battery = 1
+
+    def reset(self, floor):
+        super().reset(floor)
+        self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
+        self.battery = 1
+
+    def press(self):
+        self.ready = True
+        self.image = self.cardSprite.getImage(self.battery,250,350,const.scale/2)
+
+    def unpress(self):
+        self.ready = False
+        self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
+
 
 # Social card Shows the cart-npc pairs
 class SocialCard(StrengthCard):
@@ -246,6 +276,7 @@ class FairnessCard(StrengthCard):
         floor.resetCartOwnerView()
         super().reset(floor)
 
+# Leadership card makes an npc push their own cart
 class LeadershipCard(StrengthCard):
     def __init__(self):
         super().__init__(15)

@@ -32,14 +32,14 @@ class StrengthDeck():
             cardPos = (pos[0]-((i+1)%2)*150-165, pos[1]+((math.floor(i/2)-2)*200)+125)
             newRect = self.overlays[i][0].get_rect(topleft = cardPos)
             self.overlays[i] = (self.overlays[i][0], newRect)
-        self.updateOverlays(pos)
+        self.updateImages(pos)
         self.activateButton.updatePos((pos[0]+const.tileSize*15+280, pos[1]))
 
-
-    def updateOverlays(self, pos):
-        self.background = pygame.Surface((abs(pos[0]),pos[1]*2)).convert_alpha()
+    # Construct the background image of all the cards
+    def updateImages(self, pos):
+        self.background = pygame.Surface((abs(pos[0]),pos[1]*2)).convert_alpha() # Reset background surface/image
         self.background.fill((0, 0, 0, 0)) # Initialize background
-        for i, overlay in enumerate(self.overlays): # Blit every card image and its overlay to background
+        for i, overlay in enumerate(self.overlays): # Blit every card image to background
             self.background.blit(self.cards[i].image, overlay[1])
 
 
@@ -50,6 +50,7 @@ class StrengthDeck():
             if card.ready:
                 if self.activateButton.pressComplete:
                     card.tryActivate(floor)
+                    if card.imageNum == 11: self.updateImages(self.pos)
                 elif card.auraDist:
                     floor.player.changeAura(card.auraDist)
                     cardReady = True
@@ -61,11 +62,9 @@ class StrengthDeck():
             if cooldownN != oldCooldownN:
                 newImg = self.overlaySprite.getImage(cooldownN,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
-                self.updateOverlays(self.pos)
             elif timerN != oldTimerN:
                 newImg = self.overlaySprite.getImage(timerN,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
-                self.updateOverlays(self.pos)
         if not cardReady:
             floor.player.changeAura(0)
 
@@ -82,21 +81,21 @@ class StrengthDeck():
                 if overlay[1].collidePoint(event.x*screenSize[0], event.y*screenSize[1]):
                     self.overlays[i] = (self.overlaySprite.getImage(1,250,350,const.scale/2), overlay[1])
                     self.cards[i].press()
-                    self.updateOverlays(self.pos)
+                    if self.cards[i].imageNum == 11: self.updateImages(self.pos)
                 elif not self.activateButton.pressComplete:
                     self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), overlay[1])
                     self.cards[i].unpress()
-                    self.updateOverlays(self.pos)
+                    if self.cards[i].imageNum == 11: self.updateImages(self.pos)
             # Track mouse
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not self.cards[i].cooldown:
                 if overlay[1].collidepoint(event.pos):
                     self.overlays[i] = (self.overlaySprite.getImage(1,250,350,const.scale/2), overlay[1])
                     self.cards[i].press()
-                    self.updateOverlays(self.pos)
+                    if self.cards[i].imageNum == 11: self.updateImages(self.pos)
                 elif not self.activateButton.pressComplete:
                     self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), overlay[1])
                     self.cards[i].unpress()
-                    self.updateOverlays(self.pos)
+                    if self.cards[i].imageNum == 11: self.updateImages(self.pos)
 
     # Draw the cards/background and buttons on the screen
     def draw(self, screen):
@@ -107,7 +106,6 @@ class StrengthDeck():
             if self.cards[i].ready and oldShine != round(self.shinePhase):
                 newImg = self.overlaySprite.getImage(round(self.shinePhase) % 4+1,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
-                self.updateOverlays(self.pos)
             screen.blit(overlay[0], overlay[1])
         for card in self.cards:
             if card.ready:

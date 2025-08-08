@@ -142,6 +142,14 @@ class Floor():
     def resetCartOwnerView(self):
         self.currentRoom.resetCartOwnerView()
 
+    def findLove(self):
+        if self.currentRoom.talkNpc:
+            self.player.speak(const.phrase[self.lang][58])
+            return True
+        else:
+            self.player.speak(const.phrase[self.lang][52])
+            return False
+
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)
     def nextRoom(self, dir, player):
