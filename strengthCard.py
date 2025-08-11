@@ -63,12 +63,13 @@ class StrengthCard():
 class CreativityCard(StrengthCard):
     def __init__(self):
         super().__init__(0)
-        self.level = 3
+        self.level = 1
         self.auraDist = 184
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.jumpGap(floor(self.level))
+            if not floor.jumpGap(self.level):
+                self.reset(floor)
 
 # Curiosity card breaks open boxes that are in the way
 class CuriosityCard(StrengthCard):
@@ -79,7 +80,8 @@ class CuriosityCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.breakBox(self.auraDist)
+            if not floor.breakBox(self.auraDist):
+                self.reset(floor)
 
 # Judgement cards shows what items there are in the room
 class JudgementCard(StrengthCard):
@@ -112,7 +114,8 @@ class LearningCard(StrengthCard):
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.changeDarkness(0, 0, True)
+            if not floor.changeDarkness(0, 0, True):
+                self.reset(floor)
 
 # Perspective card shows the rooms around the current room
 class PerspectiveCard(StrengthCard):
@@ -177,7 +180,8 @@ class HonestyCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.rotateAdverts(self.auraDist)
+            if not floor.rotateAdverts(self.auraDist):
+                self.reset(floor)
     
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
@@ -203,7 +207,8 @@ class GritCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.destroyAdvert(self.auraDist)
+            if not floor.destroyAdvert(self.auraDist):
+                self.reset(floor)
 
 # Kindness card makes it possible to move through/past npcs
 class KindnessCard(StrengthCard):
@@ -232,6 +237,9 @@ class LoveCard(StrengthCard):
             if self.battery < 6:
                 if floor.findLove():
                     self.battery += 1
+                else:
+                    super().reset(floor)
+                    self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
             elif self.battery >= 6:
                 floor.player.fly(self.timerMax)
                 self.battery = 1
@@ -256,7 +264,8 @@ class SocialCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.showCartOwners(self.timerMax)
+            if not floor.showCartOwners(self.timerMax):
+                super().reset(floor)
 
     def reset(self, floor):
         floor.resetCartOwnerView()
@@ -270,7 +279,8 @@ class CompassionCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.swapPlayer()
+            if not floor.swapPlayer():
+                self.reset(floor)
 
 # Fairness card gives the player the ability to push certain npc's cart
 class FairnessCard(StrengthCard):
@@ -280,7 +290,8 @@ class FairnessCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.askCartPushing(self.timerMax)
+            if not floor.askCartPushing(self.timerMax):
+                super().reset(floor)
 
     def reset(self, floor):
         floor.resetCartOwnerView()
@@ -294,7 +305,8 @@ class LeadershipCard(StrengthCard):
 
     def  tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.leadCartPushing()
+            if not floor.leadCartPushing():
+                self.reset(floor)
 
 # Teamwork card makes it possible to trade items with npcs
 class TeamworkCard(StrengthCard):
@@ -304,7 +316,8 @@ class TeamworkCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.tradeWithNpc()
+            if not floor.tradeWithNpc():
+                self.reset(floor)
 
 # Forgiveness card cleans nearby waters
 class ForgivenessCard(StrengthCard):
@@ -316,7 +329,8 @@ class ForgivenessCard(StrengthCard):
     # Clean nearby water from the room if not on cooldown
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.cleanWater(self.auraDist)
+            if not floor.cleanWater(self.auraDist):
+                self.reset(floor)
 
 # Humility card makes the player smaller to fit through small spaces
 class HumilityCard(StrengthCard):
@@ -384,7 +398,8 @@ class AppreciationCard(StrengthCard):
     # Adds an item to room if not on cooldown
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.addItem()
+            if not floor.addItem():
+                self.reset(floor)
 
 # Gratitude card can drop stones on the ground, to keep track of steps and gives a speed boost when walking over the stones
 class GratitudeCard(StrengthCard):
@@ -425,7 +440,8 @@ class HopeCard(StrengthCard):
     # Makes the visible beam in front of the player if in a dark room
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.changeDarkness(-50, self.timerMax)
+            if not floor.changeDarkness(-50, self.timerMax):
+                super().reset(floor)
 
     # Reset visible area and timers
     def reset(self, floor):
@@ -455,7 +471,8 @@ class SpiritualityCard(StrengthCard):
     # Makes the visible area around the player wider if in a dark room
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            floor.changeDarkness(70, self.timerMax)
+            if not floor.changeDarkness(70, self.timerMax):
+                super().reset(floor)
 
     # Reset visible area and timers
     def reset(self, floor):

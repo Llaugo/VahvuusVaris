@@ -141,8 +141,6 @@ class Player(pygame.sprite.Sprite):
         self.pos = Vector2(pos)
         self.image = self.playerSprite.getImage(self.facing*4,36,41,self.scale)
         self.rect = self.image.get_rect()
-        #self.rect.height -= 20*self.scale # Make the player rect slimmer
-        #self.rect.width -= 10*self.scale  # Make the player rect shorter
         self.rect.height = 21*self.scale
         self.rect.width = 26*self.scale
         self.rect.center = self.pos

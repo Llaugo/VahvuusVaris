@@ -292,6 +292,9 @@ class Room():
             self.cartOwnerDuration = timer
             if bool:
                 self.cartOwnerView = None
+        if not self.npcCartPairs:
+            return False
+        return True
 
     # Returns -1 if no NPC, 0 if no items to trade, 1 if NPC has no cart, 2 if Success
     def tradeWithNpc(self, list):
@@ -371,6 +374,8 @@ class Room():
             newPos = (player.pos.x-92, player.pos.y)
         if not player.teleport(newPos, self):
             player.speak(const.phrase[self.lang][59])
+            return False
+        return True
 
     # Draw each tile, item and stone in this room
     def draw(self, screen, player):
@@ -408,8 +413,10 @@ class Room():
                 screen.blit(self.owners,self.rect.topleft)
                 if not self.carts:
                     player.speak(const.phrase[self.lang][49])
+                    self.resetCartOwnerView()
                 elif not self.npcs:
                     player.speak(const.phrase[self.lang][50])
+                    self.resetCartOwnerView()
             else:   # Show only one cart npc pair
                 for i,pair in enumerate(self.npcCartPairs):
                     if self.npcCartPairs[i][1] == self.cartOwnerView:

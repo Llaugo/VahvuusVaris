@@ -43,6 +43,8 @@ class Floor():
     def breakBox(self, dist):
         if not self.currentRoom.breakBox(self.player, dist):
             self.player.speak(const.phrase[self.lang][46])
+            return False
+        return True
 
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)
@@ -50,6 +52,8 @@ class Floor():
     def addItem(self):
         if not self.currentRoom.addItem():
             self.player.speak(const.phrase[self.lang][56])
+            return False
+        return True
 
     def showItemNames(self, bool):
         self.currentRoom.showItemNames(bool)
@@ -57,10 +61,14 @@ class Floor():
     def changeDarkness(self, radius, duration, clear=False):
         if not self.currentRoom.changeDarkness(radius, duration, clear):
             self.player.speak(const.phrase[self.lang][47])
+            return False
+        return True
 
     def cleanWater(self, dist):
         if not self.currentRoom.cleanWater(self.player, dist):
             self.player.speak(const.phrase[self.lang][55])
+            return False
+        return True
 
     # Draw the current birdseye view
     def setBirdsEye(self, lvl):
@@ -105,44 +113,61 @@ class Floor():
         if rotated:
             self.currentRoom.updatePos(self.pos,(0,0))
             self.currentRoom.reconstruct()
+            return True
         else:
             self.player.speak(const.phrase[self.lang][48])
+            return False
 
     def destroyAdvert(self, dist):
         if not self.currentRoom.destroyAdvert(self.player, dist):
             self.player.speak(const.phrase[self.lang][48])
+            return False
+        return True
 
     def swapPlayer(self):
         if not self.currentRoom.swapPlayer(self.player):
             self.player.speak(const.phrase[self.lang][51])
+            return False
+        return True
 
     def showCartOwners(self, timer):
-        self.currentRoom.showCartOwners(True, timer)
+        return self.currentRoom.showCartOwners(True, timer)
 
     def tradeWithNpc(self):
         ans = self.currentRoom.tradeWithNpc(self.shoppinglist)
         if ans == -1:
             self.player.speak(const.phrase[self.lang][52])
+            return False
         elif ans == 0:
             self.player.speak(const.phrase[self.lang][54])
+            return False
         elif ans == 1:
             self.player.speak(const.phrase[self.lang][53])
+            return False
+        return True
 
     def askCartPushing(self, timer):
         ans = self.currentRoom.askCartPushing(timer)
         if ans == -1:
             self.player.speak(const.phrase[self.lang][52])
+            return False
         elif ans == 0:
             self.player.speak(const.phrase[self.lang][53])
+            return False
+        return True
 
     def leadCartPushing(self):
         ans = self.currentRoom.leadCartPushing()
         if ans == -1:
             self.player.speak(const.phrase[self.lang][52])
+            return False
         elif ans == 0:
             self.player.speak(const.phrase[self.lang][53])
+            return False
         elif ans == 1:
             self.player.speak(const.phrase[self.lang][57])
+            return False
+        return True
 
     def resetCartOwnerView(self):
         self.currentRoom.resetCartOwnerView()
@@ -156,7 +181,7 @@ class Floor():
             return False
 
     def jumpGap(self, level):
-        self.currentRoom.jumpGap(level, self.player)
+        return self.currentRoom.jumpGap(level, self.player)
 
     # Go to next room in the given direction
     # dir: direction of the next room (0=d,1=r,2=u,3=l)

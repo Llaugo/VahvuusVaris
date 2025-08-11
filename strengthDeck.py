@@ -50,6 +50,7 @@ class StrengthDeck():
             if card.ready:
                 if self.activateButton.pressComplete:
                     card.tryActivate(floor)
+                    self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), self.overlays[i][1])
                     if card.imageNum == 11: self.updateImages(self.pos)
                 elif card.auraDist:
                     floor.player.changeAura(card.auraDist)

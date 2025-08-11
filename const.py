@@ -19,7 +19,7 @@ tileSize = 46
 # Player's base stats
 basePlayerSpeed = 2
 basePlayerStrength = 0
-basePlayerSpeechDuration = 180
+basePlayerSpeechDuration = 120
 
 # How much time (sec) there is in each level (300 = 5min)
 floorTime = 300
