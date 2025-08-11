@@ -35,7 +35,7 @@ maxCardLevel = 3    # Maximum level that a strength card can get to
 
 # Probability constants
 itemProbability = 0.05 # Probability that a shelf tile has an item on it
-darknessProbability = 0.1 # Probability that a room is dark
+darknessProbability = 0.15 # Probability that a room is dark
 
 # Item type rarities with cumulative distributions from the most common item type on the left to the rarest item type on the right.
 # The item rarities change with respect to the room distance from the starting room

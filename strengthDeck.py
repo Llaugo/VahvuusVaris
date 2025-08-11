@@ -55,11 +55,11 @@ class StrengthDeck():
                 elif card.auraDist:
                     floor.player.changeAura(card.auraDist)
                     cardReady = True
-            oldCooldownN = round((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
-            oldTimerN = round(card.timer/10) % 4 + 5
+            oldCooldownN = math.floor((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
+            oldTimerN = math.floor(card.timer/10) % 4 + 5
             card.update(floor) # Update cards
-            cooldownN = cooldownN = round((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
-            timerN = round(card.timer/10) % 4 + 5
+            cooldownN = cooldownN = math.floor((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
+            timerN = math.floor(card.timer/10) % 4 + 5
             if cooldownN != oldCooldownN:
                 newImg = self.overlaySprite.getImage(cooldownN,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
@@ -101,11 +101,11 @@ class StrengthDeck():
     # Draw the cards/background and buttons on the screen
     def draw(self, screen):
         screen.blit(self.background, (0,0))
-        oldShine = round(self.shinePhase)
+        oldShine = math.floor(self.shinePhase)
         self.shinePhase = (self.shinePhase + 0.1)
         for i, overlay in enumerate(self.overlays):
-            if self.cards[i].ready and oldShine != round(self.shinePhase):
-                newImg = self.overlaySprite.getImage(round(self.shinePhase) % 4+1,250,350,const.scale/2)
+            if self.cards[i].ready and oldShine != math.floor(self.shinePhase):
+                newImg = self.overlaySprite.getImage(math.floor(self.shinePhase) % 4+1,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
             screen.blit(overlay[0], overlay[1])
         for card in self.cards:

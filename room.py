@@ -401,6 +401,8 @@ class Room():
                         pygame.draw.circle(self.darkness, (0, 0, 0, a), playerPos, r/2)
                         pygame.draw.line(self.darkness, (0,0,0,a), [playerPos[0], playerPos[1]], [playerPos[0] + (2 - player.facing)*700, playerPos[1]], r)
             screen.blit(self.darkness, (self.rect.left+const.tileSize,self.rect.top+const.tileSize))
+        for cart in self.carts:
+            cart.draw(screen)
         if self.cartOwnerDuration:
             self.owners.fill((0, 0, 0, 0))
             if not self.cartOwnerView: # Show all cart npc pairs
@@ -425,8 +427,6 @@ class Room():
                         pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), npcPos, 22)
                         pygame.draw.circle(self.owners, ((i*50)%225, (-i*50-50)%225, (i*50-100)%225, 120), cartPos, 22)
                 screen.blit(self.owners,self.rect.topleft)
-        for cart in self.carts:
-            cart.draw(screen)
         # Show item name list
         if self.itemNameView:
             self.itemNamesTitle.draw(screen)

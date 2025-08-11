@@ -262,11 +262,11 @@ class Player(pygame.sprite.Sprite):
 
     # Draw the player
     def draw(self, screen):
+        if self.aura:
+            pygame.draw.rect(screen, "black", [self.rect.centerx-self.aura/2, self.rect.centery-self.aura/2, self.aura, self.aura], 2)
         drawRect = self.rect.copy()
         drawRect.y -= 20*self.scale # Adjust hitbox position to center on the image
         drawRect.x -= 5*self.scale
         screen.blit(self.image, drawRect)
-        if self.aura:
-            pygame.draw.rect(screen, "black", [self.rect.centerx-self.aura/2, self.rect.centery-self.aura/2, self.aura, self.aura], 2)
         if self.speechDuration:
             self.speechText.draw(screen)
