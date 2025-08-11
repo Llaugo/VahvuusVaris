@@ -157,6 +157,8 @@ async def main():
                 strengthPicker.readyButton.unpress()
                 gameStatus = "level"
                 deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
+                for card in deck.cards:
+                    card.blitXP()
                 deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
 
 

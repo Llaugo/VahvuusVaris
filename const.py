@@ -17,19 +17,23 @@ def gameFont(size=30):
 tileSize = 46
 
 # Player's base stats
-basePlayerSpeed = 2
-basePlayerStrength = 0
-basePlayerSpeechDuration = 120
+basePlayerSpeed = 2                # Speed
+basePlayerStrength = 0             # Strength
+basePlayerSpeechDuration = 120     # Speech text visibility duration
 
-# How much time (sec) there is in each level (300 = 5min)
-floorTime = 300
-# Floor size (floorSize x floorSize rooms)
-floorSize = 9
+# Floor constants
+floorTime = 300     # How much time (sec) there is in each level (300 = 5min)
+floorSize = 9       # Floor size (floorSize x floorSize rooms)
 
-# NPC walking duration/distance
-npcWalkDur = 93
-npcWalkSpeed = 1
+# Npc constants
+npcWalkDur = 93     # Walking distances
+npcWalkSpeed = 1    # Walking speed
 
+# Card constants
+cardExp = 0.1       # Amount of experience gained when using a card
+maxCardLevel = 3    # Maximum level that a strength card can get to
+
+# Probability constants
 itemProbability = 0.05 # Probability that a shelf tile has an item on it
 darknessProbability = 0.1 # Probability that a room is dark
 

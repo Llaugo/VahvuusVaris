@@ -18,7 +18,7 @@ class StrengthDeck():
         self.overlaySprite = spriteSheet.SpriteSheet(overlaySpriteSheet)
         self.cards = cards
         self.overlays: list[tuple[pygame.Surface, pygame.Rect]] = []  # List of overlays and their rects associated with the cards
-        for i in range(len(self.cards)): # create overlay for every card
+        for i,card in enumerate(self.cards): # create overlay for every card
             overlay = self.overlaySprite.getImage(0,250,350,const.scale/2)
             rect = overlay.get_rect()
             self.overlays.append((overlay,rect))
@@ -28,10 +28,10 @@ class StrengthDeck():
     # Update position of the cards on the screen
     def updatePos(self, pos):
         self.pos = pos
-        for i, card in enumerate(self.cards): # Blit every card image and its overlay to background
+        for i, overlay in enumerate(self.overlays): # Blit every card image and its overlay to background
             cardPos = (pos[0]-((i+1)%2)*150-165, pos[1]+((math.floor(i/2)-2)*200)+125)
-            newRect = self.overlays[i][0].get_rect(topleft = cardPos)
-            self.overlays[i] = (self.overlays[i][0], newRect)
+            newRect = overlay[0].get_rect(topleft = cardPos)
+            self.overlays[i] = (overlay[0], newRect)
         self.updateImages(pos)
         self.activateButton.updatePos((pos[0]+const.tileSize*15+280, pos[1]))
 
@@ -51,7 +51,7 @@ class StrengthDeck():
                 if self.activateButton.pressComplete:
                     card.tryActivate(floor)
                     self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), self.overlays[i][1])
-                    if card.imageNum == 11: self.updateImages(self.pos)
+                    self.updateImages(self.pos)
                 elif card.auraDist:
                     floor.player.changeAura(card.auraDist)
                     cardReady = True
