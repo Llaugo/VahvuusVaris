@@ -177,20 +177,26 @@ class Room():
 
     # Add one item randomly into the room
     # Returns True if item was added, False if no shelves to add to
-    def addItem(self):
+    def addItem(self, level):
         freeTiles = []
         for tile in self.tiles: # Check all free shelves
             if tile.isShelf() and not tile.item:
                 freeTiles.append(tile)
-        if freeTiles:
-            rndTile = random.choice(freeTiles)
-            rndTile.addItem(self.roomDistance)  # Add an item to a random tile
-            self.items.append(rndTile.item)     # Add the item to room
-            random.shuffle(self.items)
-            for i, itm in enumerate(self.items): # List of items, if needed for showing room items
-                itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
-            return True
-        return False
+        if not freeTiles:
+            return False
+        itemCount = 1
+        if random.random() < level-1.5:
+            itemCount = 2
+        for _ in range(itemCount):
+            if freeTiles:
+                rndTile = random.choice(freeTiles)
+                freeTiles.remove(rndTile)
+                rndTile.addItem(self.roomDistance)  # Add an item to a random tile
+                self.items.append(rndTile.item)     # Add the item to room
+                random.shuffle(self.items)
+                for i, itm in enumerate(self.items): # List of items, if needed for showing room items
+                    itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
+        return True
     
     # Lighten up a dark room
     # radius: radius of the lit area, negative numbers create a beam of light in front of the player

@@ -6,13 +6,15 @@ class Text():
     # pos: location of the text (topleft) on the screen
     # color: color of the text (default black)
     # lineSpacing: spacing of multiline text
-    def __init__(self, font, text, pos, color=(0,0,0), lineSpacing=2):
+    # is the text centered or not
+    def __init__(self, font, text, pos, color=(0,0,0), lineSpacing=2, center=False):
         self.font = font
         self.pos = pos
         self.color = color
         self.lineSpacing = lineSpacing
         self.lines = []     # Text rows as list rows
         self.surfaces = []  # Rendered text lines
+        self.center = center
         self.setText(text)
 
     # Set the text / modify the text
@@ -25,10 +27,10 @@ class Text():
             self.lines = lines
             self.surfaces = [ self.font.render(line, True, self.color) for line in lines ]
 
-    # pos: new pos of the button
+    # pos: new pos of the text
     # center: alligns text to left if False and to center if True
-    def updatePos(self, pos, center=False):
-        if center:
+    def updatePos(self, pos):
+        if self.center:
             # Find the longest line, to center the text on
             longest = 0
             for surf in self.surfaces:
@@ -44,6 +46,14 @@ class Text():
         if text: # Modify text
             self.setText(text)
         x,y = self.pos
+        if self.center:
+            # Find the longest line, to center the text on
+            longest = 0
+            for surf in self.surfaces:
+                if surf.get_width() > longest:
+                    longest = surf.get_width()
+        add = 0
         for surf in self.surfaces: # draw every line/surface on top of each other
-            screen.blit(surf, (x, y))
+            if self.center: add = longest/2 - surf.get_width()/2
+            screen.blit(surf, (x+add, y))
             y += surf.get_height() + self.lineSpacing

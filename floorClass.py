@@ -49,8 +49,8 @@ class Floor():
     def addStone(self):
         self.currentRoom.addStone(self.player.rect.center)
 
-    def addItem(self):
-        if not self.currentRoom.addItem():
+    def addItem(self, level):
+        if not self.currentRoom.addItem(level):
             self.player.speak(const.phrase[self.lang][56])
             return False
         return True

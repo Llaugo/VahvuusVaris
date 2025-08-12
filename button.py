@@ -27,8 +27,7 @@ class Button():
         self.pressComplete = False
         self.text = None # Text on the button
         if font: # If font is specified, render text on the button
-            self.text = text.Text(font, buttonText, pos, color)
-            self.text.updatePos(pos, True)
+            self.text = text.Text(font, buttonText, pos, color, 2, True)
 
     # Press this button
     def press(self, fingerID):
@@ -53,7 +52,7 @@ class Button():
     def updatePos(self, pos):
         self.rect.center = pos
         if self.text: # Update text pos
-            self.text.updatePos(pos, True)
+            self.text.updatePos(pos)
 
     # Track button pressing
     def handleEvent(self, event, screenSize):

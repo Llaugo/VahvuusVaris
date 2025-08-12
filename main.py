@@ -84,7 +84,7 @@ async def main():
 
 
     # Texts
-    checkpointText = text.Text(const.gameFont(50), f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.', (0,0))   # Checkpoint text
+    checkpointText = text.Text(const.gameFont(50), f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.', (0,0), center=True)   # Checkpoint text
     debugText = text.Text(const.gameFont(20), f'FPS: {round(clock.get_fps())}',(20,20))          # Debug text
 
     # Updates all positions of all elements on the screen, when the screen size is changed
@@ -100,7 +100,7 @@ async def main():
         liftButton.updatePos((floor.currentRoom.rect.right+80,newScreenSize[1]/2))
         if deck:
             deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
-        checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6),True)
+        checkpointText.updatePos((newScreenSize[0]/2,newScreenSize[1]/6))
         nextFloorButton.updatePos((newScreenSize[0]/2,newScreenSize[1]*4/5))
         startButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2-107))
         continueButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+14))

@@ -82,7 +82,7 @@ phrase = [
      "Seuraava kerros",                     # 1: levelin aloitusnapissa
      "Kerros",                              # 2: checkpoint otsikon osa 1 & Kerrosnumeron edessä
      "suoritettu",                          # 3: checkpoint otsikon osa 2
-     " OTA\nESINE",                         # 4: esinenapissa
+     "OTA\nESINE",                         # 4: esinenapissa
      "TOINEN\nESINE",                       # 5: vaihda kaupattavaa esinettä
      "Huoneessa olevat esineet:",           # 6: huoneen esinelista
      "Ostoslista",                          # 7: Ostoslistan otsikko

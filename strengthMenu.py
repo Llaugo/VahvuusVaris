@@ -24,12 +24,12 @@ class StrengthMenu():
         self.cardPiles = []
         for i in range(6):
             self.cardPiles.append(picture.Picture("images/card_pile.png",(246,386), (0,0), 0.45))
-        self.titles = [text.Text(const.gameFont(15), const.phrase[self.lang][15], (0,0)),
-                       text.Text(const.gameFont(15), const.phrase[self.lang][16], (0,0)),
-                       text.Text(const.gameFont(15), const.phrase[self.lang][17], (0,0)),
-                       text.Text(const.gameFont(15), const.phrase[self.lang][18], (0,0)),
-                       text.Text(const.gameFont(15), const.phrase[self.lang][19], (0,0)),
-                       text.Text(const.gameFont(15), const.phrase[self.lang][20], (0,0))]
+        self.titles = [text.Text(const.gameFont(15), const.phrase[self.lang][15], (0,0),center=True),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][16], (0,0),center=True),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][17], (0,0),center=True),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][18], (0,0),center=True),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][19], (0,0),center=True),
+                       text.Text(const.gameFont(15), const.phrase[self.lang][20], (0,0),center=True)]
         self.inspectPile = 0
         self.strengthBackground = picture.Picture("images/strength_menu.png", (2500,1500), (0,0), 0.45)
         self.otter = picture.Picture("images/otter_1.png", (140,195), (0,0), 0.45)
@@ -65,8 +65,8 @@ class StrengthMenu():
 
     def updateTextPos(self):
         for i, text in enumerate(self.titles):
-            text.updatePos((self.pos[0]+i*112.5-100, self.pos[1]-283 + (i%2)*210), True)
-        self.titles[self.inspectPile].updatePos((self.pos[0]+175, self.pos[1]-53), True)
+            text.updatePos((self.pos[0]+i*112.5-100, self.pos[1]-283 + (i%2)*210))
+        self.titles[self.inspectPile].updatePos((self.pos[0]+175, self.pos[1]-53))
 
     def updateBackground(self):
         self.background = pygame.Surface((2500,1500)).convert_alpha()
