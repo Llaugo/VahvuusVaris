@@ -407,11 +407,11 @@ class TeamworkCard(StrengthCard):
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
-            if not floor.tradeWithNpc():
+            if not floor.tradeWithNpc(math.floor(self.level)):
                 self.reset(floor)
             else:
                 if self.levelup():
-                    self.upgradeCard()
+                    self.upgradeCard(0,-3*60)
 
 # Forgiveness card cleans nearby waters
 class ForgivenessCard(StrengthCard):

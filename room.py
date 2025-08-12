@@ -303,7 +303,7 @@ class Room():
         return True
 
     # Returns -1 if no NPC, 0 if no items to trade, 1 if NPC has no cart, 2 if Success
-    def tradeWithNpc(self, list):
+    def tradeWithNpc(self, list, level):
         foundCart = None
         if self.talkNpc:
             npci = self.npcs.index(self.talkNpc)
@@ -312,8 +312,14 @@ class Room():
         else:
             return -1
         if foundCart:
-            self.tradeView = tradeMenu.TradeMenu(list, foundCart, self.pos, self.lang)
+            doubleItem = False
+            if level > 1 and not self.talkNpc.tradedWith:
+                randomFloat = random.random()
+                if randomFloat < level*0.1-0.15:
+                    doubleItem = True
+            self.tradeView = tradeMenu.TradeMenu(list, foundCart, self.pos, self.lang, doubleItem)
             if self.tradeView.listItem:
+                self.talkNpc.trade()
                 return 2
             else:
                 self.deleteTradeView()

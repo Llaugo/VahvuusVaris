@@ -19,6 +19,10 @@ class Npc():
         self.strength = 100
         self.walkDuration = 0
         self.walking = 0        # Animation helper
+        self.tradedWith = False
+
+    def trade(self):
+        self.tradedWith = True
 
     # Return True if teleport was successful, False if collision happened
     def teleport(self, newPos, room):

@@ -8,7 +8,7 @@ import shoppingList
 
 class TradeMenu():
     # lang: language of the game
-    def __init__(self, list: shoppingList.ShoppingList, cart, pos, lang):
+    def __init__(self, list: shoppingList.ShoppingList, cart, pos, lang, doubleItem=False):
         self.pos = pos
         self.lang = lang
         self.list = list
@@ -21,11 +21,14 @@ class TradeMenu():
                 self.listItem = content[0]
                 break
         self.cart = cart
+        self.doubleItem = doubleItem
         #self.pos = (0,0)
         self.background = picture.Picture("images/trade_view.png", (710,710), (0,0))
         self.infoText = text.Text(const.gameFont(46), const.phrase[self.lang][9],(0,0))
         self.oldItem = text.Text(const.gameFont(40), f"- {self.listItem}", (0,0), (255,0,0))
         self.newItem = text.Text(const.gameFont(40), f"+ {self.cart.item.name}", (0,0), (0,255,0))
+        if doubleItem:
+            self.newItem.setText(f"+ 2x {self.cart.item.name}")
         self.yesButton = button.Button(10,1,(0,0),const.scale, const.gameFont(23), const.phrase[self.lang][10])
         self.noButton = button.Button(12,1,(0,0),const.scale, const.gameFont(23), const.phrase[self.lang][11])
         self.changeButton = button.Button(14,1,(0,0),const.scale*0.6, const.gameFont(12), const.phrase[self.lang][5])
@@ -41,6 +44,8 @@ class TradeMenu():
     def confirmTrade(self):
         oldItem = self.cart.switchItem(self.listItem)
         self.list.receiveItem(oldItem.name)
+        if self.doubleItem:
+            self.list.receiveItem(oldItem.name)
         self.list.loseItem(self.itemI)
 
     def changeItem(self):

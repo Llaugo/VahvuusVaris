@@ -133,8 +133,8 @@ class Floor():
     def showCartOwners(self, timer):
         return self.currentRoom.showCartOwners(True, timer)
 
-    def tradeWithNpc(self):
-        ans = self.currentRoom.tradeWithNpc(self.shoppinglist)
+    def tradeWithNpc(self, level):
+        ans = self.currentRoom.tradeWithNpc(self.shoppinglist, level)
         if ans == -1:
             self.player.speak(const.phrase[self.lang][52])
             return False
