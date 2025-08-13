@@ -45,6 +45,7 @@ class StrengthDeck():
     # Update all the cards
     def update(self, floor):
         cardReady = False
+        card4 = self.cards[4]
         for i, card in enumerate(self.cards): 
             if card.ready:
                 if self.activateButton.pressComplete:
@@ -56,9 +57,11 @@ class StrengthDeck():
                     cardReady = True
             oldCooldownN = math.floor((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
             oldTimerN = math.floor(card.timer/10) % 4 + 5
-            if self.cards[4].imageNum == 19 and self.cards[4].timer and i != 4: # If prudence is on, update only cooldown timers
+            if card4.imageNum == 19 and card4.timer and i != 4: # If prudence is on, update only cooldown timers
                 if not card.timer:
                     card.updateCooldown()
+                    if card4.level == 3 and card4.timer%2: # If prudence is on level 3, every other tick doubles the cooldown reduce
+                        card.updateCooldown()
             else:
                 card.update(floor) # Update cards
             cooldownN = cooldownN = math.floor((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9

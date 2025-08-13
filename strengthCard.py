@@ -461,6 +461,7 @@ class PrudenceCard(StrengthCard):
     def __init__(self):
         super().__init__(19)
         self.timerMax = 5*60
+        self.level = 2.9
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
