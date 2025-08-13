@@ -42,7 +42,6 @@ class StrengthDeck():
         for i, overlay in enumerate(self.overlays): # Blit every card image to background
             self.background.blit(self.cards[i].image, overlay[1])
 
-
     # Update all the cards
     def update(self, floor):
         cardReady = False
@@ -57,7 +56,11 @@ class StrengthDeck():
                     cardReady = True
             oldCooldownN = math.floor((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
             oldTimerN = math.floor(card.timer/10) % 4 + 5
-            card.update(floor) # Update cards
+            if self.cards[4].imageNum == 19 and self.cards[4].timer and i != 4: # If prudence is on, update only cooldown timers
+                if not card.timer:
+                    card.updateCooldown()
+            else:
+                card.update(floor) # Update cards
             cooldownN = cooldownN = math.floor((card.cooldownMax - card.cooldown)/card.cooldownMax*16) + 9
             timerN = math.floor(card.timer/10) % 4 + 5
             if cooldownN != oldCooldownN:

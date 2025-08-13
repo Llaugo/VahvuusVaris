@@ -35,7 +35,7 @@ class Room():
         self.items = []                         # items in the room
         self.itemNamesTitle = text.Text(const.gameFont(32), const.phrase[self.lang][6],(0,0),(25, 28, 54)) # Title for the item names list
         self.adverts = []                       # adverts in the room
-        self.itemNameView = False               # If True, item names are shown
+        self.itemNameView = 0                   # If >0, item names are shown
         self.cartOwnerView = None               # If not specified, show all carts
         self.cartOwnerDuration = 0              # How long to show carts for
         self.tradeView = None                   # If True, show trading buttons
@@ -172,8 +172,8 @@ class Room():
         rect = image.get_rect(center = pos) # Get rect
         self.stones.append((image, rect))
 
-    def showItemNames(self, bool):
-        self.itemNameView = bool
+    def showItemNames(self, level):
+        self.itemNameView = level
 
     # Add one item randomly into the room
     # Returns True if item was added, False if no shelves to add to

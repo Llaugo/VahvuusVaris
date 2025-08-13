@@ -61,6 +61,10 @@ class StrengthCard():
         elif self.cooldown:     # Update cooldown timer if cooldown is active
             self.cooldown -= 1
 
+    def updateCooldown(self):
+        if self.cooldown:
+            self.cooldown -= 1
+
     def levelup(self, amount=const.cardExp):
         self.level = min(self.level+amount, const.maxCardLevel)
         self.blitXP()
@@ -123,19 +127,19 @@ class JudgementCard(StrengthCard):
     def tryActivate(self, floor):
         if super().tryActivate(floor):
             self.timer = self.timerMax
-            floor.showItemNames(True)
+            floor.showItemNames(math.floor(self.level))
             self.levelup()
 
     # Hide item names, if timer ends
     def update(self, floor):
         if self.timer == 1:
-            floor.showItemNames(False)
+            floor.showItemNames(0)
         self.updateTimers()
 
     # Reset timers and hide item names
     def reset(self, floor):
         super().reset(floor)
-        floor.showItemNames(False)
+        floor.showItemNames(0)
 
 # Learning card gets rid of darkness in the dark rooms
 class LearningCard(StrengthCard):
@@ -456,11 +460,13 @@ class HumilityCard(StrengthCard):
 class PrudenceCard(StrengthCard):
     def __init__(self):
         super().__init__(19)
+        self.timerMax = 5*60
 
     def tryActivate(self, floor):
         if super().tryActivate(floor):
             floor.stopTime()
-            self.levelup()
+            if self.levelup():
+                self.upgradeCard(4*60,-4*60)
 
     def update(self, floor):
         if self.timer == 1:

@@ -19,8 +19,8 @@ class Floor():
         self.lang = lang
         self.rooms: list[list[room.Room]] = [[None]*n for _ in range(n)]
         self.half = n // 2
-        #self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang, self.pos)
-        self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang, 0, self.pos) # FOR TESTING
+        self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang, 0, self.pos)
+        # self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang, 0, self.pos) # START ROOM FOR TESTING
         self.currentLocation = (self.half,self.half) # Player's current room coords (start from the middle)
         self.currentRoom: room.Room = self.rooms[self.half][self.half] # Player's current room
         self.player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2)) # Player initialization
@@ -55,8 +55,8 @@ class Floor():
             return False
         return True
 
-    def showItemNames(self, bool):
-        self.currentRoom.showItemNames(bool)
+    def showItemNames(self, level):
+        self.currentRoom.showItemNames(level)
 
     def changeDarkness(self, radius, duration, clear=False):
         if not self.currentRoom.changeDarkness(radius, duration, clear):
