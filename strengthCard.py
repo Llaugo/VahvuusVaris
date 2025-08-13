@@ -29,7 +29,10 @@ class StrengthCard():
 
     def blitXP(self):
         self.image = self.cardSprite.getImage(self.imageNum,250,350,const.scale/2)
-        self.xpImage = self.xpSprite.getImage(round((self.level*10)%10),178,18,const.scale/2)
+        if self.level == 3: 
+            self.xpImage = self.xpSprite.getImage(10,178,18,const.scale/2)
+        else: 
+            self.xpImage = self.xpSprite.getImage(round((self.level*10)%10),178,18,const.scale/2)
         self.lvlText.setText(f"-{math.floor(self.level)}-")
         self.image.blit(self.xpImage,(18,150))
         self.image.blit(self.lvlText.surfaces[0], (52,138))
