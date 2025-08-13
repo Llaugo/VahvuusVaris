@@ -390,10 +390,10 @@ class Room():
         return True
 
     # Draw each tile, item and stone in this room
-    def draw(self, screen, player):
+    def draw(self, screen, player, timeStop=False):
         screen.blit(self.background, self.rect) # background
         for item in self.items:                 # items
-            item.draw(screen)
+            item.draw(screen,timeStop)
         for stn in self.stones:                 # stones
             screen.blit(stn[0],stn[1])
         # Fill with darkness

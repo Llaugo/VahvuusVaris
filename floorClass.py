@@ -274,7 +274,7 @@ class Floor():
         if self.birdsEyeLevel:
             screen.blit(self.birdsEye, self.currentRoom.rect)
         else:
-            self.currentRoom.draw(screen, self.player)
+            self.currentRoom.draw(screen, self.player, self.timeStop)
         self.frame.draw(screen)
         self.timerText.draw(screen,time.strftime('%M:%S', time.gmtime(self.timer)))
         self.floorText.draw(screen)

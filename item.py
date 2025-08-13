@@ -31,9 +31,10 @@ class Item():
         self.text.updatePos((pos[0],pos[1]+23))
 
     # Draw item with animated shine effect
-    def draw(self, screen):
+    def draw(self, screen, timeStop=False):
         oldShine = round(self.shinePhase)
-        self.shinePhase += 0.1
+        if not timeStop:
+            self.shinePhase += 0.1
         if oldShine != round(self.shinePhase):
             self.image = self.itemSprite.getImage(self.picType + (round(self.shinePhase) % 4),35,35,const.scale)
         screen.blit(self.image, self.rect)
