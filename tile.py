@@ -82,6 +82,12 @@ class Tile():
         else:
             return False
         
+    def isWall(self):
+        if self.tileType == 9:
+            return True
+        else:
+            return False
+        
     def isAdvert(self):
         if self.tileType == 7:
             return True

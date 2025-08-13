@@ -72,12 +72,15 @@ class Player(pygame.sprite.Sprite):
     # Returns True if a collition happened
     def resolveCollision(self, room: room.Room, preferDir=None):
         self.rect.center = (self.pos.x, self.pos.y)
-        solids = room.solidRects.copy()
-        if not self.swimDuration:
-            solids += room.waterRects
-        if not self.npcCollDuration:
-            for npc in room.npcs:
-                solids.append(npc.rect)
+        if self.flyDuration > 1:
+            solids = room.wallRects.copy()
+        else:
+            solids = room.solidRects.copy()
+            if not self.swimDuration:
+                solids += room.waterRects
+            if not self.npcCollDuration:
+                for npc in room.npcs:
+                    solids.append(npc.rect)
         collided = False
         for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid):
@@ -116,12 +119,12 @@ class Player(pygame.sprite.Sprite):
             self.npcCollDuration = max(self.npcCollDuration-1, 0) # update npc passthrough timer
         if self.speechDuration:
             self.speechDuration = max(self.speechDuration-1, 0)
-        if not self.flyDuration:
-            self.resolveCollision(room)
-        elif self.flyDuration == 1:
+        
+        if self.flyDuration == 1:
             if self.resolveCollision(room,'x') or self.resolveCollision(room,'y'):
                 self.flyDuration -= 1
         else:
+            self.resolveCollision(room)
             self.flyDuration = max(self.flyDuration-1,0)
         self.updateSpeech()
 
@@ -219,6 +222,8 @@ class Player(pygame.sprite.Sprite):
             if self.rect.colliderect(solid):
                 collided = True
                 break
+        if not self.rect.colliderect(room.rect): # Player tried to teleport outside the map
+            collided = True
         if collided:
             self.resetRect(oldPos)
         return not collided

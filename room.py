@@ -32,6 +32,7 @@ class Room():
         self.rect = self.background.get_rect(center = self.pos)
         self.reconstruct()                      # Blit all the tiles to a single background image
         self.solidRects = []                    # walls and solid objects of the room
+        self.wallRects = []                     # outside walls of the room
         self.waterRects = []                    # watertiles in the room
         self.items = []                         # items in the room
         self.itemNamesTitle = text.Text(const.gameFont(32), const.phrase[self.lang][6],(0,0),(25, 28, 54)) # Title for the item names list
@@ -78,6 +79,7 @@ class Room():
         self.rect.center = self.pos
         halfLength = round((len(self.layout)-1)/2)  # Helper value
         self.solidRects: list[pygame.Rect] = []     # Reset solids
+        self.wallRects: list[pygame.Rect] = []      # Reset walls
         self.waterRects: list[pygame.Rect] = []     # Reset waters
         self.items: list[item.Item] = []            # Reset items
         self.adverts = []                           # Reset adverts
@@ -92,6 +94,8 @@ class Room():
                         self.waterRects.append(newRect)
                     else:
                         self.solidRects.append(newRect)
+                        if tile.isWall():
+                            self.wallRects.append(newRect)
                 elif tile.tileType == 5:            # Update crate tiles
                     newRect = pygame.Rect(i*const.tileSize, j*const.tileSize, 23, 25)
                     newRect.center = (tilePos[0]+5, tilePos[1]+5)
