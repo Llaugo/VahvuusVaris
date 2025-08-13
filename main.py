@@ -80,7 +80,7 @@ async def main():
     # The main floor object
     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))
     lobby = room.Room(const.lobbyLayout[0],lang)
-    deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
+    deck = None
 
 
     # Texts

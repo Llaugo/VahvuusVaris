@@ -20,6 +20,7 @@ class Room():
         self.pos = (0,0)                        # Room center
         self.roomDistance = roomDistance
         self.exit = None                        # Does the room have an exit
+        self.doorways = []                      # Four rects for the four doors out of the room
         self.carts = []                         # carts in the room
         self.npcs = []                          # npcs in the room
         self.npcCartPairs = []                  # pairs of npcs and carts
@@ -113,6 +114,11 @@ class Room():
             #self.solidRects.append(npc.rect)
         if self.tradeView:
             self.tradeView.updatePos(screenCenter)
+        self.doorways = []
+        self.doorways.append(self.layout[(len(self.layout)//2)][0].rect.copy())
+        self.doorways.append(self.layout[0][(len(self.layout)//2)].rect.copy())
+        self.doorways.append(self.layout[(len(self.layout)//2)][len(self.layout)-1].rect.copy())
+        self.doorways.append(self.layout[len(self.layout)-1][(len(self.layout)//2)].rect.copy())
     
     def updateItemPos(self):
         if self.itemNameView == 3:
@@ -479,16 +485,19 @@ class Room():
             for j,c in enumerate(row):
                 if c == 0: # Wall
                     if lift: # Lift has special walls
-                        self.layout[i].append(tile.Tile(18, self.lang))
+                        self.layout[i].append(tile.Tile(19, self.lang))
                     else:
-                        self.layout[i].append(tile.Tile(8, self.lang))
+                        self.layout[i].append(tile.Tile(9, self.lang))
                 elif c == 1: # Floor
                     if lift: # Lift has special floor
                         self.layout[i].append(tile.Tile(4, self.lang))
                     else:
-                        self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
+                        if i == 0 or j == 0 or i == len(layout)-1 or j == len(layout)-1:
+                            self.layout[i].append(tile.Tile(8, self.lang))
+                        else:
+                            self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                 elif c == 2: # Shelf
-                    self.layout[i].append(tile.Tile(random.randint(9,17), self.lang, self.roomDistance))
+                    self.layout[i].append(tile.Tile(random.randint(10,18), self.lang, self.roomDistance))
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0, self.lang)
                     self.layout[i].append(self.exit)
@@ -505,7 +514,7 @@ class Room():
                     npcPos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize+3)
                     self.npcs.append(npc.Npc(npcPos,c-60))
                 elif c == 7: # Water
-                    self.layout[i].append(tile.Tile(19, self.lang))
+                    self.layout[i].append(tile.Tile(20, self.lang))
                 elif c >= 80 and c <= 83:
                     newTile = tile.Tile(7, self.lang)
                     newTile.setAdvert(c-80)
@@ -530,4 +539,3 @@ class Room():
             else:                   cart1 = None
             pair = (npc1, cart1)
             self.npcCartPairs.append(pair)
-        #self.npcCartPairs = zip(self.npcs,self.carts)

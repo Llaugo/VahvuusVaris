@@ -69,7 +69,7 @@ class StrengthDeck():
             if cooldownN != oldCooldownN:
                 newImg = self.overlaySprite.getImage(cooldownN,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
-            elif timerN != oldTimerN:
+            elif timerN != oldTimerN and card.imageNum != 22:
                 newImg = self.overlaySprite.getImage(timerN,250,350,const.scale/2)
                 self.overlays[i] = (newImg, self.overlays[i][1])
         if not cardReady:

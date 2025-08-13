@@ -57,9 +57,14 @@ class Cart():
                 solids.append(npc.rect)
         if player != pusher:
             solids.append(player.rect)
+        for door in room.doorways:
+            solids.append(door)
         collided = False
         for solid in solids:                                # Check all the solid rects in the room
             if self.rect.colliderect(solid) and solid != self.rect:
+                for door in room.doorways:
+                    if door == solid:
+                        player.speak(const.phrase[self.lang][60])
                 overlap = self.rect.clip(solid)             # Compute overlap rectangle
                 if overlap.width < overlap.height : # Choose the smaller overlap dimension
                     if self.rect.centerx > solid.centerx:   # cart is on right side of tile -> push right

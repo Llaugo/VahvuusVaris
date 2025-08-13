@@ -140,7 +140,7 @@ phrase = [
      "Hänen kärrynsä ovat jumissa.",        # 57: johtajuuden aktivointi, kun NPC ei pääse kärrynsä luo
      "<3",                                  # 58: Rakkauden onnistunut aktivointi (lataa reppua)
      "Ei tilaa laskeutua.",                 # 59: luovuuden lennokki yrittää laskeutua esteen päälle
-     "",
+     "Kärryä ei voi työntää kynnyksen yli", # 60: kun kärryä työntää oviaukkoa päin
      "",
      "Luovuuden lennokki",                  # ??: Vahvuuskorttien otsikot
      "Uteliaisuuden suurennuslasi",

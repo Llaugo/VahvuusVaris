@@ -19,8 +19,8 @@ class Floor():
         self.lang = lang
         self.rooms: list[list[room.Room]] = [[None]*n for _ in range(n)]
         self.half = n // 2
-        self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang, 0, self.pos)
-        # self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang, 0, self.pos) # START ROOM FOR TESTING
+        #self.rooms[self.half][self.half] = room.Room(random.choice(const.startLayouts), self.lang, 0, self.pos)
+        self.rooms[self.half][self.half] = room.Room(random.choice(const.testRoom), self.lang, 0, self.pos) # START ROOM FOR TESTING
         self.currentLocation = (self.half,self.half) # Player's current room coords (start from the middle)
         self.currentRoom: room.Room = self.rooms[self.half][self.half] # Player's current room
         self.player = playerClass.Player(moveButtons, (const.worldWidth/2,const.worldHeight/2)) # Player initialization
