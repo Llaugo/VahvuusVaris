@@ -102,8 +102,7 @@ class Room():
                     self.items.append(tile.item)
         random.shuffle(self.items)
         self.itemNamesTitle.updatePos((self.rect.left + 5, self.rect.top + 45))
-        for i, itm in enumerate(self.items): # List of items, if needed for showing room items
-            itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
+        self.updateItemPos()
         for stn in self.stones:
             stn[1].center = (stn[1].centerx + screenMove[0]/2, stn[1].centery + screenMove[1]/2)
         for cart in self.carts:
@@ -114,7 +113,17 @@ class Room():
             #self.solidRects.append(npc.rect)
         if self.tradeView:
             self.tradeView.updatePos(screenCenter)
-
+    
+    def updateItemPos(self):
+        if self.itemNameView == 3:
+            for i, itm in enumerate(self.items):
+                itm.text.changeCentering(True)
+                itm.text.changeFont(const.gameFont(15))
+                itm.text.updatePos(itm.rect.midtop)
+        else:
+            for i, itm in enumerate(self.items): # List of items, if needed for showing room items
+                itm.text.updatePos((self.rect.left + 5, self.rect.top + 75 + i*itm.text.surfaces[0].get_height() + itm.text.lineSpacing))
+                #itm.text.changeCentering(False)
 
     # Calcuates the point where the stream ends
     def streamLength(self,tx,ty,dir):
@@ -174,6 +183,7 @@ class Room():
 
     def showItemNames(self, level):
         self.itemNameView = level
+        self.updateItemPos()
 
     # Add one item randomly into the room
     # Returns True if item was added, False if no shelves to add to
@@ -393,6 +403,9 @@ class Room():
     def draw(self, screen, player, timeStop=False):
         screen.blit(self.background, self.rect) # background
         for item in self.items:                 # items
+            if self.itemNameView >= 2:
+                rgb = (const.rarityColor[item.rarityLevel][0], const.rarityColor[item.rarityLevel][1], const.rarityColor[item.rarityLevel][2],255)
+                pygame.draw.circle(screen, rgb, (item.rect.centerx+1, item.rect.centery-3), 15, 4)
             item.draw(screen,timeStop)
         for stn in self.stones:                 # stones
             screen.blit(stn[0],stn[1])

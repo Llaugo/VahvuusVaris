@@ -17,13 +17,23 @@ class Text():
         self.center = center
         self.setText(text)
 
+    def changeCentering(self, bool):
+        if bool != self.center:
+            self.center = bool
+            self.updatePos(self.pos)
+
+    def changeFont(self, font):
+        if self.font != font:
+            self.font = font
+            self.setText(self.lines, True)
+
     # Set the text / modify the text
-    def setText(self, text):
+    def setText(self, text, forceUpdate=False):
         if isinstance(text, str):   # Make str to list with newlines as breaks
             lines = text.splitlines()
         else:                       # Or just accept a list as is
             lines = text
-        if self.lines != lines: # If given text has changed, log new text and render it
+        if self.lines != lines or forceUpdate: # If given text has changed, log new text and render it
             self.lines = lines
             self.surfaces = [ self.font.render(line, True, self.color) for line in lines ]
 

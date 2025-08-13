@@ -17,9 +17,9 @@ class Item():
         self.itemSprite = spriteSheet.SpriteSheet(itemSpriteSheet)
         self.image = self.itemSprite.getImage(self.picType,35,35,const.scale)
         self.rect = self.image.get_rect(center = pos)
+        self.rarityLevel = 0
         self.name = self.rollItem(roomDistance) # Determine item name/type
-        self.text = text.Text(const.gameFont(fontSize),self.name,pos,(46, 49, 79),2,True) # Item name as text
-
+        self.text = text.Text(const.gameFont(fontSize),self.name,pos,(46, 49, 79)) # Item name as text
 
     def setName(self, newName):
         self.name = newName
@@ -44,6 +44,7 @@ class Item():
         randomFloat = random.random()
         for i in range(len(const.itemRarity[roomDistance])): # Get item rarities according to the room distance
             if randomFloat <= const.itemRarity[roomDistance][i]: # Compare rarity list to the random float
+                self.rarityLevel = i
                 return const.shop(self.lang)[i][random.randint(0,4)]
         raise ValueError('Could not determine item based on rarity level.')
         

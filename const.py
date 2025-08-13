@@ -50,6 +50,8 @@ itemRarity = [[0.78,	1,	1,	1,	1],
               [0.32,	0.56,	0.81,	0.93,	1],
               [0.26,	0.47,	0.69,	0.86,	1],
               [0.2,	0.4,	0.6,	0.8,	1]]
+# Colors used in the game to indicate the rarity levels
+rarityColor = [(255,255,140), (255,182,101), (67,255,255), (255,106,233), (255,255,255)]
 # Maximum room distance from the start (and index for the "best" item distibution)
 roomDistMax = len(itemRarity)-1
 
