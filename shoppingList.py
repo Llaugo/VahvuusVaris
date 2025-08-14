@@ -71,3 +71,12 @@ class ShoppingList():
         if self.showImgTimer > 0: # show item image if image timer is on
             screen.blit(self.itemImage, (self.back.rect.center[0]-23, self.back.rect.bottom - 60))
             self.showImgTimer -= 1
+
+    def saveList(self):
+        return self.contents
+
+# listArr: [5x names, 5x quantities]
+def listLoader(listArr, lang):
+    list = ShoppingList((0,0), lang)
+    list.contents = listArr
+    return list

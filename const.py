@@ -1,6 +1,11 @@
 import pygame
 pygame.init()
 import layoutLoader
+
+# Save file names
+
+
+
 # Initial world dimensions
 worldWidth = 1400
 worldHeight = 700
@@ -141,6 +146,11 @@ phrase = [
      "<3",                                  # 58: Rakkauden onnistunut aktivointi (lataa reppua)
      "Ei tilaa laskeutua.",                 # 59: luovuuden lennokki yrittää laskeutua esteen päälle
      "Kärryä ei voi työntää kynnyksen yli", # 60: kun kärryä työntää oviaukkoa päin
+     "Sinulla on jo tallennettu peli olemassa.\nHaluatko poistaa sen?",
+     "",
+     "",
+     "",
+     "",
      "",
      "Luovuuden lennokki",                  # ??: Vahvuuskorttien otsikot
      "Uteliaisuuden suurennuslasi",

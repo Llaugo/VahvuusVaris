@@ -118,5 +118,46 @@ class StrengthDeck():
             if card.ready:
                 self.activateButton.draw(screen)
                 break
+
+    def saveDeck(self):
+        deckArr = []
+        for card in self.cards:
+            deckArr.append(card.imageNum)
+        for card in self.cards:
+            deckArr.append(card.level)
+        for card in self.cards:
+            deckArr.append(card.auraDist)
+        for card in self.cards:
+            deckArr.append(card.timerMax)
+        for card in self.cards:
+            deckArr.append(card.cooldownMax)
+        for card in self.cards:
+            if card.imageNum == 6: 
+                deckArr.append(card.swimSpeed)
+            elif card.imageNum == 11:
+                while len(deckArr) < 31: deckArr.append(None)
+                deckArr.append(card.battery)
+            elif card.imageNum == 23 or card.imageNum == 25:
+                while len(deckArr) < 32: deckArr.append(None)
+                deckArr.append(card.litWidth)
+        return deckArr
+
         
-        
+# deckArr: [6x card numbers, 6x card levels, 6x auraDist, 6x timerMax, 6x cooldownMax, 3x extra values]
+def deckLoader(deckArr, lang):
+    cards = []
+    for i in range(6):
+        card = strengthCard.createStrengthCard(deckArr[i])
+        card.level = deckArr[6+i]
+        card.auraDist = deckArr[12+i]
+        card.timerMax = deckArr[18+i]
+        card.cooldownMax = deckArr[24+i]
+        if card.imageNum == 6: 
+            card.swimSpeed = deckArr[30]
+        if card.imageNum == 11:
+            card.battery = deckArr[31]
+            card.batteryReset = math.floor(card.level)
+        if card.imageNum == 23 or card.imageNum == 25:
+            card.litWidth = deckArr[32]
+        cards.append(card)
+    return StrengthDeck(cards,lang)

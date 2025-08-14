@@ -19,6 +19,8 @@ import strengthMenu
 import cart
 import npc
 import tradeMenu
+import popupWindow
+import SaveLoadManager
 import random
 import math
 
@@ -34,6 +36,8 @@ screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RE
 # Language of the game (Default in Finnish)
 lang = 0
 
+gameSaver = SaveLoadManager.SaveLoadSystem(".save", "game_saves")
+
 # Initialize buttons
 downButton = button.Button(0,0,(0,0),const.scale)
 rightButton = button.Button(2,0,(0,0),const.scale)
@@ -41,6 +45,7 @@ upButton = button.Button(4,0,(0,0),const.scale)
 leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), const.phrase[lang][0], (8,63,6)) # Button to exit a level
+quitButton = button.Button(10,1,(50,50),const.scale/2,const.gameFont(16),const.phrase[lang][11])
 # Checkpoint buttons
 nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), const.phrase[lang][1], (8,63,6)) # Button to start a new level
 # Menu buttons
@@ -49,18 +54,17 @@ continueButton = button.Button(16,1,(0,0),const.scale)
 settingsButton = button.Button(16,1,(0,0),const.scale)
 infoButton = button.Button(16,1,(0,0),const.scale)
 
+confirmation = popupWindow.ConfirmWindow(const.phrase[lang][61],const.gameFont(17),lang)
 
 # All buttons are handled from this array
-buttons = [downButton,rightButton,upButton,leftButton,liftButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
+buttons = [downButton,rightButton,upButton,leftButton,liftButton,quitButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
 
 # Background color
 backg = (160,209,255)
 menuback = (180,200,215)
 # Menu elements
 menuBackground = picture.Picture("images/menu_screen.png", (4000,2000), (0,0), 0.45)
-strengthPicker = strengthMenu.StrengthMenu(lang)
 
-shoppinglist = shoppingList.ShoppingList((0,0), lang)
 
 async def main():
 
@@ -73,15 +77,16 @@ async def main():
     #   "menu": Game is at the starting menu
     #   "strengths": Game is at the strength picking menu
     #   "checkpoint": Game is at a state in between levels
-    gameStatus = "strengths"
+    gameStatus = "menu"
 
     # Tracks the floor/level the player is at
     floorNumber = 1
+    shoppinglist = shoppingList.ShoppingList((0,0), lang)
     # The main floor object
     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))
     lobby = room.Room(const.lobbyLayout[0],lang)
     deck = None
-
+    strengthPicker = strengthMenu.StrengthMenu(lang)
 
     # Texts
     checkpointText = text.Text(const.gameFont(50), f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.', (0,0), center=True)   # Checkpoint text
@@ -108,6 +113,7 @@ async def main():
         infoButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+256))
         menuBackground.updatePos(newCenter)
         strengthPicker.updatePos(newCenter)
+        confirmation.updatePos(newCenter)
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
 
@@ -123,10 +129,14 @@ async def main():
             else:
                 for btn in buttons:
                     btn.handleEvent(event, screenSize)
-                if deck:
-                    deck.handleCards(event, screenSize)
-                strengthPicker.handleEvent(event, screenSize)
-                floor.handleButtons(event, screenSize)
+                if gameStatus == "menu":
+                    confirmation.handleButtons(event, screenSize)
+                elif gameStatus == "strengths":
+                    strengthPicker.handleEvent(event, screenSize)
+                elif gameStatus == "level":
+                    floor.handleButtons(event, screenSize)
+                    if deck:
+                        deck.handleCards(event, screenSize)
 
         #########################################################
         # THE MAIN MENU
@@ -138,9 +148,41 @@ async def main():
             continueButton.draw(screen)
             settingsButton.draw(screen)
             infoButton.draw(screen)
+
             if startButton.pressComplete:
-                startButton.unpress()
-                gameStatus = "strengths"
+                if gameSaver.check_for_file("deck"):
+                    confirmation.draw(screen)
+                    if confirmation.yesButton.pressComplete:
+                        confirmation.yesButton.unpress()
+                        startButton.unpress()
+                        gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
+                        strengthPicker = strengthMenu.StrengthMenu(lang)
+                        updateAllPositions(screenSize)
+                        gameStatus = "strengths"
+                    elif confirmation.noButton.pressComplete:
+                        confirmation.noButton.unpress()
+                        startButton.unpress()
+                        gameStatus = "menu"
+                else:
+                    startButton.unpress()
+                    gameStatus = "strengths"
+
+            elif continueButton.pressComplete:
+                continueButton.unpress()
+                if gameSaver.check_for_file("deck"):
+                    deckArr, floorNumber, shoppinglistArr = gameSaver.load_game_data(["deck", "floorNumber", "shoppinglist"], [None, None, None])
+                    deck = strengthDeck.deckLoader(deckArr, lang)
+                    for card in deck.cards: card.blitXP()
+                    shoppinglist = shoppingList.listLoader(shoppinglistArr, lang)
+                    updateAllPositions(screenSize)
+                    gameStatus = "checkpoint"
+                else:
+                    gameStatus = "strengths"
+
+            elif settingsButton.pressComplete:
+                settingsButton.unpress()
+            elif infoButton.pressComplete:
+                infoButton.unpress()
 
         # THE STRENGTH MENU
         if gameStatus == "strengths":
@@ -157,8 +199,7 @@ async def main():
                 strengthPicker.readyButton.unpress()
                 gameStatus = "level"
                 deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
-                for card in deck.cards:
-                    card.blitXP()
+                for card in deck.cards: card.blitXP()
                 deck.updatePos((floor.currentRoom.rect.left, newScreenSize[1]/2))
 
 
@@ -198,6 +239,12 @@ async def main():
             floor.player.update(lobby)
             checkpointText.draw(screen,f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.') # Text
             nextFloorButton.draw(screen)                                    # Next floor button
+            quitButton.draw(screen)
+
+            if quitButton.pressComplete:
+                quitButton.unpress()
+                gameSaver.save_game_data([deck.saveDeck(), floorNumber, shoppinglist.saveList()], ["deck", "floorNumber", "shoppinglist"])
+                gameStatus = "menu"
 
             # Check if nextFloorButton is pressed
             if nextFloorButton.pressComplete:
