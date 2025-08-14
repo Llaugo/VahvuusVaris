@@ -16,11 +16,11 @@ class ShoppingList():
         self.pos = pos
         self.lang = lang
         self.contents = []
-        self.contents.append([const.shop(self.lang)[4][randint(0,4)],1,1]) # Item from each rarity level is picked at random
-        self.contents.append([const.shop(self.lang)[3][randint(0,4)],1,2])
+        self.contents.append([const.shop(self.lang)[4][randint(0,4)],0,1]) # Item from each rarity level is picked at random
+        self.contents.append([const.shop(self.lang)[3][randint(0,4)],0,2])
         self.contents.append([const.shop(self.lang)[2][randint(0,4)],0,4])
-        self.contents.append([const.shop(self.lang)[1][randint(0,4)],2,6])
-        self.contents.append([const.shop(self.lang)[0][randint(0,4)],2,10])
+        self.contents.append([const.shop(self.lang)[1][randint(0,4)],0,6])
+        self.contents.append([const.shop(self.lang)[0][randint(0,4)],0,10])
         self.back = picture.Picture("images/shoplist.png", (260,230), pos) # Background image
         self.title = text.Text(const.gameFont(), const.phrase[self.lang][7],(0,0)) # Title text
         self.text1 = text.Text(const.gameFont(14), [self.contents[i][0] for i in range(len(self.contents))], (0,0), (0,0,0), 10) # Item names

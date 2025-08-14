@@ -11,11 +11,12 @@ from pygame.math import Vector2
 class Cart():
     # dir: direction where the cart is facing
     # pos: location on screen
+    # dir: initial facing direction
     # lang: language of the game
     # roomDist: distance from the middle room (for item generation)
-    def __init__(self, pos, lang, roomDist):
+    def __init__(self, pos, dir, lang, roomDist):
         self.lang = lang
-        self.dir = random.randint(0,3)
+        self.dir = dir
         cartSpriteSheet = pygame.image.load('images/cart.png').convert() # Load player's spritesheet
         self.cartSprite = spriteSheet.SpriteSheet(cartSpriteSheet)
         self.image = self.cartSprite.getImage(self.dir,38,38,const.scale)

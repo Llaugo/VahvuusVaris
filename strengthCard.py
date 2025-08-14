@@ -552,7 +552,7 @@ class GratitudeCard(StrengthCard):
 class HopeCard(StrengthCard):
     def __init__(self):
         super().__init__(23)
-        self.timerMax = 10*60
+        self.timerMax = 20*60
         self.litWidth = -80
 
     # Makes the visible beam in front of the player if in a dark room
@@ -562,7 +562,7 @@ class HopeCard(StrengthCard):
                 super().reset(floor)
             else:
                 if self.levelup():
-                    self.upgradeCard(5*60)
+                    self.upgradeCard(10*60)
                     self.litWidth -= 30
 
 
@@ -593,7 +593,7 @@ class HumorCard(StrengthCard):
 class SpiritualityCard(StrengthCard):
     def __init__(self):
         super().__init__(25)
-        self.timerMax = 10*60
+        self.timerMax = 20*60
         self.litWidth = 70
 
     # Makes the visible area around the player wider if in a dark room
@@ -603,7 +603,7 @@ class SpiritualityCard(StrengthCard):
                 super().reset(floor)
             else:
                 if self.levelup():
-                    self.upgradeCard(5*60)
+                    self.upgradeCard(10*60)
                     self.litWidth += 30
 
     # Reset visible area and timers

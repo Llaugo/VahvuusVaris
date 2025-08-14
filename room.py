@@ -484,15 +484,17 @@ class Room():
     # layout: the number matrix of the room's layout
     def initialize(self, layout, screenCenter):
         randLayout = layout
-        randInt1 = random.randint(0,1)
-        randInt2 = random.randint(1,4)
-        for _ in range(randInt2):
+        randInt1 = random.randint(1,4)
+        randInt2 = random.randint(0,1)
+        for _ in range(randInt1):
             randLayout = list(zip(*randLayout[::-1]))
-        if randInt1:
+        if randInt2:
             randLayout = numpy.flip(randLayout, 1)
         def randDir(x): 
-            y = (randInt1*(4-((x+randInt2)%4)) + (x+randInt2)%4*((randInt1+1)%2)) % 4
-            return ((y+2)%4)*((y+1)%2) + y*(y%2)
+            y = (x-randInt1)%4
+            if randInt2:
+                y = ((4-y)%4)*(y%2) + ((y+1)%2)*y
+            return y
         lift = (len(layout) <= 5) # The layout represents a lift
         # Create the correct tile by the number
         for i,row in enumerate(randLayout):
@@ -518,19 +520,19 @@ class Room():
                     self.layout[i].append(self.exit)
                 elif c == 4: # Crate
                     self.layout[i].append(tile.Tile(5, self.lang))
-                elif c == 5: # Cart
+                elif 50 <= c <= 53: # Cart
                     self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)
                     cartPos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize)
-                    self.carts.append(cart.Cart(cartPos, self.lang, self.roomDistance))
-                elif c >= 60 and c <= 63: # NPC
+                    self.carts.append(cart.Cart(cartPos, randDir(c-50), self.lang, self.roomDistance))
+                elif 60 <= c <= 63: # NPC
                     self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)
                     npcPos = (screenCenter[0]+(j-halfLength)*const.tileSize, screenCenter[1]+(i-halfLength)*const.tileSize+3)
                     self.npcs.append(npc.Npc(npcPos,randDir(c-60)))
                 elif c == 7: # Water
                     self.layout[i].append(tile.Tile(20, self.lang))
-                elif c >= 80 and c <= 83: # Advert
+                elif 80 <= c <= 83: # Advert
                     newTile = tile.Tile(7, self.lang)
                     newTile.setAdvert(randDir(c-80))
                     self.layout[i].append(newTile)
