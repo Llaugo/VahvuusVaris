@@ -46,7 +46,7 @@ upButton = button.Button(4,0,(0,0),const.scale)
 leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), const.phrase[lang][0], (8,63,6)) # Button to exit a level
-quitButton = button.Button(10,1,(50,50),const.scale/2,const.gameFont(16),const.phrase[lang][11])
+quitButton = button.Button(10,1,(40,40),const.scale/2,const.gameFont(16),const.phrase[lang][11])
 # Checkpoint buttons
 nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), const.phrase[lang][1], (8,63,6)) # Button to start a new level
 # Menu buttons
@@ -61,7 +61,7 @@ LoseScreen = None
 prologueScreen = None
 
 # All buttons are handled from this array
-buttons = [downButton,rightButton,upButton,leftButton,liftButton,quitButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
+buttons = [startButton,continueButton,settingsButton,infoButton]
 
 # Background color
 backg = (160,209,255)
@@ -118,6 +118,7 @@ async def main():
         continueButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+14))
         settingsButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+135))
         infoButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+256))
+        quitButton.updatePos((40,40))
         menuBackground.updatePos(newCenter)
         strengthPicker.updatePos(newCenter)
         confirmation.updatePos(newCenter)
@@ -149,14 +150,22 @@ async def main():
                 elif gameStatus == "level":
                     if floor.timer >= 1:
                         floor.handleButtons(event, screenSize)
+                        liftButton.handleEvent(event, screenSize)
                         if deck:
                             deck.handleCards(event, screenSize)
+                        for b in moveButtons:
+                            b.handleEvent(event, screenSize)
                     else:
                         loseScreen.handleButtons(event, screenSize)
                 elif gameStatus == "victory":
                     winScreen.handleButtons(event, screenSize)
                 elif gameStatus == "checkpoint":
+                    for b in moveButtons:
+                        b.handleEvent(event, screenSize)
                     prologueScreen.handleButtons(event, screenSize)
+                    quitButton.handleEvent(event, screenSize)
+                    if floorNumber:
+                        nextFloorButton.handleEvent(event, screenSize)
                     
 
         #########################################################
@@ -317,6 +326,8 @@ async def main():
                 checkpointText.draw(screen,f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.') # Text
                 nextFloorButton.draw(screen)                                    # Next floor button
                 quitButton.draw(screen)
+                for b in moveButtons:                                               # buttons
+                    b.draw(screen)
                 # Check if quit button is pressed
                 if quitButton.pressComplete:
                     quitButton.unpress()

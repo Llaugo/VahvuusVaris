@@ -156,11 +156,39 @@ phrase = [
      "Etsi alla näkyvät asiat.",            # 67
      "Sinulla on 5 minuuttia aikaa etsiä\njoka kerroksessa. Muista palata takaisin\nhissille ennen kuin on liian myöhäistä!", # 68
      "", # 69
-     "",
-     "",
-     "",
-     "",
-     "Luovuuden lennokki",                  # ??: Vahvuuskorttien otsikot
+     "", # 70
+     "", # 71
+     "", # 72
+     "", # 73
+     "", # 74
+     "", # 75
+     "Luovuuden lennokki",                  # 76: Vahvuuskorttien kuvaukset
+     "Uteliaisuuden suurennuslasi",
+     "Arviointikyvyn kaukoputki",
+     "Oppimisen ilon hehkulamppu",
+     "Näkökulmanottokyvyn nelikopteri",      # 80
+     "Rohkeuden rukkaset",
+     "Sinnikyyden saappaat",
+     "Rehellisyyden radio",
+     "Innostuksen juoksukengät",
+     "Sisukkuuden sapeli",                   # 85
+     "Ystävällisyyden kukkakimppu",
+     "Rakkauden rakettireppu",
+     "Sosiaalisen älykkyyden silmälasit",
+     "Myötätunnon peili",
+     "Reiluuden lapaset",                    # 90
+     "Johtajuuden päähine",
+     "Ryhmätyötaitojen tarjotin",
+     "Anteeksiantavuuden pyyhe",
+     "Vaatimattomuuden viitta",
+     "Harkitsevuuden hörppy",                # 95
+     "Itsesäätelyn suojakilpi",
+     "Kauneuden arvostuksen kamera",
+     "Kiitollisuuden kivet",
+     "Toiveikkuuden taskulamppu",
+     "Huumorintajun räpylät",                # 100
+     "Hengellisyyden kynttilä",
+     "Luovuuden lennokki",                   # 102: Vahvuuskorttien otsikot
      "Uteliaisuuden suurennuslasi",
      "Arviointikyvyn kaukoputki",
      "Oppimisen ilon hehkulamppu",

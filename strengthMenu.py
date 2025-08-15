@@ -38,6 +38,10 @@ class StrengthMenu():
         self.randomizeButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), const.phrase[self.lang][13])
         self.readyButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), const.phrase[self.lang][14])
         self.buttons = [self.backButton,self.randomizeButton,self.readyButton]
+        self.activeFinger = None
+        self.heldCard = None
+        self.displayCard = -1
+        self.cardInfoText = text.Text(const.gameFont(24), "Info", (0,0),center=True)
 
     def getDeck(self):
         return [self.favorites[0],self.favorites[1],self.favorites[2],self.favorites[3],self.favorites[4],self.favorites[5]]
@@ -59,7 +63,8 @@ class StrengthMenu():
             pile.updatePos((screenCenter[0]+i*112.5-100, screenCenter[1]-187 + (i%2)*14))
         for deck in self.decks:
             for i, card in enumerate(deck):
-                card[1].center = (screenCenter[0]-123+i*149, screenCenter[1]+38) 
+                card[1].center = (screenCenter[0]-123+i*149, screenCenter[1]+38)
+        self.cardInfoText.updatePos((self.strengthBackground.rect.left+40,self.strengthBackground.rect.top+40))
         self.updateTextPos()
         self.updateBackground()
 
@@ -90,6 +95,12 @@ class StrengthMenu():
         self.readyButton.draw(screen)
         for i, text in enumerate(self.titles):
             text.draw(screen)
+        if self.heldCard:
+            mousex,mousey = pygame.mouse.get_pos()
+            smallImg = pygame.transform.rotozoom(self.heldCard[0].image,0,0.25)
+            screen.blit(smallImg, (mousex-15,mousey-15))
+        if self.displayCard != -1:
+            self.cardInfoText.draw(screen)
 
     # Handle button and card pressing
     def handleEvent(self, event, screenSize):
@@ -114,8 +125,29 @@ class StrengthMenu():
                 if card[1].collidePoint(event.x*screenSize[0], event.y*screenSize[1]):
                     self.favorites[self.inspectPile] = card[0]
                     self.updateBackground()
+                    self.activeFinger = event.id
+                    self.heldCard = card
+                else:
+                    self.displayCard = -1
+            elif event.type == pygame.FINGERUP and self.activeFinger == event.id:
+                if self.heldCard[1].left > screenSize[0]/3:
+                    self.displayCard = self.heldCard[0].imageNum
+                self.heldCard = None
+                self.activeFinger = None
             # Track mouse
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if card[1].collidepoint(event.pos):
                     self.favorites[self.inspectPile] = card[0]
                     self.updateBackground()
+                    self.activeFinger = "mouse"
+                    self.heldCard = card
+                    #print(f"set text: {self.cardInfoText.lines[0]}")
+                    self.cardInfoText.setText(const.phrase[self.lang][76+self.heldCard[0].imageNum])
+                else:
+                    self.displayCard = -1
+            elif event.type == pygame.MOUSEBUTTONUP and self.activeFinger == "mouse":
+                if pygame.mouse.get_pos()[0] < screenSize[0]/3:
+                    print(pygame.mouse.get_pos()[0],screenSize[0]/3)
+                    self.displayCard = self.heldCard[0].imageNum
+                self.heldCard = None
+                self.activeFinger = None
