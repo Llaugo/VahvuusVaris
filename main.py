@@ -58,6 +58,7 @@ infoButton = button.Button(16,1,(0,0),const.scale)
 confirmation = popupWindow.ConfirmWindow(const.phrase[lang][61],const.gameFont(17),lang)
 winScreen = None
 LoseScreen = None
+prologueScreen = None
 
 # All buttons are handled from this array
 buttons = [downButton,rightButton,upButton,leftButton,liftButton,quitButton,nextFloorButton,startButton,continueButton,settingsButton,infoButton]
@@ -83,7 +84,7 @@ async def main():
     gameStatus = "menu"
 
     # Tracks the floor/level the player is at
-    floorNumber = 1
+    floorNumber = 0
     shoppinglist = shoppingList.ShoppingList((0,0), lang)
     # The main floor object
     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))
@@ -92,6 +93,7 @@ async def main():
     strengthPicker = strengthMenu.StrengthMenu(lang)
     winScreen = None
     loseScreen = None
+    prologueScreen = None
 
     # Texts
     checkpointText = text.Text(const.gameFont(50), f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.', (0,0), center=True)   # Checkpoint text
@@ -123,6 +125,8 @@ async def main():
             winScreen.updatePos(newCenter)
         if loseScreen:
             loseScreen.updatePos(newCenter)
+        if prologueScreen:
+            prologueScreen.updatePos(newCenter)
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
 
@@ -151,6 +155,8 @@ async def main():
                         loseScreen.handleButtons(event, screenSize)
                 elif gameStatus == "victory":
                     winScreen.handleButtons(event, screenSize)
+                elif gameStatus == "checkpoint":
+                    prologueScreen.handleButtons(event, screenSize)
                     
 
         #########################################################
@@ -189,8 +195,9 @@ async def main():
                     deck = strengthDeck.deckLoader(deckArr, lang)
                     for card in deck.cards: card.blitXP()
                     shoppinglist = shoppingList.listLoader(shoppinglistArr, lang)
-                    winScreen = endScreen.WinScreen(deck, shoppinglist, floor.timer, floorNumber, (screenSize[0]/2,screenSize[1]/2), lang)
-                    loseScreen = endScreen.LoseScreen(deck, shoppinglist, floor.timer, floorNumber, (screenSize[0]/2,screenSize[1]/2), lang)
+                    winScreen = endScreen.WinScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
+                    loseScreen = endScreen.LoseScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
+                    prologueScreen = endScreen.PrologueScreen(deck, shoppinglist, (const.worldWidth/2,const.worldHeight/2), lang)
                     updateAllPositions(screenSize)
                     gameStatus = "checkpoint"
                 else:
@@ -214,14 +221,16 @@ async def main():
                 strengthPicker.randomizeFavo()
             if strengthPicker.readyButton.pressComplete:
                 strengthPicker.readyButton.unpress()
-                gameStatus = "level"
+                floorNumber = 0
+                gameStatus = "checkpoint"
                 deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
                 shoppinglist = shoppingList.ShoppingList((0,0), lang)
                 floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))
                 for card in deck.cards: card.blitXP()
                 updateAllPositions(screenSize)
-                winScreen = endScreen.WinScreen(deck, shoppinglist, floor.timer, floorNumber, (screenSize[0]/2,screenSize[1]/2), lang)
-                loseScreen = endScreen.LoseScreen(deck, shoppinglist, floor.timer, floorNumber, (screenSize[0]/2,screenSize[1]/2), lang)
+                winScreen = endScreen.WinScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
+                loseScreen = endScreen.LoseScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
+                prologueScreen = endScreen.PrologueScreen(deck, shoppinglist, (const.worldWidth/2,const.worldHeight/2), lang)
 
 
 
@@ -262,6 +271,7 @@ async def main():
                 if loseScreen.readyButton.pressComplete:
                     loseScreen = None
                     winScreen = None
+                    prologueScreen = None
                     gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
                     strengthPicker = strengthMenu.StrengthMenu(lang)
                     updateAllPositions(screenSize)
@@ -275,6 +285,7 @@ async def main():
             if winScreen.readyButton.pressComplete:
                 loseScreen = None
                 winScreen = None
+                prologueScreen = None
                 gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
                 strengthPicker = strengthMenu.StrengthMenu(lang)
                 strengthPicker.updatePos((screenSize[0]/2,screenSize[1]/2))
@@ -284,32 +295,46 @@ async def main():
         # CHECKPOINT IN BETWEEN LEVELS
         #########################################################
         elif gameStatus == "checkpoint":
-            # Draw checkpoint elements
-            screen.fill(backg)                                              # Background
-            lobby.draw(screen, floor.player)                                              # Room
-            floor.player.draw(screen)                                       # Player
-            floor.player.update(lobby)
-            checkpointText.draw(screen,f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.') # Text
-            nextFloorButton.draw(screen)                                    # Next floor button
-            quitButton.draw(screen)
-
-            if quitButton.pressComplete:
-                quitButton.unpress()
-                gameSaver.save_game_data([deck.saveDeck(), floorNumber, shoppinglist.saveList()], ["deck", "floorNumber", "shoppinglist"])
-                winScreen = None
-                loseScreen = None
-                gameStatus = "menu"
-
-            # Check if nextFloorButton is pressed
-            if nextFloorButton.pressComplete:
-                nextFloorButton.unpress()
-                # START NEW LEVEL
-                gameStatus = "level"                        # Change game status
-                floorNumber += 1                            # Advance floor number
-                floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))   # Create a new room
-                floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
-                floor.player.resetPos(screenSize)           # Move player to the middle
-                #deck.reset(player, floor)                  # Reset the card deck
+            if not floorNumber:
+                prologueScreen.activate()
+                screen.fill(menuback)
+                prologueScreen.draw(screen)
+                if prologueScreen.readyButton.pressComplete:
+                    prologueScreen.readyButton.unpress()
+                    gameStatus = "level"                        # Change game status
+                    floorNumber += 1                            # Advance floor number
+                    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))   # Create a new room
+                    floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
+                    floor.player.resetPos(screenSize)           # Move player to the middle
+            else:
+                # Draw checkpoint elements
+                screen.fill(backg)                                              # Background
+                lobby.draw(screen, floor.player)                                              # Room
+                floor.player.draw(screen)                                       # Player
+                floor.player.update(lobby)
+                deck.draw(screen)
+                floor.shoppinglist.draw(screen)
+                checkpointText.draw(screen,f'{const.phrase[lang][2]} {floorNumber} {const.phrase[lang][3]}.') # Text
+                nextFloorButton.draw(screen)                                    # Next floor button
+                quitButton.draw(screen)
+                # Check if quit button is pressed
+                if quitButton.pressComplete:
+                    quitButton.unpress()
+                    gameSaver.save_game_data([deck.saveDeck(), floorNumber, shoppinglist.saveList()], ["deck", "floorNumber", "shoppinglist"])
+                    winScreen = None
+                    loseScreen = None
+                    prologueScreen = None
+                    gameStatus = "menu"
+                # Check if nextFloorButton is pressed
+                if nextFloorButton.pressComplete:
+                    nextFloorButton.unpress()
+                    # START NEW LEVEL
+                    gameStatus = "level"                        # Change game status
+                    floorNumber += 1                            # Advance floor number
+                    floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))   # Create a new room
+                    floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
+                    floor.player.resetPos(screenSize)           # Move player to the middle
+                    #deck.reset(player, floor)                  # Reset the card deck
 
         # Update all positions if the screen size is changed
         newScreenSize = pygame.display.get_window_size()

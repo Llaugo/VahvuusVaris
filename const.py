@@ -89,7 +89,7 @@ phrase = [
      "Seuraava kerros",                     # 1: levelin aloitusnapissa
      "Kerros",                              # 2: checkpoint otsikon osa 1 & Kerrosnumeron edessä
      "suoritettu",                          # 3: checkpoint otsikon osa 2
-     "OTA\nESINE",                         # 4: esinenapissa
+     "OTA\nESINE",                          # 4: esinenapissa
      "TOINEN\nESINE",                       # 5: vaihda kaupattavaa esinettä
      "Huoneessa olevat esineet:",           # 6: huoneen esinelista
      "Ostoslista",                          # 7: Ostoslistan otsikko
@@ -152,9 +152,9 @@ phrase = [
      "Aika loppui kesken.",         # 64
      "Kauppakeskus suljetaan ja sinut ohjataan ulos.", # 65
      "Aikaa jäljellä:",                     # 66
-     "",
-     "",
-     "",
+     "Etsi alla näkyvät asiat.",            # 67
+     "Sinulla on 5 minuuttia aikaa etsiä\njoka kerroksessa. Muista palata takaisin\nhissille ennen kuin on liian myöhäistä!", # 68
+     "", # 69
      "",
      "",
      "",

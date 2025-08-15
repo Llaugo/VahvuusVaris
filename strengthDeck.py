@@ -77,8 +77,9 @@ class StrengthDeck():
 
     # Reset all card actions
     def reset(self, floor):
-        for card in self.cards:
+        for i,card in enumerate(self.cards):
             card.reset(floor)
+            self.overlays[i] = (self.overlaySprite.getImage(0,250,350,const.scale/2), self.overlays[i][1])
 
     # Handle all button events
     def handleCards(self, event, screenSize):
