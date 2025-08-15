@@ -27,7 +27,7 @@ basePlayerStrength = 0             # Strength
 basePlayerSpeechDuration = 120     # Speech text visibility duration
 
 # Floor constants
-floorTime = 300     # How much time (sec) there is in each level (300 = 5min)
+floorTime = 3     # How much time (sec) there is in each level (300 = 5min)
 floorSize = 9       # Floor size (floorSize x floorSize rooms)
 
 # Npc constants
@@ -146,7 +146,14 @@ phrase = [
      "<3",                                  # 58: Rakkauden onnistunut aktivointi (lataa reppua)
      "Ei tilaa laskeutua.",                 # 59: luovuuden lennokki yrittää laskeutua esteen päälle
      "Kärryä ei voi työntää kynnyksen yli", # 60: kun kärryä työntää oviaukkoa päin
-     "Sinulla on jo tallennettu peli olemassa.\nHaluatko poistaa sen?",
+     "Sinulla on jo tallennettu peli olemassa.\nHaluatko poistaa sen?", # 61
+     "Onnistuit!",                          # 62
+     "Sait kerättyä koko ostoslistan\nennen kaupan sulkemista.", # 63
+     "Aika loppui kesken.",         # 64
+     "Kauppakeskus suljetaan ja sinut ohjataan ulos.", # 65
+     "Aikaa jäljellä:",                     # 66
+     "",
+     "",
      "",
      "",
      "",
