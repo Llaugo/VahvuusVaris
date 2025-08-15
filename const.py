@@ -155,7 +155,7 @@ phrase = [
      "Aikaa jäljellä:",                     # 66
      "Etsi alla näkyvät asiat.",            # 67
      "Sinulla on 5 minuuttia aikaa etsiä\njoka kerroksessa. Muista palata takaisin\nhissille ennen kuin on liian myöhäistä!", # 68
-     "", # 69
+     "Tallenna ja\npalaa päävalikkoon", # 69
      "", # 70
      "", # 71
      "", # 72

@@ -46,7 +46,7 @@ upButton = button.Button(4,0,(0,0),const.scale)
 leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), const.phrase[lang][0], (8,63,6)) # Button to exit a level
-quitButton = button.Button(10,1,(40,40),const.scale/2,const.gameFont(16),const.phrase[lang][11])
+quitButton = button.Button(0,4,(0,0),const.scale/2,const.gameFont(14),const.phrase[lang][69])
 # Checkpoint buttons
 nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), const.phrase[lang][1], (8,63,6)) # Button to start a new level
 # Menu buttons
@@ -118,7 +118,7 @@ async def main():
         continueButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+14))
         settingsButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+135))
         infoButton.updatePos((newScreenSize[0]/2-330, newScreenSize[1]/2+256))
-        quitButton.updatePos((40,40))
+        quitButton.updatePos((120,40))
         menuBackground.updatePos(newCenter)
         strengthPicker.updatePos(newCenter)
         confirmation.updatePos(newCenter)
