@@ -518,8 +518,11 @@ class Room():
                 elif c == 3: # Exit
                     self.exit = tile.Tile(0, self.lang)
                     self.layout[i].append(self.exit)
-                elif c == 4: # Crate
-                    self.layout[i].append(tile.Tile(5, self.lang))
+                elif c == 4 or c == 40: # Crate
+                    if c == 40 and random.random() > const.crateProbability:
+                        self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
+                    else:
+                        self.layout[i].append(tile.Tile(5, self.lang))
                 elif 50 <= c <= 53: # Cart
                     self.layout[i].append(tile.Tile(random.randint(1,3), self.lang))
                     halfLength = round((len(layout)-1)/2)

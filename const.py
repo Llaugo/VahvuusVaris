@@ -27,7 +27,7 @@ basePlayerStrength = 0             # Strength
 basePlayerSpeechDuration = 120     # Speech text visibility duration
 
 # Floor constants
-floorTime = 3     # How much time (sec) there is in each level (300 = 5min)
+floorTime = 300     # How much time (sec) there is in each level (300 = 5min)
 floorSize = 9       # Floor size (floorSize x floorSize rooms)
 
 # Npc constants
@@ -41,6 +41,7 @@ maxCardLevel = 3    # Maximum level that a strength card can get to
 # Probability constants
 itemProbability = 0.05 # Probability that a shelf tile has an item on it
 darknessProbability = 0.15 # Probability that a room is dark
+crateProbability = 0.66 # Probability that a crate spawns
 
 # Item type rarities with cumulative distributions from the most common item type on the left to the rarest item type on the right.
 # The item rarities change with respect to the room distance from the starting room
