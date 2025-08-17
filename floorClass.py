@@ -230,9 +230,13 @@ class Floor():
         return newRoom
     
     def handleButtons(self, event, screenSize):
-        self.itemButton.handleEvent(event, screenSize)
         if self.currentRoom.tradeView:
             self.currentRoom.tradeView.handleButtons(event, screenSize)
+        else:
+            for item in self.currentRoom.items:
+                if item.rect.colliderect(self.player.rect):  # Show the button if player is on top of the item
+                    self.itemButton.handleEvent(event, screenSize)
+                    break
         
     # Update floor
     def update(self):

@@ -55,7 +55,8 @@ continueButton = button.Button(16,1,(0,0),const.scale)
 settingsButton = button.Button(16,1,(0,0),const.scale)
 infoButton = button.Button(16,1,(0,0),const.scale)
 
-confirmation = popupWindow.ConfirmWindow(const.phrase[lang][61],const.gameFont(17),lang)
+confirmationDelete = popupWindow.ConfirmWindow(const.phrase[lang][61],const.gameFont(17),lang)
+confirmationGiveup = popupWindow.ConfirmWindow(const.phrase[lang][70],const.gameFont(17),lang)
 winScreen = None
 LoseScreen = None
 prologueScreen = None
@@ -121,7 +122,8 @@ async def main():
         quitButton.updatePos((120,40))
         menuBackground.updatePos(newCenter)
         strengthPicker.updatePos(newCenter)
-        confirmation.updatePos(newCenter)
+        confirmationDelete.updatePos(newCenter)
+        confirmationGiveup.updatePos(newCenter)
         if winScreen:
             winScreen.updatePos(newCenter)
         if loseScreen:
@@ -144,17 +146,22 @@ async def main():
                 for btn in buttons:
                     btn.handleEvent(event, screenSize)
                 if gameStatus == "menu":
-                    confirmation.handleButtons(event, screenSize)
+                    if startButton.pressComplete and gameSaver.check_for_file("deck"):
+                        confirmationDelete.handleButtons(event, screenSize)
                 elif gameStatus == "strengths":
                     strengthPicker.handleEvent(event, screenSize)
                 elif gameStatus == "level":
                     if floor.timer >= 1:
                         floor.handleButtons(event, screenSize)
-                        liftButton.handleEvent(event, screenSize)
                         if deck:
                             deck.handleCards(event, screenSize)
                         for b in moveButtons:
                             b.handleEvent(event, screenSize)
+                        quitButton.handleEvent(event, screenSize)
+                        if quitButton.pressComplete:
+                            confirmationGiveup.handleButtons(event, screenSize)
+                        elif floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(floor.player.rect):
+                            liftButton.handleEvent(event, screenSize)
                     else:
                         loseScreen.handleButtons(event, screenSize)
                 elif gameStatus == "victory":
@@ -162,10 +169,11 @@ async def main():
                 elif gameStatus == "checkpoint":
                     for b in moveButtons:
                         b.handleEvent(event, screenSize)
-                    prologueScreen.handleButtons(event, screenSize)
                     quitButton.handleEvent(event, screenSize)
                     if floorNumber:
                         nextFloorButton.handleEvent(event, screenSize)
+                    else:
+                        prologueScreen.handleButtons(event, screenSize)
                     
 
         #########################################################
@@ -181,16 +189,16 @@ async def main():
 
             if startButton.pressComplete:
                 if gameSaver.check_for_file("deck"):
-                    confirmation.draw(screen)
-                    if confirmation.yesButton.pressComplete:
-                        confirmation.yesButton.unpress()
+                    confirmationDelete.draw(screen)
+                    if confirmationDelete.yesButton.pressComplete:
+                        confirmationDelete.yesButton.unpress()
                         startButton.unpress()
                         gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
                         strengthPicker = strengthMenu.StrengthMenu(lang)
                         updateAllPositions(screenSize)
                         gameStatus = "strengths"
-                    elif confirmation.noButton.pressComplete:
-                        confirmation.noButton.unpress()
+                    elif confirmationDelete.noButton.pressComplete:
+                        confirmationDelete.noButton.unpress()
                         startButton.unpress()
                         gameStatus = "menu"
                 else:
@@ -258,8 +266,24 @@ async def main():
                     b.draw(screen)               
                 deck.update(floor)
                 deck.draw(screen)                                                   # Strength deck
+                quitButton.draw(screen)
+                if quitButton.pressComplete:
+                    confirmationGiveup.draw(screen)
+                    if confirmationGiveup.yesButton.pressComplete:
+                        confirmationGiveup.yesButton.unpress()
+                        quitButton.unpress()
+                        gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
+                        strengthPicker = strengthMenu.StrengthMenu(lang)
+                        updateAllPositions(screenSize)
+                        winScreen = None
+                        loseScreen = None
+                        prologueScreen = None
+                        gameStatus = "menu"
+                    elif confirmationGiveup.noButton.pressComplete:
+                        confirmationGiveup.noButton.unpress()
+                        quitButton.unpress()
                 # Draw the exit button, if player is at the exit
-                if floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(floor.player.rect):
+                elif floor.currentRoom.exit != None and floor.currentRoom.exit.rect.colliderect(floor.player.rect):
                     liftButton.draw(screen)
                     if liftButton.pressComplete:
                         liftButton.unpress()
