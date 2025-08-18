@@ -297,9 +297,9 @@ class LoveCard(StrengthCard):
         cardSpriteSheet = pygame.image.load('images/love_jetpack.png').convert() # Load strength spritesheet
         self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
         self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
-        self.batteryReset = 1
+        self.batteryReset = 6
         self.battery = self.batteryReset
-        self.timerMax = 3*60
+        self.timerMax = 1*60
 
     def blitXP(self, n=0):
         self.image = self.cardSprite.getImage(n,250,350,const.scale/2)
@@ -322,7 +322,7 @@ class LoveCard(StrengthCard):
                 self.battery = self.batteryReset
                 leveledUp = True
             if leveledUp:
-                if self.levelup():
+                if self.levelup(const.cardExp/2):
                     self.upgradeCard(2*60)
                     self.batteryReset += 1
 

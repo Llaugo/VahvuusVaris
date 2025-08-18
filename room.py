@@ -475,8 +475,6 @@ class Room():
         for i,row in enumerate(self.layout):    # Blit tile images to background 
             for j,oneTile in enumerate(row):
                 self.background.blit(oneTile.image, (j*const.tileSize, i*const.tileSize))
-                if oneTile.hasAdvert():
-                    self.background.blit(oneTile.advert.image, (j*const.tileSize+8, i*const.tileSize+1))
         
     
     # Construct the room tiles from the given layout

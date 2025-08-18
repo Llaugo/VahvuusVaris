@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
     def playerInput(self, room: room.Room):
         keys = pygame.key.get_pressed()
         velocity = Vector2()
-        speed = self.playerSpeed*self.swimSpeed if self.isInWater(room) else self.playerSpeed
+        speed = self.playerSpeed*self.swimSpeed if self.isInWater(room) and not self.flyDuration else self.playerSpeed
         if keys[pygame.K_s] or self.controls[0].activeFinger: # Down key or button
             self.facing = 0
             velocity += Vector2(0,1)
@@ -123,6 +123,7 @@ class Player(pygame.sprite.Sprite):
         if self.flyDuration == 1:
             if self.resolveCollision(room,'x') or self.resolveCollision(room,'y'):
                 self.flyDuration -= 1
+                self.swimDuration = 1
         else:
             self.resolveCollision(room)
             self.flyDuration = max(self.flyDuration-1,0)

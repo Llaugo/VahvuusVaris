@@ -283,14 +283,22 @@ class Floor():
         self.timerText.draw(screen,time.strftime('%M:%S', time.gmtime(self.timer)))
         self.floorText.draw(screen)
         if not self.birdsEyeLevel:
-            playerDrawn = False
+            for add in self.currentRoom.adverts: # Draw player in front of the npc if it's lower down
+                screen.blit(add.streamImage, add.stream)
+                if add.rect.centery-2 < self.player.pos.y:
+                    add.draw(screen)
             for npc in self.currentRoom.npcs: # Draw player in front of the npc if it's lower down
-                if not playerDrawn and npc.pos.y+2 > self.player.pos.y:
-                    self.player.draw(screen)
-                    playerDrawn = True
-                npc.draw(screen)
-            if not playerDrawn:
-                self.player.draw(screen)
+                if npc.pos.y+2 < self.player.pos.y:
+                    npc.draw(screen)
+                else:
+                    break
+            self.player.draw(screen) # Draw the player
+            for add in self.currentRoom.adverts: # Draw player behind the npc if it's lower down
+                if add.rect.centery-2 >= self.player.pos.y:
+                    add.draw(screen)
+            for npc in self.currentRoom.npcs: # Draw player behind the npc if it's lower down
+                if npc.pos.y+2 >= self.player.pos.y:
+                    npc.draw(screen)
         if self.currentRoom.tradeView:
             self.currentRoom.tradeView.draw(screen)
         self.shoppinglist.draw(screen)

@@ -14,6 +14,9 @@ class Advert():
         self.rect = self.image.get_rect()
         self.streamEnd = self.rect.center
         self.stream = self.rect
+        streamSpriteSheet = pygame.image.load('images/advertStreams.png').convert() # Load tile spritesheet
+        self.streamSprite = spriteSheet.SpriteSheet(streamSpriteSheet)
+        self.streamImage = self.streamSprite.getImage(0,self.stream.width,self.stream.height,const.scale)
 
     def update(self, player, room):
         # Push player to the direction if player is in front
@@ -26,7 +29,6 @@ class Advert():
                 player.push(const.basePlayerSpeed*1.5, self.dir, Vector2(0,-1), room)
             elif self.dir == 3:
                 player.push(const.basePlayerSpeed*1.5, self.dir, Vector2(-1,0), room)
-
 
     def updatePos(self, pos):
         self.rect.center = pos
@@ -54,12 +56,13 @@ class Advert():
         elif self.dir == 3:
             self.stream = pygame.Rect(0,0,abs(self.rect.right-pos[0]),const.tileSize)
             self.stream.midright = self.rect.midright
-        #print(self.stream.topleft,self.stream.bottomright)
-        #print(self.rect.center)
-
+        self.streamImage = self.streamSprite.getImage(0,self.stream.width,self.stream.height,const.scale)
 
     # amount: how many 90 degree turns, positive integers clockwise, negative counterclockwise
     def rotate(self, amount):
         self.dir = (self.dir - amount) % 4
         self.image = self.advertSprite.getImage(self.dir,30,30,const.scale)
         self.stream = self.rect
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
