@@ -13,8 +13,7 @@ class Item():
         self.lang = lang
         self.picType = random.randint(0,3)*4 # Randomize item image
         self.shinePhase = 0 # Goes from 0 to 4 (Animation helper)
-        itemSpriteSheet = pygame.image.load('images/item_sheet.png').convert() # Load items' spritesheet
-        self.itemSprite = spriteSheet.SpriteSheet(itemSpriteSheet)
+        self.itemSprite = spriteSheet.SpriteSheet('images/item_sheet.png')
         self.image = self.itemSprite.getImage(self.picType,35,35,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.rarityLevel = 0

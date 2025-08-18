@@ -14,8 +14,7 @@ class StrengthDeck():
         self.pos = (0,0)
         self.lang = lang
         self.shinePhase = 0
-        overlaySpriteSheet = pygame.image.load('images/card_overlay.png').convert() # Load strength spritesheet
-        self.overlaySprite = spriteSheet.SpriteSheet(overlaySpriteSheet)
+        self.overlaySprite = spriteSheet.SpriteSheet('images/card_overlay.png')
         self.cards = cards
         self.overlays: list[tuple[pygame.Surface, pygame.Rect]] = []  # List of overlays and their rects associated with the cards
         for i,card in enumerate(self.cards): # create overlay for every card

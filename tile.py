@@ -12,8 +12,7 @@ class Tile():
     # lang: language of the game
     # roomDistance: How far away the room/item is from the middle. Far away rooms produce more rarer items.
     def __init__(self, tileType, lang, roomDistance=0):
-        tileSpriteSheet = pygame.image.load('images/shopsprite.png').convert() # Load tile spritesheet
-        self.tileSprite = spriteSheet.SpriteSheet(tileSpriteSheet)
+        self.tileSprite = spriteSheet.SpriteSheet('images/shopsprite.png')
         self.tileType = tileType
         self.lang = lang
         self.pos = (0,0)

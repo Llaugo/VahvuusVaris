@@ -17,8 +17,7 @@ class Cart():
     def __init__(self, pos, dir, lang, roomDist):
         self.lang = lang
         self.dir = dir
-        cartSpriteSheet = pygame.image.load('images/cart.png').convert() # Load player's spritesheet
-        self.cartSprite = spriteSheet.SpriteSheet(cartSpriteSheet)
+        self.cartSprite = spriteSheet.SpriteSheet('images/cart.png')
         self.image = self.cartSprite.getImage(self.dir,38,38,const.scale)
         self.rect = self.image.get_rect(center = pos)
         self.pos = Vector2(self.rect.center)

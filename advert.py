@@ -7,15 +7,13 @@ from pygame.math import Vector2
 class Advert():
     # dir: initial direction of the advert
     def __init__(self, dir):
-        advertSpriteSheet = pygame.image.load('images/advert_screen.png').convert() # Load tile spritesheet
-        self.advertSprite = spriteSheet.SpriteSheet(advertSpriteSheet)
+        self.advertSprite = spriteSheet.SpriteSheet('images/advert_screen.png')
         self.dir = dir
         self.image = self.advertSprite.getImage(dir,30,30,const.scale)
         self.rect = self.image.get_rect()
         self.streamEnd = self.rect.center
         self.stream = self.rect
-        streamSpriteSheet = pygame.image.load('images/advertStreams.png').convert() # Load tile spritesheet
-        self.streamSprite = spriteSheet.SpriteSheet(streamSpriteSheet)
+        self.streamSprite = spriteSheet.SpriteSheet('images/advertStreams.png')
         self.streamImage = self.streamSprite.getImage(0,self.stream.width,self.stream.height,const.scale)
 
     def update(self, player, room):

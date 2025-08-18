@@ -29,7 +29,7 @@ class Room():
         self.talkNpc = None                     # The npc the player is currently interacting with
         self.initialize(layout, screenCenter)   # Initialize room's tiles
         self.tiles = [x for xs in self.layout for x in xs] # All the room's tiles in a list
-        self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert() # Room background surface
+        self.background = pygame.Surface((len(layout[0])*const.tileSize, len(layout)*const.tileSize)).convert_alpha() # Room background surface
         self.rect = self.background.get_rect(center = self.pos)
         self.reconstruct()                      # Blit all the tiles to a single background image
         self.solidRects = []                    # walls and solid objects of the room

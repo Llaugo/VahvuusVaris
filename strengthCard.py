@@ -18,11 +18,9 @@ class StrengthCard():
         self.timerMax = 8*60     # timer duration
         self.cooldownMax = 30*60  # cooldown duration
         self.level = 1          # Level of the card
-        cardSpriteSheet = pygame.image.load('images/strength_sheet.png').convert() # Load strength spritesheet
-        self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
+        self.cardSprite = spriteSheet.SpriteSheet('images/strength_sheet.png')
         self.image = self.cardSprite.getImage(self.imageNum,250,350,const.scale/2)
-        xpSpriteSheet = pygame.image.load('images/xp_sheet.png').convert() # Load strength spritesheet
-        self.xpSprite = spriteSheet.SpriteSheet(xpSpriteSheet)
+        self.xpSprite = spriteSheet.SpriteSheet('images/xp_sheet.png')
         self.xpImage = self.xpSprite.getImage(round((self.level*10)%10),178,18,const.scale/2)
         self.lvlText = text.Text(const.gameFont(12),f"-{self.level}-",(0,0),(160,0,130))
         self.ready = False
@@ -294,10 +292,9 @@ class KindnessCard(StrengthCard):
 class LoveCard(StrengthCard):
     def __init__(self):
         super().__init__(11)
-        cardSpriteSheet = pygame.image.load('images/love_jetpack.png').convert() # Load strength spritesheet
-        self.cardSprite = spriteSheet.SpriteSheet(cardSpriteSheet)
+        self.cardSprite = spriteSheet.SpriteSheet('images/love_jetpack.png')
         self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
-        self.batteryReset = 6
+        self.batteryReset = 1
         self.battery = self.batteryReset
         self.timerMax = 1*60
 

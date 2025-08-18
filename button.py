@@ -16,10 +16,9 @@ class Button():
         self.scale = scale
         self.type = type
         if self.type == 4:
-            buttonSpriteSheet = pygame.image.load('images/buttons_l.png').convert() # Load buttons spritesheet
+            self.buttonSprite = spriteSheet.SpriteSheet('images/buttons_l.png')
         else:
-            buttonSpriteSheet = pygame.image.load('images/buttons_s.png').convert() # Load buttons spritesheet
-        self.buttonSprite = spriteSheet.SpriteSheet(buttonSpriteSheet)
+            self.buttonSprite = spriteSheet.SpriteSheet('images/buttons_s.png')
         if not self.type: self.image = self.buttonSprite.getImage(self.buttonNum,100,100,self.scale)
         else: self.image = self.buttonSprite.getImage(self.buttonNum,100*self.type,100,self.scale)
         self.rect = self.image.get_rect(center = pos)

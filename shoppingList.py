@@ -26,8 +26,7 @@ class ShoppingList():
         self.text1 = text.Text(const.gameFont(14), [self.contents[i][0] for i in range(len(self.contents))], (0,0), (0,0,0), 10) # Item names
         self.text2 = text.Text(const.gameFont(14), [f'{self.contents[i][1]}/{self.contents[i][2]}' for i in range(len(self.contents))], (0,0),(0,0,0), 10, True) # item quantities / needs
         # Rest are for showing item icon upon receiving item
-        itemSpriteSheet = pygame.image.load('images/items.png').convert() # Load items' spritesheet
-        self.itemSprite = spriteSheet.SpriteSheet(itemSpriteSheet)
+        self.itemSprite = spriteSheet.SpriteSheet('images/items.png')
         self.itemImage = self.itemSprite.getImage(0,46,46,const.scale)
         self.showImgTimer = 0
         self.filled = False

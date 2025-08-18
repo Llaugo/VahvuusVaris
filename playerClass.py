@@ -21,8 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.swimDuration = 0  # Duration of the swim speed
         self.npcCollDuration = 0 # Does the player collide with npc's
         self.flyDuration = 0    # Duration of being able to fly
-        playerSpriteSheet = pygame.image.load('images/player_sheet.png').convert() # Load player's spritesheet
-        self.playerSprite = spriteSheet.SpriteSheet(playerSpriteSheet)
+        self.playerSprite = spriteSheet.SpriteSheet('images/player_sheet.png')
         self.image = self.playerSprite.getImage(0,36,41,self.scale)
         self.facing = 0 # 0,1,2,3 = down,right,up,left
         self.walking = 0 # When rounded 0 = standing, 1,2,3 = walking (Animation helper)
