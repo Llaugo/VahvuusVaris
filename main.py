@@ -214,9 +214,10 @@ async def main():
                     shoppinglist = shoppingList.listLoader(shoppinglistArr, lang)
                     winScreen = endScreen.WinScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
                     loseScreen = endScreen.LoseScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
-                    prologueScreen = endScreen.PrologueScreen(deck, shoppinglist, (const.worldWidth/2,const.worldHeight/2), lang)
                     updateAllPositions(screenSize)
                     gameStatus = "checkpoint"
+                    quitButton.text.setText(const.phrase[lang][69])
+                    quitButton.updatePos(quitButton.rect.center)
                 else:
                     gameStatus = "strengths"
 
@@ -240,6 +241,8 @@ async def main():
                 strengthPicker.readyButton.unpress()
                 floorNumber = 0
                 gameStatus = "checkpoint"
+                quitButton.text.setText(const.phrase[lang][69])
+                quitButton.updatePos(quitButton.rect.center)
                 deck = strengthDeck.StrengthDeck(strengthPicker.getDeck(), lang)
                 shoppinglist = shoppingList.ShoppingList((0,0), lang)
                 floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))
@@ -277,7 +280,6 @@ async def main():
                         updateAllPositions(screenSize)
                         winScreen = None
                         loseScreen = None
-                        prologueScreen = None
                         gameStatus = "menu"
                     elif confirmationGiveup.noButton.pressComplete:
                         confirmationGiveup.noButton.unpress()
@@ -293,6 +295,8 @@ async def main():
                         else:
                             # EXIT THE LEVEL
                             gameStatus = "checkpoint" # Change the game status
+                            quitButton.text.setText(const.phrase[lang][69])
+                            quitButton.updatePos(quitButton.rect.center)
                             deck.reset(floor) # Finish all active strengths
 
             # LOOSING THE GAME
@@ -304,7 +308,6 @@ async def main():
                 if loseScreen.readyButton.pressComplete:
                     loseScreen = None
                     winScreen = None
-                    prologueScreen = None
                     gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
                     strengthPicker = strengthMenu.StrengthMenu(lang)
                     updateAllPositions(screenSize)
@@ -318,7 +321,6 @@ async def main():
             if winScreen.readyButton.pressComplete:
                 loseScreen = None
                 winScreen = None
-                prologueScreen = None
                 gameSaver.remove_files(["deck","floorNumber","shoppinglist"])
                 strengthPicker = strengthMenu.StrengthMenu(lang)
                 strengthPicker.updatePos((screenSize[0]/2,screenSize[1]/2))
@@ -335,10 +337,13 @@ async def main():
                 if prologueScreen.readyButton.pressComplete:
                     prologueScreen.readyButton.unpress()
                     gameStatus = "level"                        # Change game status
+                    quitButton.text.setText(const.phrase[lang][12])
+                    quitButton.updatePos(quitButton.rect.center)
                     floorNumber += 1                            # Advance floor number
                     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))   # Create a new room
                     floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
                     floor.player.resetPos(screenSize)           # Move player to the middle
+                    prologueScreen = None
             else:
                 # Draw checkpoint elements
                 screen.fill(backg)                                              # Background
@@ -358,13 +363,14 @@ async def main():
                     gameSaver.save_game_data([deck.saveDeck(), floorNumber, shoppinglist.saveList()], ["deck", "floorNumber", "shoppinglist"])
                     winScreen = None
                     loseScreen = None
-                    prologueScreen = None
                     gameStatus = "menu"
                 # Check if nextFloorButton is pressed
                 if nextFloorButton.pressComplete:
                     nextFloorButton.unpress()
                     # START NEW LEVEL
                     gameStatus = "level"                        # Change game status
+                    quitButton.text.setText(const.phrase[lang][12])
+                    quitButton.updatePos(quitButton.rect.center)
                     floorNumber += 1                            # Advance floor number
                     floor = floorClass.Floor(const.floorSize, floorNumber, moveButtons, shoppinglist, lang, (screenSize[0]/2,screenSize[1]/2))   # Create a new room
                     floor.updatePos(screenSize,(screenSize[0]/2,screenSize[1]/2))
