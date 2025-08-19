@@ -90,7 +90,11 @@ class Floor():
                         roomPic = pygame.Surface((len(self.currentRoom.layout)*const.tileSize*frac, len(self.currentRoom.layout)*const.tileSize*frac)).convert()
                     self.birdsEye.blit(roomPic,(i*roomPic.get_width(),j*roomPic.get_height()))
             # Draw player picture in the correct location
-            self.birdsEye.blit(self.player.image, (len(self.currentRoom.layout)*const.tileSize*half*frac + self.player.pos.x*frac - self.player.image.get_width() // 2 - self.currentRoom.rect.left*frac, len(self.currentRoom.layout)*const.tileSize*half*frac + self.player.pos.y*frac - self.player.image.get_height() - self.currentRoom.rect.top*frac))
+            playerx = (len(self.currentRoom.layout)*const.tileSize*half + self.player.pos.x - self.currentRoom.rect.left)*frac - self.player.image.get_width() // 2
+            playery = (len(self.currentRoom.layout)*const.tileSize*half + self.player.pos.y - self.currentRoom.rect.top)*frac - self.player.image.get_height()
+            playerImg = self.player.image.convert_alpha()
+            playerImg.set_colorkey((1,0,0))
+            self.birdsEye.blit(playerImg, (playerx, playery))
 
     def stopTime(self):
         self.timeStop = not self.timeStop

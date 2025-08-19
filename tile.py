@@ -121,7 +121,7 @@ class Tile():
     # Adds an item to this tile if it is a shelf and the item isn't set already
     def addItem(self, roomDistance):
         if self.isShelf() and not self.item:
-            self.item = item.Item(self.itemPos(), roomDistance)
+            self.item = item.Item(self.itemPos(), self.lang, roomDistance)
 
     # Sets the advert of this tile if the tile is appropriate and advert is not set already
     def setAdvert(self, dir):
