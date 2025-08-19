@@ -157,37 +157,37 @@ phrase = [
      "Sinulla on 5 minuuttia aikaa etsiä\njoka kerroksessa. Muista palata takaisin\nhissille ennen kuin on liian myöhäistä!", # 68
      "Tallenna ja\npalaa päävalikkoon", # 69
      "Haluatko palata päävalikkoon?\nTämä pelisuoritus poistetaan.", # 70
-     "", # 71
+     "Valitse yksi vahvuus\n jokaisesta kategoriasta.\nSaat lisätietoa korteista\nvetämällä ne minulle.\nVoit myös arpoa kaikki\nvahvuudet, jos et halua\nitse valita niitä.", # 71
      "", # 72
      "", # 73
      "", # 74
      "", # 75
-     "Luovuuden lennokki",                  # 76: Vahvuuskorttien kuvaukset
-     "Uteliaisuuden suurennuslasi",
-     "Arviointikyvyn kaukoputki",
-     "Oppimisen ilon hehkulamppu",
-     "Näkökulmanottokyvyn nelikopteri",      # 80
-     "Rohkeuden rukkaset",
-     "Sinnikyyden saappaat",
-     "Rehellisyyden radio",
-     "Innostuksen juoksukengät",
-     "Sisukkuuden sapeli",                   # 85
-     "Ystävällisyyden kukkakimppu",
-     "Rakkauden rakettireppu",
-     "Sosiaalisen älykkyyden silmälasit",
-     "Myötätunnon peili",
-     "Reiluuden lapaset",                    # 90
-     "Johtajuuden päähine",
-     "Ryhmätyötaitojen tarjotin",
-     "Anteeksiantavuuden pyyhe",
-     "Vaatimattomuuden viitta",
-     "Harkitsevuuden hörppy",                # 95
-     "Itsesäätelyn suojakilpi",
-     "Kauneuden arvostuksen kamera",
-     "Kiitollisuuden kivet",
-     "Toiveikkuuden taskulamppu",
-     "Huumorintajun räpylät",                # 100
-     "Hengellisyyden kynttilä",
+     "Luovuuden lennokki\nlennättää käyttäjänsä jonkin\nviereisen laatan yli.",                  # 76: Vahvuuskorttien kuvaukset
+     "Uteliaisuuden suurennuslasi\navaa lähellä olevat\nlaatikot ja poistaa ne tieltä.",
+     "Arviointikyvyn kaukoputki\nauttaa näkemään huoneessa\nolevat esineet.",
+     "Oppimisen ilon hehkulamppu\nvalaisee pimeän huoneen\nkokonaan ja pysyvästi.",
+     "Näkökulmanottokyvyn nelikopteri\npaljastaa hetkeksi\nympärillä olevat huoneet.",      # 80
+     "Rohkeuden rukkaset\nantavat käyttäjälleen rohkeuden\ntyöntää muiden kärryjä.",
+     "Sinnikyyden saappaat\nmahdollistavat märän\nlattian yli kävelemisen.",
+     "Rehellisyyden radio\nlähettää aaltoja, jotka\nkääntävät lähellä olevat\ntarjousnäytöt muualle.",
+     "Innostuksen juoksukengät\nantavat lisävauhtia\nkäyttäjänsä askeliin.",
+     "Sisukkuuden sapeli\ntekee lähistöllä olevat\ntarjousnäytöt\ntoimintakyvyttömiksi.",                   # 85
+     "Ystävällisyyden kukkakimppu\nsaa muut shoppailijat\nantamaan tietä.",
+     "Rakkauden rakettireppu\nlatautuu toisille jutellessa,\nja täysillä akuilla\nantaa käyttäjälleen\nhetkellisen lentokyvyn.",
+     "Sosiaalisen älykkyyden silmälasit\nnäyttävät käyttäjälleen lähellä\nolevien kärryjen sisällön,\nsekä näiden omistajat.",
+     "Myötätunnon peili\nauttaa käyttäjäänsä asettumaan\ntoisen shoppailijan asemaan.",
+     "Reiluuden lapaset\nantavat kyvyt työntää toisen\nshoppailijan kärryjä, kunhan\ntältä on ensin kysynyt luvan.",                    # 90
+     "Johtajuuden päähine\npäässään, kykenee pyytämään\nmuita työntämään\nomia kärryään.",
+     "Ryhmätyötaitojen tarjotin\nantaa mahdollisuuden käydä\nvaihtokauppaa muiden kanssa\nheidän löytämistään esineistä.",
+     "Anteeksiantavuuden pyyhe\npyyhkii pois lähellä\nolevat märät lattialaatat.",
+     "Vaatimattomuuden viitta\ntekee käyttäjänsä pienemmäksi,\njolloin voi selvitä\ntiukoistakin tilanteista.",
+     "Harkitsevuuden hörppy\nantaa nautiskelijalleen\naikaa pysähtyä, laatia\nsuunnitelmaa ja odottaa\nvoimien palautumista.",                # 95
+     "Itsesäätelyn suojakilpi\nmahdollistaa viisveisaamisen\nkaikenlaisista tarjouksista.",
+     "Kauneuden arvostuksen kamera\npaljastaa uuden kiinnostavan\nesineen huoneessa, jota et\naiemmin huomannutkaan.",
+     "Kiitollisuuden kivet\nvoi ripotella seikkaillessa\njälkiinsä, jotta paluumatka\nsujuisi mukavammin.",
+     "Toiveikkuuden taskulamppu\nnäyttää tien, vaikka huoneesta\nolisivatkin valot rikki.",
+     "Huumorintajun räpylät\nauttavat silloin, kun kurainen\ntilanne meinaa pilata päivän.",                # 100
+     "Hengellisyyden kynttilä\nantaa käyttäjälleen\nvaloa, kun kaikki muu\nvalo näyttää hävinneen.",
      "Luovuuden lennokki",                   # 102: Vahvuuskorttien otsikot
      "Uteliaisuuden suurennuslasi",
      "Arviointikyvyn kaukoputki",

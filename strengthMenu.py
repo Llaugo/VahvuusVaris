@@ -40,8 +40,7 @@ class StrengthMenu():
         self.buttons = [self.backButton,self.randomizeButton,self.readyButton]
         self.activeFinger = None
         self.heldCard = None
-        self.displayCard = -1
-        self.cardInfoText = text.Text(const.gameFont(24), "Info", (0,0),center=True)
+        self.cardInfoText = text.Text(const.gameFont(16), const.phrase[self.lang][71], (0,0),center=True)
 
     def getDeck(self):
         return [self.favorites[0],self.favorites[1],self.favorites[2],self.favorites[3],self.favorites[4],self.favorites[5]]
@@ -64,7 +63,7 @@ class StrengthMenu():
         for deck in self.decks:
             for i, card in enumerate(deck):
                 card[1].center = (screenCenter[0]-123+i*149, screenCenter[1]+38)
-        self.cardInfoText.updatePos((self.strengthBackground.rect.left+40,self.strengthBackground.rect.top+40))
+        self.updateInfo()
         self.updateTextPos()
         self.updateBackground()
 
@@ -72,6 +71,9 @@ class StrengthMenu():
         for i, text in enumerate(self.titles):
             text.updatePos((self.pos[0]+i*112.5-100, self.pos[1]-283 + (i%2)*210))
         self.titles[self.inspectPile].updatePos((self.pos[0]+175, self.pos[1]-53))
+    
+    def updateInfo(self):
+        self.cardInfoText.updatePos((self.strengthBackground.rect.left+178,self.strengthBackground.rect.top+130))
 
     def updateBackground(self):
         self.background = pygame.Surface((2500,1500)).convert_alpha()
@@ -99,8 +101,7 @@ class StrengthMenu():
             mousex,mousey = pygame.mouse.get_pos()
             smallImg = pygame.transform.rotozoom(self.heldCard[0].image,0,0.25)
             screen.blit(smallImg, (mousex-15,mousey-15))
-        if self.displayCard != -1:
-            self.cardInfoText.draw(screen)
+        self.cardInfoText.draw(screen)
 
     # Handle button and card pressing
     def handleEvent(self, event, screenSize):
@@ -127,11 +128,12 @@ class StrengthMenu():
                     self.updateBackground()
                     self.activeFinger = event.id
                     self.heldCard = card
-                else:
-                    self.displayCard = -1
             elif event.type == pygame.FINGERUP and self.activeFinger == event.id:
-                if self.heldCard[1].left > screenSize[0]/3:
-                    self.displayCard = self.heldCard[0].imageNum
+                if event.x < screenSize[0]/3:
+                    self.cardInfoText.setText(const.phrase[self.lang][76+self.heldCard[0].imageNum])
+                else:
+                    self.cardInfoText.setText(const.phrase[self.lang][71])
+                self.updateInfo()
                 self.heldCard = None
                 self.activeFinger = None
             # Track mouse
@@ -141,13 +143,11 @@ class StrengthMenu():
                     self.updateBackground()
                     self.activeFinger = "mouse"
                     self.heldCard = card
-                    #print(f"set text: {self.cardInfoText.lines[0]}")
-                    self.cardInfoText.setText(const.phrase[self.lang][76+self.heldCard[0].imageNum])
-                else:
-                    self.displayCard = -1
             elif event.type == pygame.MOUSEBUTTONUP and self.activeFinger == "mouse":
                 if pygame.mouse.get_pos()[0] < screenSize[0]/3:
-                    print(pygame.mouse.get_pos()[0],screenSize[0]/3)
-                    self.displayCard = self.heldCard[0].imageNum
+                    self.cardInfoText.setText(const.phrase[self.lang][76+self.heldCard[0].imageNum])
+                else:
+                    self.cardInfoText.setText(const.phrase[self.lang][71])
+                self.updateInfo()
                 self.heldCard = None
                 self.activeFinger = None
