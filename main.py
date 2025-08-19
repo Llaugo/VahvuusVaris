@@ -1,4 +1,3 @@
-#!/usr/bin/env pypy
 from sys import exit
 import asyncio # For creating a browser view with pygbag
 import pygame
@@ -25,7 +24,9 @@ import SaveLoadManager
 import random
 import math
 
-
+from sys import platform
+if platform != "emscripten":
+    import numpy as np
 
 pygame.init()
 clock = pygame.time.Clock() # Init clock

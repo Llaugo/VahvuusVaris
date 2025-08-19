@@ -3,7 +3,10 @@ import pygame
 # Class for extracting single image sprites from a spritesheet.
 class SpriteSheet():
     def __init__(self, sheet):
-        self.sheet = pygame.image.load(sheet).convert()
+        try:
+            self.sheet = pygame.image.load(sheet).convert()
+        except Exception as e:
+            print("ASSET LOAD FAILED:", e)
         self.store = {}
     
     # Get a certain image from a line of sprites
