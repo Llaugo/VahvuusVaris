@@ -119,7 +119,7 @@ phrase = [
      "Linssisipsit",                        # 30
      "Rasvaton maito",                      # 31
      "Kreikkalainen jogurtti",              # 32
-     "Pakaste katkaravut",                  # 33
+     "Pakastekatkaravut",                   # 33
      "Manchego",                            # 34
      "Halloumi",                            # 35
      "Kasvisliemikuutio",                   # 36
@@ -174,7 +174,7 @@ phrase = [
      "Sisukkuuden sapeli\ntekee lähistöllä olevat\ntarjousnäytöt\ntoimintakyvyttömiksi.",                   # 85
      "Ystävällisyyden kukkakimppu\nsaa muut shoppailijat\nantamaan tietä.",
      "Rakkauden rakettireppu\nlatautuu toisille jutellessa,\nja täysillä akuilla\nantaa käyttäjälleen\nhetkellisen lentokyvyn.",
-     "Sosiaalisen älykkyyden silmälasit\nnäyttävät käyttäjälleen lähellä\nolevien kärryjen sisällön,\nsekä näiden omistajat.",
+     "Sosiaalisen älykkyyden\nsilmälasit näyttävät\nkäyttäjälleen lähellä olevien\nkärryjen sisällön, sekä\nnäiden omistajat.\nKortti toimii hyvin\nyhteen oikeudenmukaisuuden\nvahvuuksien kanssa.",
      "Myötätunnon peili\nauttaa käyttäjäänsä asettumaan\ntoisen shoppailijan asemaan.",
      "Reiluuden lapaset\nantavat kyvyt työntää toisen\nshoppailijan kärryjä, kunhan\ntältä on ensin kysynyt luvan.",                    # 90
      "Johtajuuden päähine\npäässään, kykenee pyytämään\nmuita työntämään\nomia kärryään.",

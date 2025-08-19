@@ -19,14 +19,14 @@ class StrengthCard():
         self.cooldownMax = 30*60  # cooldown duration
         self.level = 1          # Level of the card
         self.cardSprite = spriteSheet.SpriteSheet('images/strength_sheet.png')
-        self.image = self.cardSprite.getImage(self.imageNum,250,350,const.scale/2)
+        self.image = self.cardSprite.getImage(self.imageNum,250,350,const.scale/2).copy()
         self.xpSprite = spriteSheet.SpriteSheet('images/xp_sheet.png')
         self.xpImage = self.xpSprite.getImage(round((self.level*10)%10),178,18,const.scale/2)
         self.lvlText = text.Text(const.gameFont(12),f"-{self.level}-",(0,0),(160,0,130))
         self.ready = False
 
     def blitXP(self):
-        self.image = self.cardSprite.getImage(self.imageNum,250,350,const.scale/2)
+        self.image = self.cardSprite.getImage(self.imageNum,250,350,const.scale/2).copy()
         if self.level == 3: 
             self.xpImage = self.xpSprite.getImage(10,178,18,const.scale/2)
         else: 
@@ -315,13 +315,13 @@ class LoveCard(StrengthCard):
     def __init__(self):
         super().__init__(11)
         self.cardSprite = spriteSheet.SpriteSheet('images/love_jetpack.png')
-        self.image = self.cardSprite.getImage(0,250,350,const.scale/2)
+        self.image = self.cardSprite.getImage(0,250,350,const.scale/2).copy()
         self.batteryReset = 1
         self.battery = self.batteryReset
         self.timerMax = 1*60
 
     def blitXP(self, n=0):
-        self.image = self.cardSprite.getImage(n,250,350,const.scale/2)
+        self.image = self.cardSprite.getImage(n,250,350,const.scale/2).copy()
         self.xpImage = self.xpSprite.getImage(round((self.level*10)%10),178,18,const.scale/2)
         self.lvlText.setText(f"-{round(self.level)}-")
         self.image.blit(self.xpImage,(18,150))
