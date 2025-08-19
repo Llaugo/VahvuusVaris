@@ -28,6 +28,7 @@ class ShoppingList():
         # Rest are for showing item icon upon receiving item
         self.itemSprite = spriteSheet.SpriteSheet('images/items.png')
         self.itemImage = self.itemSprite.getImage(0,46,46,const.scale)
+        self.itemText = text.Text(const.gameFont(14), "404", (0,0), center=True)
         self.showImgTimer = 0
         self.filled = False
 
@@ -42,6 +43,7 @@ class ShoppingList():
     # Returns True if item is needed and False if not
     # itemName: name of the received item
     def receiveItem(self, itemName):
+        received = False
         for i in range(len(self.contents)):
             if self.contents[i][0] == itemName: # Check if item is in the list
                 self.contents[i][1] = min(self.contents[i][1] + 1, self.contents[i][2]) # Increase item count
@@ -52,10 +54,16 @@ class ShoppingList():
                         imgNum = i
                 self.itemImage = self.itemSprite.getImage(imgNum,46,46,const.scale) # show item image
                 self.showImgTimer = 100
-                self.updatePos(self.pos)
                 self.checkFillStatus()
-                return True
-        return False
+                received = True
+                break
+        if received:
+            self.itemText = text.Text(const.gameFont(16), str(itemName), (0,0), (0,194,0), center=True)
+        else:
+            self.itemText = text.Text(const.gameFont(16), str(itemName), (0,0), center=True)
+            self.showImgTimer = -100
+        self.updatePos(self.pos)
+        return received
     
     def loseItem(self, itemI):
         self.contents[itemI] = [self.contents[itemI][0], self.contents[itemI][1]-1, self.contents[itemI][2]]
@@ -69,6 +77,7 @@ class ShoppingList():
         self.title.updatePos((self.back.rect.left+10,self.back.rect.top+10)) # Update texts
         self.text1.updatePos((self.back.rect.left+13,self.back.rect.top+50))
         self.text2.updatePos((self.back.rect.right-34,self.back.rect.top+86))
+        self.itemText.updatePos((self.back.rect.center[0], self.back.rect.bottom - 58))
 
     # Draw the list and the texts on the screen
     def draw(self, screen):
@@ -76,9 +85,13 @@ class ShoppingList():
         self.title.draw(screen) # title
         self.text1.draw(screen) # names
         self.text2.draw(screen) # quantities
-        if self.showImgTimer > 0: # show item image if image timer is on
-            screen.blit(self.itemImage, (self.back.rect.center[0]-23, self.back.rect.bottom - 60))
-            self.showImgTimer -= 1
+        if self.showImgTimer: # show item image if image timer is on
+            self.itemText.draw(screen)
+            if self.showImgTimer > 0:
+                screen.blit(self.itemImage, (self.back.rect.center[0]-23, self.back.rect.bottom - 58))
+                self.showImgTimer -= 1
+            else:
+                self.showImgTimer += 1
 
     def saveList(self):
         return self.contents
