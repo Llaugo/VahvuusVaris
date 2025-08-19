@@ -103,6 +103,8 @@ class CreativityCard(StrengthCard):
         if super().tryActivate(floor):
             floor.jumpGap(math.floor(self.level))
             self.levelup()
+            return True
+        return False
 
 # Curiosity card breaks open boxes that are in the way
 class CuriosityCard(StrengthCard):
@@ -118,6 +120,8 @@ class CuriosityCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,0,25)
+                return True
+        return False
 
 # Judgement cards shows what items there are in the room
 class JudgementCard(StrengthCard):
@@ -130,6 +134,8 @@ class JudgementCard(StrengthCard):
             self.timer = self.timerMax
             floor.showItemNames(math.floor(self.level))
             self.levelup()
+            return True
+        return False
 
     # Hide item names, if timer ends
     def update(self, floor):
@@ -157,6 +163,8 @@ class LearningCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-30*60)
+                return True
+        return False
 
 # Perspective card shows the rooms around the current room
 class PerspectiveCard(StrengthCard):
@@ -169,6 +177,8 @@ class PerspectiveCard(StrengthCard):
             floor.setBirdsEye(math.floor(self.level)+2)
             if self.levelup():
                 self.upgradeCard(120)
+            return True
+        return False
 
     # Set view to normal when the timer ends
     def update(self, floor):
@@ -191,6 +201,8 @@ class BraveryCard(StrengthCard):
             floor.player.changeStrength(8)
             if self.levelup():
                 self.upgradeCard(3*60, -5*60)
+            return True
+        return False
 
     def update(self, floor):
         if self.timer == 1:
@@ -214,6 +226,8 @@ class PerseveranceCard(StrengthCard):
             if self.levelup():
                 self.upgradeCard(5*60)
                 self.swimSpeed += const.basePlayerSpeed*0.1
+            return True
+        return False
 
     # Reset player swimming speed to normal (off)
     def reset(self, floor):
@@ -234,6 +248,8 @@ class HonestyCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-5*60,const.tileSize*1.5)
+                return True
+        return False
     
 # Zest card gives the player a speed boost
 class ZestCard(StrengthCard):
@@ -246,6 +262,8 @@ class ZestCard(StrengthCard):
             floor.player.changeSpeed(const.basePlayerSpeed*1.5, self.timerMax)
             if self.levelup():
                 self.upgradeCard(5*60)
+            return True
+        return False
 
     # Reset player speed to normal
     def reset(self, floor):
@@ -266,6 +284,8 @@ class GritCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,0,const.tileSize*1.2)
+                return True
+        return False
 
 # Kindness card makes it possible to move through/past npcs
 class KindnessCard(StrengthCard):
@@ -278,6 +298,8 @@ class KindnessCard(StrengthCard):
             floor.player.setNpcCollitionTimer(self.timerMax)
             if self.levelup():
                 self.upgradeCard(3*60)
+            return True
+        return False
 
     def update(self, floor):
         if self.level == 3 and self.timer and floor.player.isOnNpc(floor.currentRoom):
@@ -322,6 +344,9 @@ class LoveCard(StrengthCard):
                 if self.levelup(const.cardExp/2):
                     self.upgradeCard(2*60)
                     self.batteryReset += 1
+                return True
+        return False
+                
 
     def reset(self, floor):
         super().reset(floor)
@@ -349,6 +374,8 @@ class SocialCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(4*60,-5*60)
+                return True
+        return False
 
     def reset(self, floor):
         floor.resetCartOwnerView()
@@ -368,6 +395,8 @@ class CompassionCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-7*60)
+                return True
+        return False
 
 # Fairness card gives the player the ability to push certain npc's cart
 class FairnessCard(StrengthCard):
@@ -383,6 +412,8 @@ class FairnessCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-8*60)
+                return True
+        return False
 
     def reset(self, floor):
         floor.resetCartOwnerView()
@@ -402,6 +433,8 @@ class LeadershipCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-5*60)
+                return True
+        return False
 
 # Teamwork card makes it possible to trade items with npcs
 class TeamworkCard(StrengthCard):
@@ -416,6 +449,8 @@ class TeamworkCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-3*60)
+                return True
+        return False
 
 # Forgiveness card cleans nearby waters
 class ForgivenessCard(StrengthCard):
@@ -432,6 +467,8 @@ class ForgivenessCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-5*60,const.tileSize)
+                return True
+        return False
 
 # Humility card makes the player smaller to fit through small spaces
 class HumilityCard(StrengthCard):
@@ -444,6 +481,8 @@ class HumilityCard(StrengthCard):
             floor.player.toggleSize(floor.currentRoom, 0.5)
             if self.levelup():
                 self.upgradeCard(4*60,-4*60)
+            return True
+        return False
 
     # Turn player size back to normal if timer is out
     def update(self, floor):
@@ -467,6 +506,8 @@ class PrudenceCard(StrengthCard):
             floor.stopTime()
             if self.levelup():
                 self.upgradeCard(4*60,-4*60)
+            return True
+        return False
 
     def update(self, floor):
         if self.timer == 1:
@@ -487,6 +528,8 @@ class RegulationCard(StrengthCard):
             floor.advertBlockStart()
             if self.levelup():
                 self.upgradeCard(5*60)
+            return True
+        return False
 
     def update(self, floor):
         if self.timer == 1:
@@ -511,6 +554,8 @@ class AppreciationCard(StrengthCard):
             else:
                 if self.levelup():
                     self.upgradeCard(0,-3*60)
+                return True
+        return False
 
 # Gratitude card can drop stones on the ground to keep track of steps and gives a speed boost when walking over the stones
 class GratitudeCard(StrengthCard):
@@ -526,6 +571,8 @@ class GratitudeCard(StrengthCard):
             self.unpress()
             if self.levelup():
                 self.upgradeCard(30,-5*60)
+            return True
+        return False
 
     # Fill boost timer if player is standing on a stone
     def update(self, floor):
@@ -561,6 +608,8 @@ class HopeCard(StrengthCard):
                 if self.levelup():
                     self.upgradeCard(10*60)
                     self.litWidth -= 30
+                return True
+        return False
 
 
     # Reset visible area and timers
@@ -580,6 +629,8 @@ class HumorCard(StrengthCard):
             floor.player.swim(const.basePlayerSpeed*0.5, self.timerMax)
             if self.levelup():
                 self.upgradeCard(3*60,-5*60)
+            return True
+        return False
 
     # Reset player swimming speed to normal (off)
     def reset(self, floor):
@@ -602,6 +653,8 @@ class SpiritualityCard(StrengthCard):
                 if self.levelup():
                     self.upgradeCard(10*60)
                     self.litWidth += 30
+                return True
+        return False
 
     # Reset visible area and timers
     def reset(self, floor):
