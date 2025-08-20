@@ -1,10 +1,9 @@
-# .github/workflows/build-windows.yml
 name: Build Windows EXE (PyInstaller)
 
 on:
   workflow_dispatch: {}
   push:
-    tags: ['v*']  # tag like v1.0 to auto-publish a release
+    tags: ['v*']   # tag like v1.0 to auto-publish a release build
 
 jobs:
   windows:
@@ -22,33 +21,20 @@ jobs:
       - name: Install dependencies
         shell: pwsh
         run: |
-          python -m pip install --upgrade pip setuptools wheel
-          if (Test-Path requirements.txt) {
-            pip install -r requirements.txt
-          } else {
-            pip install pygame
-          }
+          python -m pip install --upgrade pip
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
           pip install pyinstaller
 
-      - name: Build EXE with assets
+      - name: Build EXE
         shell: pwsh
         run: |
-          # Resolve asset directories if they exist
-          $candidateDirs = @("images","rooms","sounds","fonts","assets")
-          $add = @()
-          foreach ($d in $candidateDirs) {
-            if (Test-Path $d) {
-              $src = (Resolve-Path $d).Path
-              $add += @("--add-data", "$src;$d")
-            }
-          }
-
-          # Build (no --specpath so add-data sources are absolute)
+          # Avoid clobbering your existing "build" dir by using custom paths
           pyinstaller --noconfirm --clean `
             --name VahvuusVaris `
             --onefile --noconsole `
-            --workpath pyi_build --distpath pyi_dist `
-            $add `
+            --workpath pyi_build --distpath pyi_dist --specpath pyi_spec `
+            --add-data "images;images" `
+            --add-data "rooms;rooms" `
             main.py
 
       - name: Upload artifact
@@ -56,14 +42,11 @@ jobs:
         with:
           name: VahvuusVaris-windows
           path: pyi_dist/VahvuusVaris.exe
-          if-no-files-found: error
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [windows]
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Download build
         uses: actions/download-artifact@v4
@@ -71,7 +54,7 @@ jobs:
           name: VahvuusVaris-windows
           path: dist
 
-      - name: Zip
+      - name: Create ZIP
         run: |
           cd dist
           zip -9 VahvuusVaris-windows.zip VahvuusVaris.exe
