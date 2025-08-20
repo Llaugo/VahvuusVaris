@@ -1,10 +1,11 @@
 import pygame
+import const
 
 # Class for extracting single image sprites from a spritesheet.
 class SpriteSheet():
     def __init__(self, sheet):
         try:
-            self.sheet = pygame.image.load(sheet).convert()
+            self.sheet = pygame.image.load(const.resource_path(sheet)).convert()
         except Exception as e:
             print("ASSET LOAD FAILED:", e)
         self.store = {}

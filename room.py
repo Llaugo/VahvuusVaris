@@ -188,7 +188,7 @@ class Room():
 
     # Add a stone to the room
     def addStone(self, pos):
-        image = pygame.image.load('images/stone.png').convert_alpha() # Get image
+        image = pygame.image.load(const.resource_path('images/stone.png')).convert_alpha() # Get image
         rect = image.get_rect(center = pos) # Get rect
         self.stones.append((image, rect))
 

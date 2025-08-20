@@ -23,10 +23,7 @@ import endScreen
 import SaveLoadManager
 import random
 import math
-
-from sys import platform
-if platform != "emscripten":
-    import numpy as np
+import numpy
 
 pygame.init()
 clock = pygame.time.Clock() # Init clock
