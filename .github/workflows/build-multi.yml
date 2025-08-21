@@ -11,7 +11,7 @@ jobs:
     # Add macos-13 if you also want Intel mac builds
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-22.04, macos-14]
+        os: [windows-latest, ubuntu-22.04, macos-14,macos-13,macos-12]
     runs-on: ${{ matrix.os }}
 
     steps:
