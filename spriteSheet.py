@@ -3,9 +3,13 @@ import paths
 
 # Class for extracting single image sprites from a spritesheet.
 class SpriteSheet():
-    def __init__(self, sheet):
+    def __init__(self, sheet, alpha=True):
         splitSheet = sheet.split('/')
-        self.sheet = pygame.image.load(paths.resource_path(splitSheet[0],splitSheet[1])).convert()
+        self.sheet = pygame.image.load(paths.resource_path(splitSheet[0],splitSheet[1]))
+        if alpha:
+            self.sheet.convert_alpha()
+        else:
+            self.sheet.convert()
         self.store = {}
     
     # Get a certain image from a line of sprites
@@ -18,7 +22,7 @@ class SpriteSheet():
         storekey = (frame, width, height, scale, color)
         if storekey in self.store:
             return self.store[storekey]
-        image = pygame.Surface((width,height)).convert_alpha()
+        image = pygame.Surface((width,height), pygame.SRCALPHA).convert_alpha()
         image.blit(self.sheet, (0,0), (frame*width, 0, width, height))
         #image.set_colorkey(color)
         if scale != 1:
