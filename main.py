@@ -34,7 +34,7 @@ screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RE
 # Language of the game (Default in Finnish)
 lang = 0
 
-gameSaver = SaveLoadManager.SaveLoadSystem(".save", )
+gameSaver = SaveLoadManager.SaveLoadSystem(".save")
 
 # Initialize buttons
 downButton = button.Button(0,0,(0,0),const.scale)
@@ -43,7 +43,7 @@ upButton = button.Button(4,0,(0,0),const.scale)
 leftButton = button.Button(6,0,(0,0),const.scale)
 moveButtons = [downButton, rightButton, upButton, leftButton]
 liftButton = button.Button(10,1,(0,0),const.scale, const.gameFont(19), const.phrase[lang][0], (8,63,6)) # Button to exit a level
-quitButton = button.Button(0,4,(0,0),const.scale/2,const.gameFont(14),const.phrase[lang][69])
+quitButton = button.Button(0,4,(0,0),const.scale/2,const.gameFont(14),const.phrase[lang][72])
 # Checkpoint buttons
 nextFloorButton = button.Button(0,4,(0,0),const.scale, const.gameFont(40), const.phrase[lang][1], (8,63,6)) # Button to start a new level
 # Menu buttons
@@ -145,6 +145,10 @@ async def main():
                 if gameStatus == "menu":
                     if startButton.pressComplete and gameSaver.check_for_file("deck"):
                         confirmationDelete.handleButtons(event, screenSize)
+                    quitButton.handleEvent(event, screenSize)
+                    if quitButton.pressComplete:
+                        pygame.quit()
+                        exit()
                 elif gameStatus == "strengths":
                     strengthPicker.handleEvent(event, screenSize)
                 elif gameStatus == "level":
@@ -183,6 +187,7 @@ async def main():
             continueButton.draw(screen)
             settingsButton.draw(screen)
             infoButton.draw(screen)
+            quitButton.draw(screen)
 
             if startButton.pressComplete:
                 if gameSaver.check_for_file("deck"):
@@ -198,6 +203,8 @@ async def main():
                         confirmationDelete.noButton.unpress()
                         startButton.unpress()
                         gameStatus = "menu"
+                        quitButton.text.setText(const.phrase[lang][72])
+                        quitButton.updatePos(quitButton.rect.center)
                 else:
                     startButton.unpress()
                     gameStatus = "strengths"
@@ -231,6 +238,8 @@ async def main():
             if strengthPicker.backButton.pressComplete:
                 strengthPicker.backButton.unpress()
                 gameStatus = "menu"
+                quitButton.text.setText(const.phrase[lang][72])
+                quitButton.updatePos(quitButton.rect.center)
             if strengthPicker.randomizeButton.pressComplete:
                 strengthPicker.randomizeButton.unpress()
                 strengthPicker.randomizeFavo()
@@ -247,7 +256,7 @@ async def main():
                 updateAllPositions(screenSize)
                 winScreen = endScreen.WinScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
                 loseScreen = endScreen.LoseScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
-                prologueScreen = endScreen.PrologueScreen(deck, shoppinglist, (const.worldWidth/2,const.worldHeight/2), lang)
+                prologueScreen = endScreen.PrologueScreen(deck, shoppinglist, (screenSize[0]/2,screenSize[1]/2), lang)
 
 
 
@@ -278,6 +287,8 @@ async def main():
                         winScreen = None
                         loseScreen = None
                         gameStatus = "menu"
+                        quitButton.text.setText(const.phrase[lang][72])
+                        quitButton.updatePos(quitButton.rect.center)
                     elif confirmationGiveup.noButton.pressComplete:
                         confirmationGiveup.noButton.unpress()
                         quitButton.unpress()
@@ -309,6 +320,8 @@ async def main():
                     strengthPicker = strengthMenu.StrengthMenu(lang)
                     updateAllPositions(screenSize)
                     gameStatus = "menu"
+                    quitButton.text.setText(const.phrase[lang][72])
+                    quitButton.updatePos(quitButton.rect.center)
 
         elif gameStatus == "victory":
             if winScreen.activate(floor.timer, floorNumber):
@@ -322,6 +335,8 @@ async def main():
                 strengthPicker = strengthMenu.StrengthMenu(lang)
                 strengthPicker.updatePos((screenSize[0]/2,screenSize[1]/2))
                 gameStatus = "menu"
+                quitButton.text.setText(const.phrase[lang][72])
+                quitButton.updatePos(quitButton.rect.center)
 
         #########################################################
         # CHECKPOINT IN BETWEEN LEVELS
@@ -361,6 +376,8 @@ async def main():
                     winScreen = None
                     loseScreen = None
                     gameStatus = "menu"
+                    quitButton.text.setText(const.phrase[lang][72])
+                    quitButton.updatePos(quitButton.rect.center)
                 # Check if nextFloorButton is pressed
                 if nextFloorButton.pressComplete:
                     nextFloorButton.unpress()

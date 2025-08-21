@@ -42,7 +42,7 @@ class EndScreen():
             if self.deck:
                 self.deck.updatePos((pos[0]/2, pos[1]))
             if self.shoplist:
-                self.shoplist.updatePos((pos[0], pos[1]))
+                self.shoplist.updatePos((pos[0] - self.shoplist.back.rect.width/2 - 50, pos[1]))
             self.floorText.updatePos((pos[0]+160, pos[1]-30))
             self.timerText.updatePos((pos[0]+160, pos[1]+30))
             self.maintext.updatePos((pos[0]*4/8,pos[1]*1/7))

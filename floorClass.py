@@ -268,7 +268,7 @@ class Floor():
         self.pos = screenCenter
         self.currentRoom.updatePos(screenCenter, screenMove)
         self.player.updatePos(screenMove)
-        self.shoppinglist.updatePos((newScreenSize[0] - self.currentRoom.rect.left/2, newScreenSize[1]/4))
+        self.shoppinglist.updatePos((self.currentRoom.rect.right, newScreenSize[1]/4))
         self.frame.updatePos(screenCenter)
         self.timerText.updatePos((screenCenter[0]-143,screenCenter[1]-341))
         self.floorText.updatePos((screenCenter[0]+46,screenCenter[1]-341))

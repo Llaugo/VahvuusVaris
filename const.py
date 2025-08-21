@@ -155,7 +155,7 @@ phrase = [
      "Tallenna ja\npalaa päävalikkoon", # 69
      "Haluatko palata päävalikkoon?\nTämä pelisuoritus poistetaan.", # 70
      "Valitse yksi vahvuus\n jokaisesta kategoriasta.\nSaat lisätietoa korteista\nvetämällä ne minulle.\nVoit myös arpoa kaikki\nvahvuudet, jos et halua\nitse valita niitä.", # 71
-     "", # 72
+     "Poistu pelistä", # 72
      "", # 73
      "", # 74
      "", # 75
