@@ -12,7 +12,7 @@ def default_save_dir(app_name="VahvuusVaris") -> Path:
     return base / app_name
 
 class SaveLoadSystem:
-    def __init__(self, file_extension=".sav", save_folder=None, app_name="VahvuusVaris"):
+    def __init__(self, file_extension=".save", save_folder=None, app_name="VahvuusVaris"):
         ext = file_extension if file_extension.startswith(".") else "." + file_extension
         self.file_extension = ext
         self.save_folder = Path(save_folder) if save_folder else default_save_dir(app_name)

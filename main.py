@@ -34,7 +34,7 @@ screen = pygame.display.set_mode((const.worldWidth,const.worldHeight), pygame.RE
 # Language of the game (Default in Finnish)
 lang = 0
 
-gameSaver = SaveLoadManager.SaveLoadSystem(".save", "game_saves")
+gameSaver = SaveLoadManager.SaveLoadSystem(".save", )
 
 # Initialize buttons
 downButton = button.Button(0,0,(0,0),const.scale)
