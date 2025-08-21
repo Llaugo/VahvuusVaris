@@ -23,7 +23,6 @@ import endScreen
 import SaveLoadManager
 import random
 import math
-import numpy
 
 pygame.init()
 clock = pygame.time.Clock() # Init clock
