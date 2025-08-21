@@ -1,4 +1,5 @@
 import csv
+import paths
 
 def readLayout(file):
     # Reads a CSV containing one or more room layouts separated by empty rows.
@@ -6,8 +7,8 @@ def readLayout(file):
     # and each row is a list of ints indicating tile types.
     layouts = []
     currentLayout = []
-
-    with open(file, newline='') as csvfile:
+    splitFile = file.split('/')
+    with open(paths.resource_path(splitFile[0],splitFile[1]), newline='') as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
             # Detect a separator line: all entries empty

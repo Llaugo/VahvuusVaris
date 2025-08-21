@@ -8,6 +8,7 @@ import npc
 import tradeMenu
 import random
 import numpy
+import paths
 
 # A class for rooms which consist of tiles in a grid.
 class Room():
@@ -188,7 +189,7 @@ class Room():
 
     # Add a stone to the room
     def addStone(self, pos):
-        image = pygame.image.load(const.resource_path('images/stone.png')).convert_alpha() # Get image
+        image = pygame.image.load(paths.resource_path('images','stone.png')).convert_alpha() # Get image
         rect = image.get_rect(center = pos) # Get rect
         self.stones.append((image, rect))
 

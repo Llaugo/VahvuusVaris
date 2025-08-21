@@ -1,13 +1,11 @@
 import pygame
-import const
+import paths
 
 # Class for extracting single image sprites from a spritesheet.
 class SpriteSheet():
     def __init__(self, sheet):
-        try:
-            self.sheet = pygame.image.load(const.resource_path(sheet)).convert()
-        except Exception as e:
-            print("ASSET LOAD FAILED:", e)
+        splitSheet = sheet.split('/')
+        self.sheet = pygame.image.load(paths.resource_path(splitSheet[0],splitSheet[1])).convert()
         self.store = {}
     
     # Get a certain image from a line of sprites
