@@ -134,7 +134,7 @@ async def main():
         if prologueScreen:
             prologueScreen.updatePos(newCenter)
         infoText1.updatePos((50,80))
-        infoText2.updatePos((150,280))
+        infoText2.updatePos((150,430))
         infoText3.updatePos((250,580))
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
@@ -333,7 +333,7 @@ async def main():
                             quitButton.updatePos(quitButton.rect.center)
                             deck.reset(floor) # Finish all active strengths
                         else:
-                            floor.player.speak(const.phrase[lang][128] + str(round(floor.timer)) + const.phrase[lang][129])
+                            floor.player.speak(const.phrase[lang][128] + str(round(floor.timer)-const.floorTimeMin) + const.phrase[lang][129])
 
             # LOOSING THE GAME
             else:

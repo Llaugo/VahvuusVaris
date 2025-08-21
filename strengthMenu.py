@@ -32,7 +32,7 @@ class StrengthMenu():
                        text.Text(const.gameFont(15), const.phrase[self.lang][20], (0,0),center=True)]
         self.inspectPile = 0
         self.strengthBackground = picture.Picture("images/strength_menu.png", (2500,1500), (0,0), 0.45)
-        self.otter = picture.Picture("images/otter_1.png", (140,195), (0,0), 0.45)
+        self.otter = picture.Picture("images/otter_1.png", (140,225), (0,0), 0.45)
         self.randomizeFavo()
         self.backButton = button.Button(0,4,(0,0), 0.45, const.gameFont(13), const.phrase[self.lang][12])
         self.randomizeButton = button.Button(0,4,(0,0), 0.45, const.gameFont(15), const.phrase[self.lang][13])
@@ -87,7 +87,7 @@ class StrengthMenu():
         for i, card in enumerate(self.decks[self.inspectPile]): # Blit open deck
             self.background.blit(card[0].image, (card[1].x-self.strengthBackground.rect.x,card[1].y-self.strengthBackground.rect.top))
             if card[0].imageNum == self.favorites[self.inspectPile].imageNum: # Blit otter below the selected card
-                self.background.blit(self.otter.image, (408 + i*149, 440))
+                self.background.blit(self.otter.image, (408 + i*149, 450))
 
     # Draw menu elements on the screen
     def draw(self, screen):

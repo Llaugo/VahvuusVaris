@@ -25,7 +25,7 @@ basePlayerSpeechDuration = 120     # Speech text visibility duration
 
 # Floor constants
 floorTime = 300     # How much time (sec) there is in each level (300 = 5min)
-floorTimeMin = 150  # How much time has to be spent on a level before exit is possible
+floorTimeMin = 297  # How much time has to be spent on a level before exit is possible
 floorSize = 9       # Floor size (floorSize x floorSize rooms)
 
 # Npc constants
@@ -155,14 +155,14 @@ phrase = [
      "Sinulla on 5 minuuttia aikaa etsiä\njoka kerroksessa. Muista palata takaisin\nhissille ennen kuin on liian myöhäistä!", # 68
      "Tallenna ja\npalaa päävalikkoon", # 69
      "Haluatko palata päävalikkoon?\nTämä pelisuoritus poistetaan.", # 70
-     "Valitse yksi vahvuus\n jokaisesta kategoriasta.\nSaat lisätietoa korteista\nvetämällä ne minulle.\nVoit myös arpoa kaikki\nvahvuudet, jos et halua\nitse valita niitä.", # 71
+     "Valitse yksi vahvuus\n jokaisesta kategoriasta.\nSaat lisätietoa mistä tahansa\nkortista vetämällä sen minulle.\nVoit myös arpoa kaikki\nvahvuudet, jos et halua\nitse valita niitä.", # 71
      "Poistu pelistä", # 72
-     "Pelin kulku:\n", # 73
-     "Luonteenvahvuuksista:\n  1. Luonteenvahvuudet ovat todellista, syvintä sinua.\n  2. Niiden käyttäminen innostaa, energiatasosi nousee ja haluat jatkuvasti toimia vahvuuden varassa.\n  3. Niitä voidaan käyttää elämän eri alueilla oppimisessa, työssä, ihmissuhteissa ja leikissä.\n  4. Niitä voidaan harjoitella ja ne ovat kehittyviä taitoja\n  5. Luonteenvahvuuksilla on moraalinen arvo, eikä niiden käyttö heikennä ketään muuta\n  \n  - Luonteenvahvuudet ovat itsetuntemuksen ja hyvinvoinnin väline.\n  - Vahvuuksiin tutustuminen on ponnahduslauta myönteiselle itsetuntemukselle.\n  - Luonteenvahvuuksien tunteminen opettaa meitä taidoistamme, kyvyistämme ja ainutlaatuisuudestamme.\n  - Kun käytämme haastetilanteissa luonteenvahvuuksia, voimme saavuttaa flow-tilan.\n  - Luonteenvahvuudet ovat ”tikapuitamme” kohti unelmiamme.\n  - Luonteenvahvuuksien tunnistaminen ja niille rakentaminen avaavat väylän saada itseluottamusta ja onnistumisen kokemuksia.\n  - Luonteenvahvuudet auttavat meitä kohti kokonaisvaltaista hyvinvointia.\n  \n  Lue lisää: positiivinenkasvatus.fi/luonteenvahvuudet", # 74
+     "Pelin kulku:\nPelin tarkoitus on etsiä ostoslistalla olevat esineet ostoskeskuksen kerroksista, aikapaineen ja muiden esteiden keskellä. \nAvuksi seikkailuun valitaan kortteja, jotka antavat pelaajalle erilaisia taitoja haasteista selviämiseen. Taidot kehittyvät \nkäytettäessä ja jokainen uusi taso tekee kustakin taidosta paremman.\n\nMutkia matkassa\nJokainen pelin taso eli kerros on satunnaisesti generoitu asetelma huoneita. Huoneista löytyviä esteitä ovat märkä lattia, \ntarjousnäytöt, laatikot lattialla sekä tietenkin muut shoppailijat ja heidän ostoskärrynsä. Osa huoneista voi myös olla pimeitä. \nKorteista löytyy keinoja esteiden voittamiseen, esineiden löytämiseen ja sokkeloisissa huoneissa navigoimiseen.\n(Pidä varasi! kauppaan on mahdollista jäädä pysyvästikin jumiin.)\n\nKuka tuo leivän kotiin?\nKaupasta on löydettävä juuri ne esineet, mitä omalla ostoslistalla on. Mitä harvinaisempi esine on, sitä kauemmaksi niitä \nvarten on todennäköisesti kuljettava. Oikeat esineet löytyvät matkan varrelta eri huoneista ja kerroksista.\n\nÄlä unohdu matkalla!\nOstoskeskus sulkeutuu kerros kerrallaan. Aikaa jokaisessa kerroksessa on enintään viisi minuuttia. Jos ei ehdi takaisin \nhissiin ajan loppumista, peli päättyy. Pelin voi tallentaa myöhemmin jatkamista varten vain hississä. \n(Kerroksesta voi löytyä usempi hissihuone.)", # 73
+     "Luonteenvahvuuksista:\nTässä pelissä käytössä olevat kortit perustuvat Lotta Uusitalo-Malmivaaran ja Kaisa Vuorisen kehittämiin \nHuomaa hyvä! -toimintakortteihin. Luonteenvahvuudet perustuvat tieteellisesti tutkittuihin vahvuuksiin. \nVIA-luonteenvahvuuksia löytyy 24, joihin Uusitalo ja Malmivaara ovat lisänneet myötätunnon ja sisukkuuden.", # 74
      "Pelin tekijät:\n  Lauri Karanko\n  Heidi Karanko", # 75
      "Luovuuden lennokki\nlennättää käyttäjänsä jonkin\nviereisen laatan yli.",                  # 76: Vahvuuskorttien kuvaukset
      "Uteliaisuuden suurennuslasi\navaa lähellä olevat\nlaatikot ja poistaa ne tieltä.",
-     "Arviointikyvyn kaukoputki\nauttaa näkemään huoneessa\nolevat esineet.",
+     "Arviointikyvyn kaukoputki\nauttaa tunnistamaan huoneessa\nolevat esineet.",
      "Oppimisen ilon hehkulamppu\nvalaisee pimeän huoneen\nkokonaan ja pysyvästi.",
      "Näkökulmanottokyvyn nelikopteri\npaljastaa hetkeksi\nympärillä olevat huoneet.",      # 80
      "Rohkeuden rukkaset\nantavat käyttäjälleen rohkeuden\ntyöntää muiden kärryjä.",
@@ -175,14 +175,14 @@ phrase = [
      "Sosiaalisen älykkyyden\nsilmälasit näyttävät\nkäyttäjälleen lähellä olevien\nkärryjen sisällön, sekä\nnäiden omistajat.\nKortti toimii hyvin\nyhteen oikeudenmukaisuuden\nvahvuuksien kanssa.",
      "Myötätunnon peili\nauttaa käyttäjäänsä asettumaan\ntoisen shoppailijan asemaan.",
      "Reiluuden lapaset\nantavat kyvyt työntää toisen\nshoppailijan kärryjä, kunhan\ntältä on ensin kysynyt luvan.",                    # 90
-     "Johtajuuden päähine\npäässään, kykenee pyytämään\nmuita työntämään\nomia kärryään.",
+     "Johtajuuden päähine\npäässään, kykenee pyytämään\nmuita siirtämään\nomia kärryään.",
      "Ryhmätyötaitojen tarjotin\nantaa mahdollisuuden käydä\nvaihtokauppaa muiden kanssa\nheidän löytämistään esineistä.",
      "Anteeksiantavuuden pyyhe\npyyhkii pois lähellä\nolevat märät lattialaatat.",
-     "Vaatimattomuuden viitta\ntekee käyttäjänsä pienemmäksi,\njolloin voi selvitä\ntiukoistakin tilanteista.",
+     "Vaatimattomuuden viitta\ntekee käyttäjänsä pieneksi.",
      "Harkitsevuuden hörppy\nantaa nautiskelijalleen\naikaa pysähtyä, laatia\nsuunnitelmaa ja odottaa\nvoimien palautumista.",                # 95
      "Itsesäätelyn suojakilpi\nmahdollistaa viisveisaamisen\nkaikenlaisista tarjouksista.",
      "Kauneuden arvostuksen kamera\npaljastaa uuden kiinnostavan\nesineen huoneessa, jota et\naiemmin huomannutkaan.",
-     "Kiitollisuuden kivet\nvoi ripotella seikkaillessa\njälkiinsä, jotta paluumatka\nsujuisi mukavammin.",
+     "Kiitollisuuden kivet\nvoi ripotella seikkaillessa\njälkiinsä, jotta paluumatka\nsujuisi joutuisammin.",
      "Toiveikkuuden taskulamppu\nnäyttää tien, vaikka huoneesta\nolisivatkin valot rikki.",
      "Huumorintajun räpylät\nauttavat silloin, kun kurainen\ntilanne meinaa pilata päivän.",                # 100
      "Hengellisyyden kynttilä\nantaa käyttäjälleen\nvaloa, kun kaikki muu\nvalo näyttää hävinneen.",
