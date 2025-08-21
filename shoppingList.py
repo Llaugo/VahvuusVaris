@@ -72,8 +72,8 @@ class ShoppingList():
 
     # Update the pos of the list on the screen
     def updatePos(self, pos):
-        self.pos = (pos[0] + self.back.rect.width/2 + 50, pos[1])
-        self.back.updatePos(self.pos) # update background
+        self.pos = pos
+        self.back.updatePos((pos[0] + self.back.rect.width/2 + 50, pos[1])) # update background
         self.title.updatePos((self.back.rect.left+10,self.back.rect.top+10)) # Update texts
         self.text1.updatePos((self.back.rect.left+13,self.back.rect.top+50))
         self.text2.updatePos((self.back.rect.right-34,self.back.rect.top+86))
