@@ -25,6 +25,7 @@ basePlayerSpeechDuration = 120     # Speech text visibility duration
 
 # Floor constants
 floorTime = 300     # How much time (sec) there is in each level (300 = 5min)
+floorTimeMin = 150  # How much time has to be spent on a level before exit is possible
 floorSize = 9       # Floor size (floorSize x floorSize rooms)
 
 # Npc constants
@@ -156,9 +157,9 @@ phrase = [
      "Haluatko palata päävalikkoon?\nTämä pelisuoritus poistetaan.", # 70
      "Valitse yksi vahvuus\n jokaisesta kategoriasta.\nSaat lisätietoa korteista\nvetämällä ne minulle.\nVoit myös arpoa kaikki\nvahvuudet, jos et halua\nitse valita niitä.", # 71
      "Poistu pelistä", # 72
-     "", # 73
-     "", # 74
-     "", # 75
+     "Pelin kulku:\n", # 73
+     "Luonteenvahvuuksista:\n  1. Luonteenvahvuudet ovat todellista, syvintä sinua.\n  2. Niiden käyttäminen innostaa, energiatasosi nousee ja haluat jatkuvasti toimia vahvuuden varassa.\n  3. Niitä voidaan käyttää elämän eri alueilla oppimisessa, työssä, ihmissuhteissa ja leikissä.\n  4. Niitä voidaan harjoitella ja ne ovat kehittyviä taitoja\n  5. Luonteenvahvuuksilla on moraalinen arvo, eikä niiden käyttö heikennä ketään muuta\n  \n  - Luonteenvahvuudet ovat itsetuntemuksen ja hyvinvoinnin väline.\n  - Vahvuuksiin tutustuminen on ponnahduslauta myönteiselle itsetuntemukselle.\n  - Luonteenvahvuuksien tunteminen opettaa meitä taidoistamme, kyvyistämme ja ainutlaatuisuudestamme.\n  - Kun käytämme haastetilanteissa luonteenvahvuuksia, voimme saavuttaa flow-tilan.\n  - Luonteenvahvuudet ovat ”tikapuitamme” kohti unelmiamme.\n  - Luonteenvahvuuksien tunnistaminen ja niille rakentaminen avaavat väylän saada itseluottamusta ja onnistumisen kokemuksia.\n  - Luonteenvahvuudet auttavat meitä kohti kokonaisvaltaista hyvinvointia.\n  \n  Lue lisää: positiivinenkasvatus.fi/luonteenvahvuudet", # 74
+     "Pelin tekijät:\n  Lauri Karanko\n  Heidi Karanko", # 75
      "Luovuuden lennokki\nlennättää käyttäjänsä jonkin\nviereisen laatan yli.",                  # 76: Vahvuuskorttien kuvaukset
      "Uteliaisuuden suurennuslasi\navaa lähellä olevat\nlaatikot ja poistaa ne tieltä.",
      "Arviointikyvyn kaukoputki\nauttaa näkemään huoneessa\nolevat esineet.",
@@ -193,7 +194,7 @@ phrase = [
      "Rohkeuden rukkaset",
      "Sinnikyyden saappaat",
      "Rehellisyyden radio",
-     "Innostuksen juoksukengät",
+     "Innostuksen juoksukengät",             # 110
      "Sisukkuuden sapeli",
      "Ystävällisyyden kukkakimppu",
      "Rakkauden rakettireppu",
@@ -203,14 +204,20 @@ phrase = [
      "Johtajuuden päähine",
      "Ryhmätyötaitojen tarjotin",
      "Anteeksiantavuuden pyyhe",
-     "Vaatimattomuuden viitta",
+     "Vaatimattomuuden viitta",              # 120
      "Harkitsevuuden hörppy",
      "Itsesäätelyn suojakilpi",
      "Kauneuden arvostuksen kamera",
      "Kiitollisuuden kivet",
      "Toiveikkuuden taskulamppu",
      "Huumorintajun räpylät",
-     "Hengellisyyden kynttilä",
+     "Hengellisyyden kynttilä",              # 127
+     "Aika tutkia kerrosta.\nHissi avautuu ",# 128
+     "s kuluttua.",                          # 129
+     "",
+     "",
+     "",
+     "",
      ""],
 ["EXIT",
      ""],

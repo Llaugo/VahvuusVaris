@@ -52,6 +52,10 @@ continueButton = button.Button(16,1,(0,0),const.scale)
 settingsButton = button.Button(16,1,(0,0),const.scale)
 infoButton = button.Button(16,1,(0,0),const.scale)
 
+infoText1 = text.Text(const.gameFont(15),const.phrase[lang][73],(0,0))
+infoText2 = text.Text(const.gameFont(15),const.phrase[lang][74],(0,0))
+infoText3 = text.Text(const.gameFont(15),const.phrase[lang][75],(0,0))
+
 confirmationDelete = popupWindow.ConfirmWindow(const.phrase[lang][61],const.gameFont(17),lang)
 confirmationGiveup = popupWindow.ConfirmWindow(const.phrase[lang][70],const.gameFont(17),lang)
 winScreen = None
@@ -75,10 +79,12 @@ async def main():
     screenSize = pygame.display.get_window_size() # Used to check changes in screen size
 
     # gameStatus: Shows the state of the game
-    #   "level": Game is running a level
     #   "menu": Game is at the starting menu
     #   "strengths": Game is at the strength picking menu
+    #   "info": Game is at the info screen
     #   "checkpoint": Game is at a state in between levels
+    #   "level": Game is running a level
+    #   "victory": Game has been won, show victory screen
     gameStatus = "menu"
 
     # Tracks the floor/level the player is at
@@ -127,6 +133,9 @@ async def main():
             loseScreen.updatePos(newCenter)
         if prologueScreen:
             prologueScreen.updatePos(newCenter)
+        infoText1.updatePos((50,80))
+        infoText2.updatePos((150,280))
+        infoText3.updatePos((250,580))
     # Called once at the start to get everything in place
     updateAllPositions(screenSize)
 
@@ -175,6 +184,8 @@ async def main():
                         nextFloorButton.handleEvent(event, screenSize)
                     else:
                         prologueScreen.handleButtons(event, screenSize)
+                elif gameStatus == "info":
+                    quitButton.handleEvent(event, screenSize)
                     
 
         #########################################################
@@ -229,6 +240,21 @@ async def main():
                 settingsButton.unpress()
             elif infoButton.pressComplete:
                 infoButton.unpress()
+                gameStatus = "info"
+                quitButton.text.setText(const.phrase[lang][12])
+                quitButton.updatePos(quitButton.rect.center)
+        
+        elif gameStatus == "info":
+            screen.fill(menuback)
+            quitButton.draw(screen)
+            infoText1.draw(screen)
+            infoText2.draw(screen)
+            infoText3.draw(screen)
+            if quitButton.pressComplete:
+                quitButton.unpress()
+                gameStatus = "menu"
+                quitButton.text.setText(const.phrase[lang][72])
+                quitButton.updatePos(quitButton.rect.center)
 
         # THE STRENGTH MENU
         elif gameStatus == "strengths":
@@ -300,12 +326,14 @@ async def main():
                         if shoppinglist.checkFillStatus():
                             # GAME WON
                             gameStatus = "victory"
-                        else:
+                        elif floor.timer < const.floorTimeMin:
                             # EXIT THE LEVEL
                             gameStatus = "checkpoint" # Change the game status
                             quitButton.text.setText(const.phrase[lang][69])
                             quitButton.updatePos(quitButton.rect.center)
                             deck.reset(floor) # Finish all active strengths
+                        else:
+                            floor.player.speak(const.phrase[lang][128] + str(round(floor.timer)) + const.phrase[lang][129])
 
             # LOOSING THE GAME
             else:
