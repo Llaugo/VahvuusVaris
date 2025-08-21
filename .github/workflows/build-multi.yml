@@ -1,0 +1,126 @@
+# .github/workflows/build-multi.yml
+name: Build desktop bundles (Windows/Linux/macOS)
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags: ['v*']   # optional: tag to build
+
+jobs:
+  build:
+    # Add macos-13 if you also want Intel mac builds
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-22.04, macos-14]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install pygame numpy
+          fi
+          pip install pyinstaller
+
+      # ---------- WINDOWS ----------
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $dirs = @("images","rooms","sounds","fonts","assets")
+          $add = @()
+          foreach ($d in $dirs) {
+            if (Test-Path $d) {
+              $src = (Resolve-Path $d).Path
+              $add += @("--add-data", "$src;$d")
+            }
+          }
+          pyinstaller --noconfirm --clean `
+            --name VahvuusVaris `
+            --onefile --noconsole `
+            --workpath pyi_build --distpath pyi_dist `
+            --collect-all numpy `
+            $add `
+            main.py
+
+      - name: Upload artifact (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: VahvuusVaris-windows
+          path: pyi_dist/VahvuusVaris.exe
+          if-no-files-found: error
+
+      # ---------- LINUX + MAC ----------
+      - name: Build (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          add_args=()
+          for d in images rooms sounds fonts assets; do
+            if [ -d "$d" ]; then
+              src="$(realpath "$d")"
+              add_args+=(--add-data "$src:$d")   # ':' on POSIX
+            fi
+          done
+
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            # macOS: make a proper .app bundle (no --onefile)
+            pyinstaller --noconfirm --clean \
+              --name VahvuusVaris \
+              --windowed \
+              --workpath pyi_build --distpath pyi_dist \
+              --collect-all numpy \
+              "${add_args[@]}" \
+              main.py
+          else
+            # Linux: single-file ELF
+            pyinstaller --noconfirm --clean \
+              --name VahvuusVaris \
+              --onefile \
+              --workpath pyi_build --distpath pyi_dist \
+              --collect-all numpy \
+              "${add_args[@]}" \
+              main.py
+          fi
+
+      - name: Package & upload (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cd pyi_dist
+          tar -czf VahvuusVaris-linux.tar.gz VahvuusVaris
+        # upload
+      - if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: VahvuusVaris-linux
+          path: pyi_dist/VahvuusVaris-linux.tar.gz
+          if-no-files-found: error
+
+      - name: Package & upload (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          cd pyi_dist
+          # zip .app correctly (preserves bundle metadata)
+          ditto -c -k --sequesterRsrc --keepParent VahvuusVaris.app VahvuusVaris-macOS.zip
+        # upload
+      - if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: VahvuusVaris-macOS
+          path: pyi_dist/VahvuusVaris-macOS.zip
+          if-no-files-found: error
